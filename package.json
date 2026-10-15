@@ -1,0 +1,28 @@
+{
+  "name": "shoplab",
+  "version": "2.0.0",
+  "description": "ShopLab v2 - an end-to-end e-commerce playground for Playwright practice (UI, API, network, chaos and seeded bugs)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:api": "playwright test --project=api",
+    "test:bugs": "playwright test --project=bugs",
+    "report": "playwright show-report",
+    "typecheck": "tsc -p ."
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.22.3"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.56.0",
+    "@types/node": "^22.20.5",
+    "typescript": "^5.9.3"
+  }
+}
