@@ -63,6 +63,8 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      # Supabase supplies these roles; create empty equivalents in the disposable CI database.
+      - run: PGPASSWORD=vortex_ci psql -h localhost -U vortex -d vortex_test -c 'CREATE ROLE anon; CREATE ROLE authenticated;'
       - run: npm run db:migrate
       - run: npm run db:seed:catalog
       - run: npm run test:db
