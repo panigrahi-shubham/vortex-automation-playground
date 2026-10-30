@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "outputDirectory": "web",
+  "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "{web,dist,server/certs,node_modules/.prisma}/**"
+    }
+  }
+}

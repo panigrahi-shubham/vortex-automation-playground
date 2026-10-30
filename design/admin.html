@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Orvilo design screen: original work, released under CC0 1.0. See LICENSE.txt. -->
+<meta charset="utf-8">
+<title>Orvilo Admin — Products</title>
+<style>
+body{margin:0;background:#F4F5F7}
+a{color:#2747F5}a:hover{color:#1B33B8}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+<link rel="stylesheet" href="assets/fonts.css">
+</head>
+<body>
+<div style="min-height: 1040px; background: #F4F5F7; color: #111318; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; display: flex">
+  <nav aria-label="Admin" style="width: 240px; flex: 0 0 auto; background: #111318; color: #FFFFFF; padding: 22px 14px; display: flex; flex-direction: column; gap: 4px">
+    <a href="index.html" style="display: flex; align-items: center; gap: 10px; padding: 0 10px 22px; text-decoration: none; color: #FFFFFF; font-weight: 800; font-size: 20px"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11.5" fill="none" stroke="#FFFFFF" stroke-width="3"></circle><circle cx="14" cy="14" r="4.5" fill="#2747F5"></circle></svg>Orvilo <span style="font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 6px; background: #2A2F38; color: #C4C9D2">ADMIN</span></a>
+    
+      <a href="admin.html" aria-current="false" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: transparent; color: #C4C9D2; font-weight: 600; font-size: 14px; text-decoration: none">Dashboard<span style="font-size: 12px; color: #8A909C"></span></a>
+    
+      <a href="admin.html" aria-current="page" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: #2A2F38; color: #FFFFFF; font-weight: 600; font-size: 14px; text-decoration: none">Products<span style="font-size: 12px; color: #8A909C">48</span></a>
+    
+      <a href="admin.html" aria-current="false" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: transparent; color: #C4C9D2; font-weight: 600; font-size: 14px; text-decoration: none">Orders<span style="font-size: 12px; color: #8A909C">132</span></a>
+    
+      <a href="admin.html" aria-current="false" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: transparent; color: #C4C9D2; font-weight: 600; font-size: 14px; text-decoration: none">Customers<span style="font-size: 12px; color: #8A909C">26</span></a>
+    
+      <a href="admin.html" aria-current="false" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: transparent; color: #C4C9D2; font-weight: 600; font-size: 14px; text-decoration: none">Coupons<span style="font-size: 12px; color: #8A909C">4</span></a>
+    
+      <a href="admin.html" aria-current="false" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: transparent; color: #C4C9D2; font-weight: 600; font-size: 14px; text-decoration: none">Audit log<span style="font-size: 12px; color: #8A909C"></span></a>
+    
+    <div style="margin-top: auto; padding: 14px 12px; border-radius: 12px; background: #1C2028; font-size: 13px; line-height: 1.5; color: #C4C9D2">
+      <strong style="color: #FFFFFF; display: block; margin-bottom: 4px">Demo data</strong>
+      Changes here only affect your test session.
+      <button type="button" style="display: block; margin-top: 10px; min-height: 36px; padding: 0 12px; border: 1px solid #3B414D; border-radius: 8px; background: none; color: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Reset my data</button>
+    </div>
+  </nav>
+
+  <main style="flex: 1; min-width: 0; padding: 26px 32px 48px">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 14px; margin-bottom: 20px">
+      <div>
+        <h1 style="margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.03em">Products</h1>
+        <p style="margin: 6px 0 0; color: #5A6170; font-size: 14px">48 products · 3 low on stock · 1 out of stock</p>
+      </div>
+      <div style="display: flex; gap: 10px">
+        <button type="button" style="min-height: 44px; padding: 0 16px; border: 1px solid #D3D7DE; border-radius: 10px; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Import CSV</button>
+        <button type="button" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 10px; background: #2747F5; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">+ Add product</button>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 18px">
+      
+        <div style="flex: 1 1 180px; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 14px; padding: 14px 16px"><p style="margin: 0; font-size: 13px; color: #5A6170">Revenue today</p><p style="margin: 4px 0 0; font-size: 24px; font-weight: 800">$2,184</p></div>
+      
+        <div style="flex: 1 1 180px; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 14px; padding: 14px 16px"><p style="margin: 0; font-size: 13px; color: #5A6170">Orders today</p><p style="margin: 4px 0 0; font-size: 24px; font-weight: 800">17</p></div>
+      
+        <div style="flex: 1 1 180px; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 14px; padding: 14px 16px"><p style="margin: 0; font-size: 13px; color: #5A6170">Processing</p><p style="margin: 4px 0 0; font-size: 24px; font-weight: 800">5</p></div>
+      
+        <div style="flex: 1 1 180px; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 14px; padding: 14px 16px"><p style="margin: 0; font-size: 13px; color: #5A6170">Locked users</p><p style="margin: 4px 0 0; font-size: 24px; font-weight: 800">1</p></div>
+      
+    </div>
+
+    <section aria-label="Product table" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; overflow: hidden">
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; padding: 14px 16px; border-bottom: 1px solid #E3E6EB; align-items: center">
+        <label class="sr-only" for="a-search">Search products</label>
+        <input id="a-search" placeholder="Search by name or SKU" style="flex: 1 1 240px; max-width: 320px; min-height: 40px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit; font-size: 14px">
+        <label class="sr-only" for="a-cat">Category</label>
+        <select id="a-cat" style="min-height: 40px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 10px; font: inherit; font-size: 14px; background: #FFFFFF"><option>All categories</option></select>
+        <span style="margin-left: auto; font-size: 13px; color: #5A6170">2 selected</span>
+        <button type="button" style="min-height: 40px; padding: 0 14px; border: 1px solid #F5C2BC; border-radius: 10px; background: #FFFFFF; color: #B42318; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Delete selected</button>
+      </div>
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px">
+        <thead>
+          <tr style="background: #F7F8FA; text-align: left; color: #3B414D">
+            <th scope="col" style="padding: 10px 16px; width: 32px"><input type="checkbox" aria-label="Select all" style="width: 16px; height: 16px"></th>
+            <th scope="col" aria-sort="ascending" style="padding: 10px 8px; font-weight: 700"><button type="button" style="border: 0; background: none; font: inherit; font-weight: 700; color: #111318; padding: 0; cursor: pointer">Product ▲</button></th>
+            <th scope="col" style="padding: 10px 8px; font-weight: 700">SKU</th>
+            <th scope="col" style="padding: 10px 8px; font-weight: 700">Category</th>
+            <th scope="col" style="padding: 10px 8px; font-weight: 700; text-align: right"><button type="button" style="border: 0; background: none; font: inherit; font-weight: 700; color: #3B414D; padding: 0; cursor: pointer">Price ↕</button></th>
+            <th scope="col" style="padding: 10px 8px; font-weight: 700; text-align: right"><button type="button" style="border: 0; background: none; font: inherit; font-weight: 700; color: #3B414D; padding: 0; cursor: pointer">Stock ↕</button></th>
+            <th scope="col" style="padding: 10px 8px; font-weight: 700">Status</th>
+            <th scope="col" style="padding: 10px 16px; font-weight: 700; text-align: right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr style="border-top: 1px solid #EEF0F3; background: #F5F7FF">
+              <td style="padding: 10px 16px"><input type="checkbox" checked="" aria-label="Select Adjustable Desk Lamp" style="width: 16px; height: 16px; accent-color: #2747F5"></td>
+              <td style="padding: 10px 8px"><span style="display: flex; align-items: center; gap: 10px"><span style="width: 36px; height: 36px; border-radius: 8px; background: #EDF2EC; flex: 0 0 auto"></span><strong>Adjustable Desk Lamp</strong></span></td>
+              <td style="padding: 10px 8px; font-family: ui-monospace, monospace; color: #3B414D">HOM-0142</td>
+              <td style="padding: 10px 8px; color: #3B414D">Home</td>
+              <td style="padding: 10px 8px; text-align: right; font-weight: 600">$38.00</td>
+              <td style="padding: 10px 8px; text-align: right; font-weight: 700; color: #B42318">0</td>
+              <td style="padding: 10px 8px"><span style="padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #FDECEA; color: #8A1C12">Out of stock</span></td>
+              <td style="padding: 10px 16px; text-align: right; white-space: nowrap"><button type="button" aria-label="Edit Adjustable Desk Lamp" style="min-height: 34px; padding: 0 10px; border: 1px solid #D3D7DE; border-radius: 8px; background: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Edit</button> <button type="button" aria-label="Delete Adjustable Desk Lamp" style="min-height: 34px; padding: 0 10px; border: 0; border-radius: 8px; background: none; color: #B42318; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Delete</button></td>
+            </tr>
+          
+            <tr style="border-top: 1px solid #EEF0F3; background: #FFFFFF">
+              <td style="padding: 10px 16px"><input type="checkbox" aria-label="Select Ceramic Pour-Over Set" style="width: 16px; height: 16px; accent-color: #2747F5"></td>
+              <td style="padding: 10px 8px"><span style="display: flex; align-items: center; gap: 10px"><span style="width: 36px; height: 36px; border-radius: 8px; background: #EDF2EC; flex: 0 0 auto"></span><strong>Ceramic Pour-Over Set</strong></span></td>
+              <td style="padding: 10px 8px; font-family: ui-monospace, monospace; color: #3B414D">KIT-0217</td>
+              <td style="padding: 10px 8px; color: #3B414D">Kitchen</td>
+              <td style="padding: 10px 8px; text-align: right; font-weight: 600">$42.00</td>
+              <td style="padding: 10px 8px; text-align: right; font-weight: 700; color: #111318">31</td>
+              <td style="padding: 10px 8px"><span style="padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #E6F4EC; color: #0B5E39">Active</span></td>
+              <td style="padding: 10px 16px; text-align: right; white-space: nowrap"><button type="button" aria-label="Edit Ceramic Pour-Over Set" style="min-height: 34px; padding: 0 10px; border: 1px solid #D3D7DE; border-radius: 8px; background: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Edit</button> <button type="button" aria-label="Delete Ceramic Pour-Over Set" style="min-height: 34px; padding: 0 10px; border: 0; border-radius: 8px; background: none; color: #B42318; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Delete</button></td>
+            </tr>
+          
+            <tr style="border-top: 1px solid #EEF0F3; background: #F5F7FF">
+              <td style="padding: 10px 16px"><input type="checkbox" checked="" aria-label="Select Classic Hoodie" style="width: 16px; height: 16px; accent-color: #2747F5"></td>
+              <td style="padding: 10px 8px"><span style="display: flex; align-items: center; gap: 10px"><span style="width: 36px; height: 36px; border-radius: 8px; background: #F1EDE7; flex: 0 0 auto"></span><strong>Classic Hoodie</strong></span></td>
+              <td style="padding: 10px 8px; font-family: ui-monospace, monospace; color: #3B414D">APP-0088</td>
+              <td style="padding: 10px 8px; color: #3B414D">Apparel</td>
+              <td style="padding: 10px 8px; text-align: right; font-weight: 600">$59.00</td>
+              <td style="padding: 10px 8px; text-align: right; font-weight: 700; color: #8A5300">4</td>
+              <td style="padding: 10px 8px"><span style="padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #FFF4E0; color: #8A5300">Low stock</span></td>
+              <td style="padding: 10px 16px; text-align: right; white-space: nowrap"><button type="button" aria-label="Edit Classic Hoodie" style="min-height: 34px; padding: 0 10px; border: 1px solid #D3D7DE; border-radius: 8px; background: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Edit</button> <button type="button" aria-label="Delete Classic Hoodie" style="min-height: 34px; padding: 0 10px; border: 0; border-radius: 8px; background: none; color: #B42318; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Delete</button></td>
+            </tr>
+          
+            <tr style="border-top: 1px solid #EEF0F3; background: #FFFFFF">
+              <td style="padding: 10px 16px"><input type="checkbox" aria-label="Select Linen Throw Blanket" style="width: 16px; height: 16px; accent-color: #2747F5"></td>
+              <td style="padding: 10px 8px"><span style="display: flex; align-items: center; gap: 10px"><span style="width: 36px; height: 36px; border-radius: 8px; background: #F3ECF4; flex: 0 0 auto"></span><strong>Linen Throw Blanket</strong></span></td>
+              <td style="padding: 10px 8px; font-family: ui-monospace, monospace; color: #3B414D">HOM-0190</td>
+              <td style="padding: 10px 8px; color: #3B414D">Home</td>
+              <td style="padding: 10px 8px; text-align: right; font-weight: 600">$64.00</td>
+              <td style="padding: 10px 8px; text-align: right; font-weight: 700; color: #111318">18</td>
+              <td style="padding: 10px 8px"><span style="padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #E6F4EC; color: #0B5E39">Active</span></td>
+              <td style="padding: 10px 16px; text-align: right; white-space: nowrap"><button type="button" aria-label="Edit Linen Throw Blanket" style="min-height: 34px; padding: 0 10px; border: 1px solid #D3D7DE; border-radius: 8px; background: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Edit</button> <button type="button" aria-label="Delete Linen Throw Blanket" style="min-height: 34px; padding: 0 10px; border: 0; border-radius: 8px; background: none; color: #B42318; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Delete</button></td>
+            </tr>
+          
+            <tr style="border-top: 1px solid #EEF0F3; background: #FFFFFF">
+              <td style="padding: 10px 16px"><input type="checkbox" aria-label="Select Mechanical Keyboard" style="width: 16px; height: 16px; accent-color: #2747F5"></td>
+              <td style="padding: 10px 8px"><span style="display: flex; align-items: center; gap: 10px"><span style="width: 36px; height: 36px; border-radius: 8px; background: #E9EEF6; flex: 0 0 auto"></span><strong>Mechanical Keyboard</strong></span></td>
+              <td style="padding: 10px 8px; font-family: ui-monospace, monospace; color: #3B414D">ELE-0031</td>
+              <td style="padding: 10px 8px; color: #3B414D">Electronics</td>
+              <td style="padding: 10px 8px; text-align: right; font-weight: 600">$89.00</td>
+              <td style="padding: 10px 8px; text-align: right; font-weight: 700; color: #111318">12</td>
+              <td style="padding: 10px 8px"><span style="padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #E6F4EC; color: #0B5E39">Active</span></td>
+              <td style="padding: 10px 16px; text-align: right; white-space: nowrap"><button type="button" aria-label="Edit Mechanical Keyboard" style="min-height: 34px; padding: 0 10px; border: 1px solid #D3D7DE; border-radius: 8px; background: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Edit</button> <button type="button" aria-label="Delete Mechanical Keyboard" style="min-height: 34px; padding: 0 10px; border: 0; border-radius: 8px; background: none; color: #B42318; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Delete</button></td>
+            </tr>
+          
+            <tr style="border-top: 1px solid #EEF0F3; background: #FFFFFF">
+              <td style="padding: 10px 16px"><input type="checkbox" aria-label="Select Noise-Cancelling Earbuds" style="width: 16px; height: 16px; accent-color: #2747F5"></td>
+              <td style="padding: 10px 8px"><span style="display: flex; align-items: center; gap: 10px"><span style="width: 36px; height: 36px; border-radius: 8px; background: #E9EEF6; flex: 0 0 auto"></span><strong>Noise-Cancelling Earbuds</strong></span></td>
+              <td style="padding: 10px 8px; font-family: ui-monospace, monospace; color: #3B414D">ELE-0057</td>
+              <td style="padding: 10px 8px; color: #3B414D">Electronics</td>
+              <td style="padding: 10px 8px; text-align: right; font-weight: 600">$129.00</td>
+              <td style="padding: 10px 8px; text-align: right; font-weight: 700; color: #8A5300">3</td>
+              <td style="padding: 10px 8px"><span style="padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #FFF4E0; color: #8A5300">Low stock</span></td>
+              <td style="padding: 10px 16px; text-align: right; white-space: nowrap"><button type="button" aria-label="Edit Noise-Cancelling Earbuds" style="min-height: 34px; padding: 0 10px; border: 1px solid #D3D7DE; border-radius: 8px; background: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Edit</button> <button type="button" aria-label="Delete Noise-Cancelling Earbuds" style="min-height: 34px; padding: 0 10px; border: 0; border-radius: 8px; background: none; color: #B42318; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Delete</button></td>
+            </tr>
+          
+            <tr style="border-top: 1px solid #EEF0F3; background: #FFFFFF">
+              <td style="padding: 10px 16px"><input type="checkbox" aria-label="Select Running Shoes" style="width: 16px; height: 16px; accent-color: #2747F5"></td>
+              <td style="padding: 10px 8px"><span style="display: flex; align-items: center; gap: 10px"><span style="width: 36px; height: 36px; border-radius: 8px; background: #F1EDE7; flex: 0 0 auto"></span><strong>Running Shoes</strong></span></td>
+              <td style="padding: 10px 8px; font-family: ui-monospace, monospace; color: #3B414D">APP-0102</td>
+              <td style="padding: 10px 8px; color: #3B414D">Apparel</td>
+              <td style="padding: 10px 8px; text-align: right; font-weight: 600">$95.00</td>
+              <td style="padding: 10px 8px; text-align: right; font-weight: 700; color: #111318">22</td>
+              <td style="padding: 10px 8px"><span style="padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #E6F4EC; color: #0B5E39">Active</span></td>
+              <td style="padding: 10px 16px; text-align: right; white-space: nowrap"><button type="button" aria-label="Edit Running Shoes" style="min-height: 34px; padding: 0 10px; border: 1px solid #D3D7DE; border-radius: 8px; background: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Edit</button> <button type="button" aria-label="Delete Running Shoes" style="min-height: 34px; padding: 0 10px; border: 0; border-radius: 8px; background: none; color: #B42318; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Delete</button></td>
+            </tr>
+          
+            <tr style="border-top: 1px solid #EEF0F3; background: #FFFFFF">
+              <td style="padding: 10px 16px"><input type="checkbox" aria-label="Select Trail Water Bottle" style="width: 16px; height: 16px; accent-color: #2747F5"></td>
+              <td style="padding: 10px 8px"><span style="display: flex; align-items: center; gap: 10px"><span style="width: 36px; height: 36px; border-radius: 8px; background: #E8F1F3; flex: 0 0 auto"></span><strong>Trail Water Bottle</strong></span></td>
+              <td style="padding: 10px 8px; font-family: ui-monospace, monospace; color: #3B414D">OUT-0009</td>
+              <td style="padding: 10px 8px; color: #3B414D">Outdoors</td>
+              <td style="padding: 10px 8px; text-align: right; font-weight: 600">$24.00</td>
+              <td style="padding: 10px 8px; text-align: right; font-weight: 700; color: #B42318">0</td>
+              <td style="padding: 10px 8px"><span style="padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #F1F2F4; color: #5A6170">Draft</span></td>
+              <td style="padding: 10px 16px; text-align: right; white-space: nowrap"><button type="button" aria-label="Edit Trail Water Bottle" style="min-height: 34px; padding: 0 10px; border: 1px solid #D3D7DE; border-radius: 8px; background: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Edit</button> <button type="button" aria-label="Delete Trail Water Bottle" style="min-height: 34px; padding: 0 10px; border: 0; border-radius: 8px; background: none; color: #B42318; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Delete</button></td>
+            </tr>
+          
+        </tbody>
+      </table>
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 16px; border-top: 1px solid #E3E6EB; font-size: 13px; color: #5A6170">
+        <span>Showing 1–8 of 48</span>
+        <nav aria-label="Pagination" style="display: flex; gap: 6px">
+          <button type="button" disabled="" style="min-width: 34px; min-height: 34px; border: 1px solid #E3E6EB; border-radius: 8px; background: #F7F8FA; color: #8A909C; font: inherit">‹</button>
+          <button type="button" aria-current="page" style="min-width: 34px; min-height: 34px; border: 0; border-radius: 8px; background: #2747F5; color: #FFFFFF; font: inherit; font-weight: 700">1</button>
+          <button type="button" style="min-width: 34px; min-height: 34px; border: 1px solid #D3D7DE; border-radius: 8px; background: #FFFFFF; font: inherit">2</button>
+          <button type="button" style="min-width: 34px; min-height: 34px; border: 1px solid #D3D7DE; border-radius: 8px; background: #FFFFFF; font: inherit">3</button>
+          <span style="align-self: center">…</span>
+          <button type="button" style="min-width: 34px; min-height: 34px; border: 1px solid #D3D7DE; border-radius: 8px; background: #FFFFFF; font: inherit">6</button>
+          <button type="button" aria-label="Next page" style="min-width: 34px; min-height: 34px; border: 1px solid #D3D7DE; border-radius: 8px; background: #FFFFFF; font: inherit">›</button>
+        </nav>
+      </div>
+    </section>
+  </main>
+</div>
+</body>
+</html>

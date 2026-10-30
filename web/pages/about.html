@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About Us · VORTEX</title>
+  <meta name="description" content="Learn about Vortex Automation Playground, a website for practicing software testing and automation.">
+  <link rel="stylesheet" href="/assets/fonts.css">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/orvilo.css">
+  <style>
+    .about-page .site-header { position: static; }
+    .about-page .header-inner { justify-content: space-between; }
+    .about-page main { max-width: 880px; margin: 40px auto; padding: 0 20px; }
+    .about-page .about-card { padding: clamp(24px, 5vw, 48px); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+    .about-page h1 { font-size: clamp(32px, 6vw, 50px); margin-bottom: 16px; }
+    .about-page h2 { margin: 28px 0 10px; }
+    .about-page p, .about-page li { color: var(--ink-2); line-height: 1.7; }
+    .about-page ul { padding-left: 22px; }
+    .about-page .about-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+  </style>
+</head>
+<body class="about-page">
+  <a class="skip" href="#about-main">Skip to content</a>
+  <header class="site-header"><div class="header-inner">
+    <a class="brand" href="/shop" aria-label="Vortex Automation Playground home"><span class="brand-mark" aria-hidden="true">V</span><span class="brand-copy"><span class="brand-name">VORTEX</span><small>AUTOMATION PLAYGROUND</small></span></a>
+    <a href="/shop">Back to store</a>
+  </div></header>
+  <main id="about-main">
+    <article class="about-card">
+      <h1>About Vortex</h1>
+      <p><strong>Built to Break. Designed to Test.</strong></p>
+      <p>Vortex Automation Playground is a place to learn and practice software testing using a realistic simulated store. Explore journeys, find issues and build your own automation framework at your own pace.</p>
+      <h2>What you can practice</h2>
+      <ul><li>Browse products, manage a cart and complete simulated checkout.</li><li>Explore accounts, orders and API interactions.</li><li>Use the UI Lab to work with frames, shadow DOM, dialogs and other browser interactions.</li></ul>
+      <p>Payments and store activity are simulated. Some exercises and test controls depend on the environment; see the testing guide for current availability.</p>
+      <h2>The Vortex projects</h2>
+      <p>This playground is the website project. Vortex Web Recorder, the Android application and Android Recorder are separate projects.</p>
+      <div class="about-actions"><a class="btn" href="/shop">Explore the store</a><a class="btn secondary" href="/pages/testing-guide.html">Read the testing guide</a></div>
+    </article>
+  </main>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Orvilo design screen: original work, released under CC0 1.0. See LICENSE.txt. -->
+<meta charset="utf-8">
+<title>Orvilo — Message center</title>
+<style>
+body{margin:0;background:#F4F5F7}
+a{color:#2747F5}a:hover{color:#1B33B8}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+<link rel="stylesheet" href="assets/fonts.css">
+</head>
+<body>
+<div style="min-height: 1000px; background: #F4F5F7; color: #111318; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; display: flex; flex-direction: column">
+  <div style="background: #111318; color: #FFFFFF; font-size: 13px; text-align: center; padding: 8px 16px">Orvilo is a demo store. The assistant and support agents are simulated.</div>
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E3E6EB">
+    <div style="max-width: 1360px; margin: 0 auto; padding: 14px 32px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; min-height: 44px">
+      <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #111318; font-weight: 800; font-size: 22px; letter-spacing: -0.02em"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11.5" fill="none" stroke="#2747F5" stroke-width="3"></circle><circle cx="14" cy="14" r="4.5" fill="#2747F5"></circle></svg>Orvilo</a>
+      <nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 4px 22px; font-size: 15px; font-weight: 600; flex: 1">
+        <a href="index.html" style="color: #3B414D; text-decoration: none">Shop</a>
+        <a href="orders.html" style="color: #3B414D; text-decoration: none">Orders</a>
+        <a href="messages.html" aria-current="page" style="color: #2747F5; text-decoration: none; box-shadow: inset 0 -2px 0 #2747F5">Messages <span style="font-size: 12px; padding: 1px 7px; border-radius: 999px; background: #2747F5; color: #FFFFFF">3</span></a>
+        <a href="lab.html" style="color: #3B414D; text-decoration: none">UI Lab</a>
+        <a href="docs.html" style="color: #3B414D; text-decoration: none">API docs</a>
+      </nav>
+      <a href="profile.html" aria-label="My profile" style="display: grid; place-items: center; width: 40px; height: 40px; border-radius: 20px; background: #EEF1FE; color: #2747F5; font-weight: 700; font-size: 14px; text-decoration: none">SU</a>
+    </div>
+  </header>
+
+  <div style="flex: 1; max-width: 1360px; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 20px 32px 32px; display: flex; flex-wrap: wrap; gap: 0; align-items: stretch">
+    <section aria-label="Conversations" style="flex: 1 1 300px; max-width: 340px; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px 0 0 20px; display: flex; flex-direction: column">
+      <div style="padding: 16px; border-bottom: 1px solid #E3E6EB; display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; justify-content: space-between; align-items: center"><h1 style="margin: 0; font-size: 20px; font-weight: 800">Messages</h1><button type="button" style="min-height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: #2747F5; color: #FFFFFF; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer">New message</button></div>
+        <label class="sr-only" for="c-q">Search messages</label>
+        <input id="c-q" placeholder="Search messages" style="min-height: 40px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit; font-size: 14px">
+        <div role="tablist" aria-label="Filter conversations" style="display: flex; gap: 6px; font-size: 13px; font-weight: 600">
+          
+            <button type="button" role="tab" aria-selected="true" style="min-height: 32px; padding: 0 10px; border: 0; border-radius: 8px; background: #111318; color: #FFFFFF; font: inherit; cursor: pointer">All</button>
+          
+            <button type="button" role="tab" aria-selected="false" style="min-height: 32px; padding: 0 10px; border: 0; border-radius: 8px; background: #F4F5F7; color: #3B414D; font: inherit; cursor: pointer">Unread</button>
+          
+            <button type="button" role="tab" aria-selected="false" style="min-height: 32px; padding: 0 10px; border: 0; border-radius: 8px; background: #F4F5F7; color: #3B414D; font: inherit; cursor: pointer">Support</button>
+          
+            <button type="button" role="tab" aria-selected="false" style="min-height: 32px; padding: 0 10px; border: 0; border-radius: 8px; background: #F4F5F7; color: #3B414D; font: inherit; cursor: pointer">Sellers</button>
+          
+        </div>
+      </div>
+      <ul style="list-style: none; margin: 0; padding: 0">
+        
+          <li style="border-bottom: 1px solid #EEF0F3; background: #F5F7FF; box-shadow: inset 3px 0 0 #2747F5">
+            <a href="messages.html" aria-current="true" style="display: flex; gap: 12px; padding: 14px 16px; text-decoration: none; color: #111318">
+              <span aria-hidden="true" style="flex: 0 0 auto; width: 40px; height: 40px; border-radius: 12px; background: #F3ECF4; color: #6A2C78; display: grid; place-items: center; font-weight: 800; font-size: 14px">P</span>
+              <span style="flex: 1; min-width: 0">
+                <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 14px"><strong style="font-weight: 800">Order ORV-10457</strong><span style="font-size: 12px; color: #5A6170">14:06</span></span>
+                <span style="display: flex; gap: 6px; align-items: center; margin-top: 2px"><span style="font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 5px; background: #F3ECF4; color: #6A2C78">SUPPORT</span><span style="font-size: 13px; color: #5A6170; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Priya: here is a prepaid return label…</span></span>
+              </span>
+              
+            </a>
+          </li>
+        
+          <li style="border-bottom: 1px solid #EEF0F3; background: #FFFFFF; box-shadow: none">
+            <a href="messages.html" aria-current="false" style="display: flex; gap: 12px; padding: 14px 16px; text-decoration: none; color: #111318">
+              <span aria-hidden="true" style="flex: 0 0 auto; width: 40px; height: 40px; border-radius: 12px; background: #111318; color: #FFFFFF; display: grid; place-items: center; font-weight: 800; font-size: 14px">O</span>
+              <span style="flex: 1; min-width: 0">
+                <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 14px"><strong style="font-weight: 800">Orvi assistant</strong><span style="font-size: 12px; color: #5A6170">12:40</span></span>
+                <span style="display: flex; gap: 6px; align-items: center; margin-top: 2px"><span style="font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 5px; background: #111318; color: #FFFFFF">BOT</span><span style="font-size: 13px; color: #5A6170; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Your coupon SAVE10 expires on Sunday.</span></span>
+              </span>
+              <span aria-label="1 unread" style="align-self: center; min-width: 20px; height: 20px; border-radius: 10px; background: #2747F5; color: #FFFFFF; font-size: 11px; font-weight: 800; display: grid; place-items: center">1</span>
+            </a>
+          </li>
+        
+          <li style="border-bottom: 1px solid #EEF0F3; background: #FFFFFF; box-shadow: none">
+            <a href="messages.html" aria-current="false" style="display: flex; gap: 12px; padding: 14px 16px; text-decoration: none; color: #111318">
+              <span aria-hidden="true" style="flex: 0 0 auto; width: 40px; height: 40px; border-radius: 12px; background: #F1EDE7; color: #111318; display: grid; place-items: center; font-weight: 800; font-size: 14px">KH</span>
+              <span style="flex: 1; min-width: 0">
+                <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 14px"><strong style="font-weight: 800">Keyhaus Store</strong><span style="font-size: 12px; color: #5A6170">Yesterday</span></span>
+                <span style="display: flex; gap: 6px; align-items: center; margin-top: 2px"><span style="font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 5px; background: #E6F4EC; color: #0B5E39">SELLER</span><span style="font-size: 13px; color: #5A6170; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Yes, the tactile switches ship next week.</span></span>
+              </span>
+              <span aria-label="2 unread" style="align-self: center; min-width: 20px; height: 20px; border-radius: 10px; background: #2747F5; color: #FFFFFF; font-size: 11px; font-weight: 800; display: grid; place-items: center">2</span>
+            </a>
+          </li>
+        
+          <li style="border-bottom: 1px solid #EEF0F3; background: #FFFFFF; box-shadow: none">
+            <a href="messages.html" aria-current="false" style="display: flex; gap: 12px; padding: 14px 16px; text-decoration: none; color: #111318">
+              <span aria-hidden="true" style="flex: 0 0 auto; width: 40px; height: 40px; border-radius: 12px; background: #E6F4EC; color: #0B5E39; display: grid; place-items: center; font-weight: 800; font-size: 14px">✓</span>
+              <span style="flex: 1; min-width: 0">
+                <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 14px"><strong style="font-weight: 800">Order ORV-10398</strong><span style="font-size: 12px; color: #5A6170">Oct 12</span></span>
+                <span style="display: flex; gap: 6px; align-items: center; margin-top: 2px"><span style="font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 5px; background: #EEF1FE; color: #1B33B8">ORDER</span><span style="font-size: 13px; color: #5A6170; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Delivered. How was it? Leave a review.</span></span>
+              </span>
+              
+            </a>
+          </li>
+        
+          <li style="border-bottom: 1px solid #EEF0F3; background: #FFFFFF; box-shadow: none">
+            <a href="messages.html" aria-current="false" style="display: flex; gap: 12px; padding: 14px 16px; text-decoration: none; color: #111318">
+              <span aria-hidden="true" style="flex: 0 0 auto; width: 40px; height: 40px; border-radius: 12px; background: #FFF4E0; color: #8A5300; display: grid; place-items: center; font-weight: 800; font-size: 14px">S</span>
+              <span style="flex: 1; min-width: 0">
+                <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 14px"><strong style="font-weight: 800">Orvilo support</strong><span style="font-size: 12px; color: #5A6170">Sep 25</span></span>
+                <span style="display: flex; gap: 6px; align-items: center; margin-top: 2px"><span style="font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 5px; background: #F3ECF4; color: #6A2C78">SUPPORT</span><span style="font-size: 13px; color: #5A6170; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Your refund of $32.40 was issued.</span></span>
+              </span>
+              
+            </a>
+          </li>
+        
+      </ul>
+    </section>
+
+    <section aria-labelledby="th-h" style="flex: 999 1 520px; min-width: 0; background: #FFFFFF; border-top: 1px solid #E3E6EB; border-bottom: 1px solid #E3E6EB; display: flex; flex-direction: column">
+      <div style="padding: 14px 20px; border-bottom: 1px solid #E3E6EB; display: flex; justify-content: space-between; align-items: center; gap: 12px">
+        <div>
+          <h2 id="th-h" style="margin: 0; font-size: 17px; font-weight: 800">Where is my order ORV-10457?</h2>
+          <p style="margin: 2px 0 0; font-size: 13px; color: #5A6170">You, Orvi assistant and Priya from support</p>
+        </div>
+        <span style="padding: 4px 10px; border-radius: 999px; background: #EEF1FE; color: #1B33B8; font-size: 12px; font-weight: 800">Open · assigned to Priya</span>
+      </div>
+
+      <ol aria-label="Messages" style="list-style: none; margin: 0; padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 14px; background: #FAFBFC">
+        <li style="align-self: flex-end; max-width: 70%"><div style="padding: 10px 14px; border-radius: 16px 16px 4px 16px; background: #2747F5; color: #FFFFFF; font-size: 14px; line-height: 1.5">Hi, where is my order ORV-10457? It said shipped 5 days ago.</div><p style="margin: 4px 0 0; font-size: 12px; color: #5A6170; text-align: right">14:02 · Read</p></li>
+        <li style="align-self: flex-start; max-width: 72%; display: flex; gap: 10px">
+          <span aria-hidden="true" style="flex: 0 0 auto; width: 32px; height: 32px; border-radius: 10px; background: #111318; color: #FFFFFF; display: grid; place-items: center; font-size: 13px; font-weight: 800">O</span>
+          <div>
+            <p style="margin: 0 0 4px; font-size: 12px; font-weight: 700">Orvi assistant <span style="font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 5px; background: #111318; color: #FFFFFF">BOT</span></p>
+            <div style="padding: 12px 14px; border-radius: 4px 16px 16px 16px; background: #FFFFFF; border: 1px solid #E3E6EB; font-size: 14px; line-height: 1.5">
+              I found it. Your parcel is with the carrier and is running late.
+              <div style="margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: #F4F5F7; display: flex; gap: 12px; align-items: center"><span style="width: 44px; height: 44px; border-radius: 8px; background: #EDF2EC"></span><span style="flex: 1; font-size: 13px"><strong style="display: block">ORV-10457 · Shipped</strong><span style="color: #5A6170">Tracking DEMO-TRK-55210 · was due Oct 26</span></span><a href="orderdetail.html" style="font-size: 13px; font-weight: 700">View</a></div>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px">
+              <button type="button" style="min-height: 34px; padding: 0 12px; border: 1px solid #2747F5; border-radius: 999px; background: #FFFFFF; color: #2747F5; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer">Track parcel</button>
+              <button type="button" style="min-height: 34px; padding: 0 12px; border: 1px solid #2747F5; border-radius: 999px; background: #FFFFFF; color: #2747F5; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer">Start a return</button>
+              <button type="button" aria-pressed="true" style="min-height: 34px; padding: 0 12px; border: 0; border-radius: 999px; background: #2747F5; color: #FFFFFF; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer">Talk to a person</button>
+            </div>
+          </div>
+        </li>
+        <li role="note" style="align-self: center; font-size: 12px; color: #5A6170; padding: 4px 12px; border-radius: 999px; background: #EEF0F3">Handed over to support · typical wait 2 min · 14:03</li>
+        <li style="align-self: flex-start; max-width: 72%; display: flex; gap: 10px">
+          <span aria-hidden="true" style="flex: 0 0 auto; width: 32px; height: 32px; border-radius: 10px; background: #F3ECF4; color: #6A2C78; display: grid; place-items: center; font-size: 13px; font-weight: 800">P</span>
+          <div>
+            <p style="margin: 0 0 4px; font-size: 12px; font-weight: 700">Priya <span style="font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 5px; background: #F3ECF4; color: #6A2C78">SUPPORT</span></p>
+            <div style="padding: 12px 14px; border-radius: 4px 16px 16px 16px; background: #FFFFFF; border: 1px solid #E3E6EB; font-size: 14px; line-height: 1.5">Sorry about the delay, Sam. I've asked the carrier to prioritise it. If it hasn't arrived by Friday, here's a prepaid return label so we can resend or refund.</div>
+            <a href="messages.html" style="margin-top: 8px; display: inline-flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 10px; border: 1px solid #E3E6EB; background: #FFFFFF; font-size: 13px; color: #111318; text-decoration: none"><span aria-hidden="true" style="font-size: 11px; font-weight: 800; padding: 4px 6px; border-radius: 5px; background: #FDECEA; color: #8A1C12">PDF</span>return-label-ORV-10457.pdf · 84 KB</a>
+            <p style="margin: 4px 0 0; font-size: 12px; color: #5A6170">14:06</p>
+          </div>
+        </li>
+        <li style="align-self: flex-end; max-width: 70%"><div style="padding: 10px 14px; border-radius: 16px 16px 4px 16px; background: #2747F5; color: #FFFFFF; font-size: 14px; line-height: 1.5">Thanks! I'll wait until Friday.</div><p style="margin: 4px 0 0; font-size: 12px; color: #5A6170; text-align: right">14:07 · Delivered</p></li>
+        <li aria-live="polite" style="align-self: flex-start; font-size: 13px; color: #5A6170; display: flex; align-items: center; gap: 8px"><span aria-hidden="true" style="display: inline-flex; gap: 3px"><span style="width: 6px; height: 6px; border-radius: 3px; background: #8A909C"></span><span style="width: 6px; height: 6px; border-radius: 3px; background: #8A909C"></span><span style="width: 6px; height: 6px; border-radius: 3px; background: #8A909C"></span></span>Priya is typing…</li>
+      </ol>
+
+      <form style="padding: 14px 20px; border-top: 1px solid #E3E6EB; display: flex; flex-direction: column; gap: 8px">
+        <label class="sr-only" for="msg">Message</label>
+        <div style="display: flex; gap: 10px; align-items: flex-end">
+          <button type="button" aria-label="Attach a file" style="width: 44px; height: 44px; border: 1px solid #D3D7DE; border-radius: 10px; background: #FFFFFF; font-size: 18px; cursor: pointer">⧉</button>
+          <textarea id="msg" rows="2" placeholder="Write a message… (Enter to send, Shift+Enter for a new line)" style="flex: 1; border: 1px solid #D3D7DE; border-radius: 12px; padding: 10px 12px; font: inherit; font-size: 14px; resize: none"></textarea>
+          <button type="button" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 10px; background: #2747F5; color: #FFFFFF; font: inherit; font-weight: 700; cursor: pointer">Send</button>
+        </div>
+        <p style="margin: 0; font-size: 12px; color: #5A6170">PNG, JPG or PDF up to 5 MB · demo messages are deleted after 30 days</p>
+      </form>
+    </section>
+
+    <aside aria-label="Conversation details" style="flex: 1 1 260px; max-width: 300px; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 0 20px 20px 0; padding: 18px; display: flex; flex-direction: column; gap: 18px">
+      <div>
+        <h2 style="margin: 0 0 10px; font-size: 15px; font-weight: 800">Order</h2>
+        <dl style="margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; font-size: 13px">
+          <dt style="color: #5A6170">Number</dt><dd style="margin: 0; font-family: ui-monospace, monospace">ORV-10457</dd>
+          <dt style="color: #5A6170">Status</dt><dd style="margin: 0">Shipped · late</dd>
+          <dt style="color: #5A6170">Total</dt><dd style="margin: 0">$64.80</dd>
+        </dl>
+      </div>
+      <div>
+        <h2 style="margin: 0 0 10px; font-size: 15px; font-weight: 800">People</h2>
+        <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 13px">
+          <li>Sam User · buyer</li><li>Orvi assistant · bot</li><li>Priya · support admin</li>
+        </ul>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto">
+        <button type="button" style="min-height: 42px; border: 1px solid #D3D7DE; border-radius: 10px; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Mark as resolved</button>
+        <button type="button" style="min-height: 42px; border: 1px solid #D3D7DE; border-radius: 10px; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Rate this conversation</button>
+        <button type="button" style="min-height: 42px; border: 0; border-radius: 10px; background: none; color: #B42318; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Report a problem</button>
+      </div>
+    </aside>
+  </div>
+</div>
+</body>
+</html>

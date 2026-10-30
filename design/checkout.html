@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Orvilo design screen: original work, released under CC0 1.0. See LICENSE.txt. -->
+<meta charset="utf-8">
+<title>Orvilo — Checkout</title>
+<style>
+body{margin:0;background:#F4F5F7}
+a{color:#2747F5}a:hover{color:#1B33B8}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+<link rel="stylesheet" href="assets/fonts.css">
+</head>
+<body>
+<div style="min-height: 1180px; background: #F4F5F7; color: #111318; font-family: 'Plus Jakarta Sans', system-ui, sans-serif">
+  <div style="background: #111318; color: #FFFFFF; font-size: 13px; text-align: center; padding: 8px 16px">Demo checkout. Use test cards only — nothing is charged.</div>
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E3E6EB">
+    <div style="max-width: 1180px; margin: 0 auto; padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 44px">
+      <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #111318; font-weight: 800; font-size: 22px; letter-spacing: -0.02em"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11.5" fill="none" stroke="#2747F5" stroke-width="3"></circle><circle cx="14" cy="14" r="4.5" fill="#2747F5"></circle></svg>Orvilo</a>
+      <a href="cart.html" style="font-size: 14px; font-weight: 600; text-decoration: none">← Back to cart</a>
+    </div>
+  </header>
+
+  <main style="max-width: 1180px; margin: 0 auto; padding: 28px 32px 56px">
+    <h1 style="margin: 0 0 6px; font-size: 34px; font-weight: 800; letter-spacing: -0.03em">Checkout</h1>
+    <ol aria-label="Checkout progress" style="list-style: none; margin: 0 0 24px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 14px; font-weight: 600">
+      
+        <li aria-current="false" style="display: flex; align-items: center; gap: 8px; color: #111318"><span style="display: grid; place-items: center; width: 26px; height: 26px; border-radius: 13px; background: #0F7A4A; color: #FFFFFF; font-size: 13px; font-weight: 700">✓</span>Address</li>
+      
+        <li aria-current="false" style="display: flex; align-items: center; gap: 8px; color: #111318"><span style="display: grid; place-items: center; width: 26px; height: 26px; border-radius: 13px; background: #0F7A4A; color: #FFFFFF; font-size: 13px; font-weight: 700">✓</span>Delivery</li>
+      
+        <li aria-current="step" style="display: flex; align-items: center; gap: 8px; color: #111318"><span style="display: grid; place-items: center; width: 26px; height: 26px; border-radius: 13px; background: #2747F5; color: #FFFFFF; font-size: 13px; font-weight: 700">3</span>Payment</li>
+      
+        <li aria-current="false" style="display: flex; align-items: center; gap: 8px; color: #8A909C"><span style="display: grid; place-items: center; width: 26px; height: 26px; border-radius: 13px; background: #E3E6EB; color: #5A6170; font-size: 13px; font-weight: 700">4</span>Review</li>
+      
+    </ol>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start">
+      <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+        <section aria-label="Shipping address, completed" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 18px 20px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: flex-start">
+          <div>
+            <h2 style="margin: 0 0 6px; font-size: 16px; font-weight: 800"><span style="color: #0F7A4A">✓</span> 1 · Address</h2>
+            <p style="margin: 0; font-size: 14px; color: #3B414D; line-height: 1.5">Sam User · 21 Test Lane, Springfield 40210, United States<br>sam.user@orvilo.test · +1 555 0100</p>
+          </div>
+          <button type="button" style="min-height: 40px; padding: 0 14px; border: 1px solid #D3D7DE; border-radius: 10px; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Edit</button>
+        </section>
+        <section aria-label="Delivery, completed" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 18px 20px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: flex-start">
+          <div>
+            <h2 style="margin: 0 0 6px; font-size: 16px; font-weight: 800"><span style="color: #0F7A4A">✓</span> 2 · Delivery</h2>
+            <p style="margin: 0; font-size: 14px; color: #3B414D">Standard · 4–6 business days · Free</p>
+          </div>
+          <button type="button" style="min-height: 40px; padding: 0 14px; border: 1px solid #D3D7DE; border-radius: 10px; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Edit</button>
+        </section>
+
+        <section aria-labelledby="pay-h" style="background: #FFFFFF; border: 2px solid #2747F5; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 18px">
+          <h2 id="pay-h" style="margin: 0; font-size: 20px; font-weight: 800">3 · Payment</h2>
+          <div role="radiogroup" aria-label="Payment method" style="display: flex; flex-wrap: wrap; gap: 10px">
+            <label style="flex: 1 1 160px; display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 14px; border: 2px solid #2747F5; background: #EEF1FE; border-radius: 12px; font-weight: 700; font-size: 15px"><input type="radio" name="pm" checked="" style="width: 18px; height: 18px; accent-color: #2747F5">Card</label>
+            <label style="flex: 1 1 160px; display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 14px; border: 1px solid #D3D7DE; border-radius: 12px; font-weight: 600; font-size: 15px"><input type="radio" name="pm" style="width: 18px; height: 18px">Cash on delivery</label>
+            <label style="flex: 1 1 160px; display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 14px; border: 1px solid #D3D7DE; border-radius: 12px; font-weight: 600; font-size: 15px"><input type="radio" name="pm" style="width: 18px; height: 18px">Demo wallet</label>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="cc-name" style="font-size: 14px; font-weight: 600">Name on card</label>
+            <input id="cc-name" value="Sam User" autocomplete="cc-name" style="min-height: 46px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="cc-num" style="font-size: 14px; font-weight: 600">Card number</label>
+            <input id="cc-num" value="4000 0000 0000 3220" inputmode="numeric" autocomplete="cc-number" aria-describedby="cc-num-hint" style="min-height: 46px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit; letter-spacing: 0.04em">
+            <p id="cc-num-hint" style="margin: 0; font-size: 13px; color: #5A6170">This test card asks for 3-D Secure verification.</p>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 14px">
+            <div style="flex: 1 1 140px; display: flex; flex-direction: column; gap: 6px">
+              <label for="cc-exp" style="font-size: 14px; font-weight: 600">Expiry (MM/YY)</label>
+              <input id="cc-exp" value="12/29" autocomplete="cc-exp" style="min-height: 46px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit">
+            </div>
+            <div style="flex: 1 1 140px; display: flex; flex-direction: column; gap: 6px">
+              <label for="cc-cvv" style="font-size: 14px; font-weight: 600">Security code</label>
+              <input id="cc-cvv" value="12" aria-invalid="true" aria-describedby="cc-cvv-err" autocomplete="cc-csc" style="min-height: 46px; border: 2px solid #B42318; border-radius: 10px; padding: 0 12px; font: inherit">
+              <p id="cc-cvv-err" style="margin: 0; font-size: 13px; color: #B42318; font-weight: 600">Enter the 3-digit code on the back of the card.</p>
+            </div>
+          </div>
+          <details open="" style="background: #F7F8FA; border: 1px solid #E3E6EB; border-radius: 12px; padding: 12px 16px">
+            <summary style="cursor: pointer; font-weight: 700; font-size: 14px; min-height: 28px">Test cards</summary>
+            <table style="width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 13px">
+              <thead><tr style="text-align: left; color: #5A6170"><th style="padding: 6px 0; font-weight: 600">Number</th><th style="padding: 6px 0; font-weight: 600">Result</th></tr></thead>
+              <tbody>
+                
+                  <tr style="border-top: 1px solid #E3E6EB"><td style="padding: 7px 0; font-family: ui-monospace, monospace">4242 4242 4242 4242</td><td style="padding: 7px 0">Payment succeeds</td></tr>
+                
+                  <tr style="border-top: 1px solid #E3E6EB"><td style="padding: 7px 0; font-family: ui-monospace, monospace">4000 0000 0000 0002</td><td style="padding: 7px 0">Declined — card_declined</td></tr>
+                
+                  <tr style="border-top: 1px solid #E3E6EB"><td style="padding: 7px 0; font-family: ui-monospace, monospace">4000 0000 0000 9995</td><td style="padding: 7px 0">Declined — insufficient funds</td></tr>
+                
+                  <tr style="border-top: 1px solid #E3E6EB"><td style="padding: 7px 0; font-family: ui-monospace, monospace">4000 0000 0000 3220</td><td style="padding: 7px 0">3-D Secure challenge (code 123456)</td></tr>
+                
+              </tbody>
+            </table>
+          </details>
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; min-height: 32px"><input type="checkbox" checked="" style="width: 18px; height: 18px; accent-color: #2747F5">Billing address is the same as shipping</label>
+          <button type="button" style="min-height: 52px; border: 0; border-radius: 12px; background: #2747F5; color: #FFFFFF; font: inherit; font-weight: 700; font-size: 16px; cursor: pointer">Continue to review</button>
+        </section>
+
+        <section aria-label="Review, not started" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 18px 20px; color: #8A909C">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 800">4 · Review and place order</h2>
+        </section>
+      </div>
+
+      <aside aria-label="Order summary" style="flex: 1 1 320px; max-width: 380px; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 16px">
+        <h2 style="margin: 0; font-size: 18px; font-weight: 800">In your order (3)</h2>
+        <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px">
+          
+            <li style="display: flex; gap: 12px; align-items: center"><span style="position: relative; width: 56px; height: 56px; border-radius: 10px; background: #E9EEF6; flex: 0 0 auto"><span style="position: absolute; top: -6px; right: -6px; min-width: 20px; height: 20px; border-radius: 10px; background: #3B414D; color: #FFFFFF; font-size: 12px; font-weight: 700; display: grid; place-items: center">1</span></span><span style="flex: 1; font-size: 14px"><strong style="display: block">Mechanical Keyboard</strong><span style="color: #5A6170">Tactile · Graphite</span></span><span style="font-weight: 700; font-size: 14px">$89.00</span></li>
+          
+            <li style="display: flex; gap: 12px; align-items: center"><span style="position: relative; width: 56px; height: 56px; border-radius: 10px; background: #F1EDE7; flex: 0 0 auto"><span style="position: absolute; top: -6px; right: -6px; min-width: 20px; height: 20px; border-radius: 10px; background: #3B414D; color: #FFFFFF; font-size: 12px; font-weight: 700; display: grid; place-items: center">1</span></span><span style="flex: 1; font-size: 14px"><strong style="display: block">Classic Hoodie</strong><span style="color: #5A6170">Size M</span></span><span style="font-weight: 700; font-size: 14px">$59.00</span></li>
+          
+            <li style="display: flex; gap: 12px; align-items: center"><span style="position: relative; width: 56px; height: 56px; border-radius: 10px; background: #EDF2EC; flex: 0 0 auto"><span style="position: absolute; top: -6px; right: -6px; min-width: 20px; height: 20px; border-radius: 10px; background: #3B414D; color: #FFFFFF; font-size: 12px; font-weight: 700; display: grid; place-items: center">1</span></span><span style="flex: 1; font-size: 14px"><strong style="display: block">Ceramic Pour-Over Set</strong><span style="color: #5A6170">Matte white</span></span><span style="font-weight: 700; font-size: 14px">$42.00</span></li>
+          
+        </ul>
+        <dl style="margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 10px; font-size: 15px; padding-top: 14px; border-top: 1px solid #E3E6EB">
+          <dt style="color: #3B414D">Subtotal</dt><dd style="margin: 0; text-align: right">$190.00</dd>
+          <dt style="color: #3B414D">Discount (SAVE10)</dt><dd style="margin: 0; text-align: right; color: #0F7A4A">−$19.00</dd>
+          <dt style="color: #3B414D">Shipping</dt><dd style="margin: 0; text-align: right">Free</dd>
+          <dt style="color: #3B414D">Tax (8%)</dt><dd style="margin: 0; text-align: right">$13.68</dd>
+          <dt style="font-weight: 800; font-size: 18px; padding-top: 10px; border-top: 1px solid #E3E6EB">Total</dt><dd style="margin: 0; text-align: right; font-weight: 800; font-size: 18px; padding-top: 10px; border-top: 1px solid #E3E6EB">$184.68</dd>
+        </dl>
+        <p style="margin: 0; font-size: 13px; color: #5A6170">Prices are held for 15 minutes while you check out.</p>
+      </aside>
+    </div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VORTEX Popup</title><link rel="stylesheet" href="/css/app.css"></head>
+<body style="padding:20px">
+  <h1>Popup window</h1>
+  <p class="muted">This page was opened with <code>window.open()</code>. Send something back to the page that opened it.</p>
+  <div class="field"><label for="msg">Message</label><input id="msg" value="Hello from the popup" data-testid="popup-input"></div>
+  <div class="row"><button class="btn" id="send" data-testid="popup-send">Send to opener &amp; close</button><button class="btn secondary" id="close" data-testid="popup-close">Close</button></div>
+  <p class="small muted" style="margin-top:12px" id="status" data-testid="popup-status"></p>
+  <script>
+    document.getElementById('send').onclick = () => {
+      if (!window.opener) { document.getElementById('status').textContent = 'No opener window found'; return; }
+      window.opener.postMessage({ type: 'popup-message', text: document.getElementById('msg').value }, location.origin);
+      window.close();
+    };
+    document.getElementById('close').onclick = () => window.close();
+  </script>
+</body></html>
+

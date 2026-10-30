@@ -1,125 +1,92 @@
-# ShopLab v2 — an e-commerce playground for Playwright
+# VORTEX — AUTOMATION PLAYGROUND
 
-A realistic practice store with a real JSON API, every journey a tester meets in an interview or on a project, a UI Lab full of awkward widgets, server-side chaos controls, and eight seeded bugs to hunt.
+**Built to Break. Designed to Test.**
 
-It ships with a **214-test Playwright + TypeScript reference suite** (POM, fixtures, API seeding, network mocking, mobile, bug hunt) that runs green, fully parallel, against a single server.
+[Visit the live playground](https://shoplabdemowebsite.vercel.app) · [Testing guide](https://shoplabdemowebsite.vercel.app/pages/testing-guide.html) · [About](https://shoplabdemowebsite.vercel.app/pages/about.html) · [Future roadmap](docs/ROADMAP.md)
+
+VORTEX is an existing Express and vanilla-JavaScript e-commerce application for practising browser, API and database automation. It includes catalog, account, cart, checkout and order journeys plus UI laboratories, network controls and intentionally defective legacy exercises.
+
+## About
+
+Vortex Automation Playground gives testers a realistic website on which to learn, experiment and build their own automation frameworks. Its simulated store and UI lab offer practical workflows and browser interactions without requiring real purchases. The website, Vortex Web Recorder, Android application and Android Recorder are separate Vortex projects; this repository contains the website and its supporting API and database.
+
+The supported runtime uses **Supabase/PostgreSQL through Prisma**. A separate in-memory compatibility mode preserves the original reference suite and test controls; it is not the production persistence model.
+
+## Quick start
+
+Requirements: Node.js **24.x**, npm, and a dedicated development PostgreSQL database.
 
 ```bash
-npm install
-npx playwright install chromium
-npm start                 # http://localhost:3000
-npx playwright test       # starts the server for you if it isn't running
-npx playwright show-report
+npm ci
+cp .env.example .env              # fill in development-only values
+npm run db:generate
+npm run db:migrate                 # applies migrations to the configured database
+npm run db:seed:catalog            # upserts seeded products; creates no accounts
+npx playwright install chromium    # needed for browser tests/smoke
+npm start                          # builds TypeScript, then serves port 3000
 ```
 
-No database, no build step, no external assets: one Express server, an in-memory store, and a vanilla-JS single-page app. `POST /api/reset` puts everything back to the seed.
+Open `http://localhost:3000/shop` and register an account. The catalog seed does not create users. See [docs/SETUP.md](docs/SETUP.md) for connection-pooler URLs, MFA/test-key handling, every command's side effects, and safe legacy startup.
 
----
+## Runtime modes
 
-## What changed from v1
+| Mode | Selection | Frontend API | Intended use |
+|---|---|---|---|
+| PostgreSQL | `DATABASE_URL` set and `SHOPLAB_STORAGE` is not `legacy` | `/api/v2` through `web/js/api-v2.js` | Primary persistent application |
+| Legacy memory | `SHOPLAB_STORAGE=legacy`, or no `DATABASE_URL` | `/api` | Reference regression suite and original test controls |
 
-| | v1 | v2 |
-|---|---|---|
-| Routing | `#/hash` routes | Real URLs (`/product/5`, `/checkout/payment`) with the History API, so `toHaveURL` and deep links work |
-| Auth | login, 4 users | + register, forgot/reset password, email OTP (2FA), remember me, account lockout after 5 failures, session expiry, returnTo redirects |
-| Catalog | search, 1 category, sort, pager | multi-category, price range, in-stock, rating, 6 sorts, page size, URL-synced filters, product page with variants, gallery, tabs, reviews, wishlist |
-| Cart | add / remove | quantity stepper, 4 coupons, 3 shipping methods, free-shipping threshold, save-for-later, clear with a confirmation modal |
-| Checkout | 3 fields | 4-step wizard: address (dependent country → state dropdown, per-country postal rules), delivery, payment (Luhn, expiry, CVV, test cards, **3-D Secure in an iframe**), review + terms |
-| Orders | list | detail page, live status over Server-Sent Events, cancel, CSV invoice download, buy again |
-| Extras | — | account (profile, password, avatar upload), admin console (product CRUD, sortable/paginated table, order status, lock users), test inbox, API docs page, command palette (Ctrl+K), dark mode, cookie banner, mobile layout |
-| Test control | global chaos | + per-request chaos headers (parallel-safe), session TTL, order auto-progress, mailbox API |
-| Bugs | 3 | 8 (answer key in `BUGS.md`) |
+`GET /api/config` reports the selected storage. The SPA reads it before routing. These storage modes do **not** implement the planned Normal / Practice / Defect Lab runtime modes described in the master plan.
 
-## Test accounts (password `secret123`)
+The legacy suite is pinned to memory mode by `playwright.config.ts`. Stop another local server on port 3000 before letting Playwright manage its own server; otherwise a local run can reuse a server in the wrong mode. Do not run the reset-driven reference suite against a shared or public instance.
 
-| User | Behaviour |
+## Current feature areas
+
+- Registration, persistent sessions, authenticator MFA, protected development recovery, profile/settings and avatar storage in PostgreSQL mode.
+- Catalog search/filter/sort/pagination, reviews/ratings, variants, wishlist, cart, coupons, shipping, simulated checkout, orders, cancellation and CSV invoices.
+- Server-authorized admin functions and a transactional outbox foundation; durable subscribers and all remaining business workflows are not complete.
+- Legacy email OTP inbox, global/per-request chaos controls, seeded defects, live order events and simulated 3-D Secure, with mode-specific limitations.
+- `/lab` exercises for dialogs, tabs/popups, nested frames, shadow DOM, drag/drop, dynamic content, downloads, keyboard, clipboard, geolocation, clocks, tables and accessibility targets.
+
+The route-by-route implementation and reference-design gaps are tracked in [docs/PAGE_DESIGN_INVENTORY.md](docs/PAGE_DESIGN_INVENTORY.md). A route or reference image is not evidence of visual parity.
+
+## Legacy demo accounts
+
+These accounts exist in **legacy memory mode**, not in the PostgreSQL catalog seed. Their shared demo password is `secret123`.
+
+| User | Behavior |
 |---|---|
 | `standard_user` | Happy path |
-| `locked_user` | 423 Locked |
-| `slow_user` | Login takes 3 s |
-| `problem_user` | Seeded bugs are always on |
-| `mfa_user` | Sends a 6-digit code to the test inbox |
-| `admin_user` | Admin console at `/admin` |
+| `locked_user` | HTTP 423 locked response |
+| `slow_user` | Delayed login |
+| `problem_user` | Seeded defects enabled |
+| `mfa_user` | Email OTP through the legacy test inbox |
+| `admin_user` | Legacy admin console |
 
-New accounts need a password with 8+ characters, upper and lower case, and a number.
+PostgreSQL authenticator MFA is different from legacy email OTP. PostgreSQL recovery codes are available only through the protected development sink when `ORVILO_TEST_KEY` is configured; no production email delivery is implemented.
 
-**Payment cards** (any future expiry, any CVV): `4242 4242 4242 4242` success · `4000 0027 6000 3184` 3-D Secure (code `123456`) · `4000 0000 0000 0002` declined · `4000 0000 0000 9995` insufficient funds · `4000 0000 0000 0069` expired at the bank.
-
-**Coupons:** `SAVE10` 10% off · `FLAT50` $50 off orders of $200 or more · `FREESHIP` · `EXPIRED20` (always expired).
-
-## Journeys to automate
-
-1. **Sign in:** happy path, validation, wrong password, locked, 5-strike lockout, slow login, returnTo redirect, remember me, logout.
-2. **Register:** field errors, duplicate username or email, password-strength meter, terms link in a new tab.
-3. **Forgot password:** request a code, read it from the test inbox (UI at `/mailbox` or `GET /api/test/mailbox`), reset it, sign in.
-4. **2FA:** sign in as `mfa_user`, read the OTP, fill the 6 auto-advancing boxes.
-5. **Browse:** search, debounce, filters, sorting, pagination, back button, deep links, empty and error states.
-6. **Product:** variants, quantity limits, out of stock, tabs, reviews (including a duplicate review returning 409), wishlist.
-7. **Cart:** quantities, coupons, shipping, totals arithmetic, save for later, clear with confirmation.
-8. **Checkout:** every validation rule, step guards, declined and 3-D Secure payments, double-submit protection.
-9. **Orders:** history and filters, live status updates, cancel, invoice download, buy again, opening someone else's order (404).
-10. **Account:** profile, password change, avatar upload (`setInputFiles`, drag-and-drop, 415 and 413 errors).
-11. **Admin:** role-based access (403), product CRUD reflected in the shop, sortable table, order status, lock and unlock users.
-12. **UI Lab (`/lab`):** native dialogs, new tabs and popups, nested iframes, open and closed shadow DOM, drag and drop, hover, double-click and right-click, canvas drawing, every form control, dynamic waits, infinite scroll, downloads, keyboard, clipboard, geolocation, `page.clock`, network mocking, unstable IDs, web tables, visual snapshots, and an axe accessibility target.
-
-## Locator strategy
-
-Every interactive element has an accessible role and name, so prefer `getByRole` and `getByLabel`. `data-testid` is there as a fallback, and the config sets `testIdAttribute: 'data-testid'`. Some names deliberately overlap, which teaches when to use `exact: true` and scoping:
-
-- `Password` and `Confirm password`
-- `Quantity` and `Increase quantity`
-- `Remove` and `Remove <product>`
-- `Apply` and `Apply price`
-
-## Chaos and test control
-
-| Global (affects everyone) | Per request (parallel-safe) |
-|---|---|
-| Chaos panel, bottom right, or `POST /api/chaos {latencyMs, errorRate, bugMode, sessionTtlSec, orderProgressSec}` | `x-shoplab-latency: 1500` |
-| `POST /api/reset` restores all seed data | `x-shoplab-fail: 503` |
-| `GET /api/test/mailbox?to=` | `x-shoplab-bugs: 1` |
-
-Send headers with `page.route(... route.continue({ headers }))`, `page.setExtraHTTPHeaders()`, or `test.use({ extraHTTPHeaders })`.
-
-Orders move Placed → Processing → Shipped → Delivered every 15 s by default, and the change is pushed to the browser over SSE (`GET /api/events?token=`). Because that connection stays open, `waitForLoadState('networkidle')` never resolves on this app. Wait for something meaningful on the page instead.
-
-## The reference suite
-
-```
-tests/
-  support/   fixtures.ts (fresh user per test, storageState auth, POM injection)
-             shop-api.ts (typed API client used for seeding)
-             test-data.ts, global-setup.ts (health check + reset)
-  pages/     Page Object Model: login, shop, product, cart, checkout, orders, account, admin
-  e2e/       UI journeys: auth, catalog, cart, checkout, orders, account, admin, network, lab, mobile
-  api/       pure API tests: auth, catalog, cart/checkout/orders, admin
-  bugs/      seeded-bug hunt, each test marked test.fail()
-  serial/    server-wide chaos, real session expiry, order auto-progress, catalog CRUD
-```
-
-Patterns worth studying:
-
-- **Isolation:** the `user` fixture registers a brand-new user for every test, so carts and orders never collide and the suite runs with any number of workers.
-- **Auth without the login screen:** a `storageState` fixture writes the token into localStorage. The admin spec shows the `addInitScript` alternative.
-- **Seed via the API, assert via the UI:** `api.placeOrder()` and `api.addToCart()` keep UI tests short.
-- **Projects:** `api`, `chromium`, `mobile` (Pixel 7), `bugs`, and `global-state`, which uses `dependencies` so it runs last.
-- **Network:** fulfil, patch a real response, abort, add latency, inspect the request, and make the random deal of the day deterministic.
-
-Useful commands:
+## Verification commands
 
 ```bash
-npm run test:api                          # API only, no browser
-npx playwright test --project=chromium    # desktop UI
-npm run test:bugs                         # the bug hunt
-npx playwright test --ui                  # watch mode
-VISUAL=1 npx playwright test -g visual --update-snapshots   # create a visual baseline
 npm run typecheck
+npm run test:workflows
+npm run test:pricing
+npm run test:storefront-adapter
+npm test                                      # legacy Playwright projects
+npx playwright test --project=chromium --project=mobile
+npm run test:api
+npm run test:bugs                             # intentional expected-failure exercises
 ```
 
-Run against a deployed copy with `BASE_URL=https://your-app.onrender.com npx playwright test`. Global setup waits up to 90 s for a sleeping free instance to wake.
+Database integration and browser smoke tests require a dedicated development database and have fixture side effects; read [docs/SETUP.md](docs/SETUP.md#6-verification-and-test-commands) before running them. Seeded-defect tests intentionally expect failures and are not evidence that defects were fixed. The visual snapshot remains opt-in.
 
-## Deploy free on Render
+## Documentation and status
 
-Push this folder to GitHub, then in Render choose **New → Blueprint** (it reads `render.yaml`) or **Web Service** (build `npm install --omit=dev`, start `npm start`). A free instance sleeps after about 15 minutes of inactivity. Data lives in memory, so a restart or `POST /api/reset` restores the seed.
+- [Setup and configuration](docs/SETUP.md)
+- [Current master plan](docs/VORTEX_AUTOMATION_PLAYGROUND_MASTER_PLAN.md)
+- [Page and design-reference inventory](docs/PAGE_DESIGN_INVENTORY.md)
+- [Automation compatibility contract](docs/AUTOMATION_COMPATIBILITY.md)
+- [Historical baseline validation — 29 October 2026](docs/BASELINE_VALIDATION.md)
+- [Chronological migration history](MIGRATION.md)
+- [Legacy seeded-defect answer key](BUGS.md)
 
-`.github/workflows/playwright.yml` runs the type check and the whole suite on every push and uploads the HTML report.
+The live production deployment passed a customer journey and browser/API checks on 30 October 2026; see [deployment status](docs/DEPLOYMENT_STATUS.md). The historical baseline is not a fresh guarantee for every feature. Production password recovery is unavailable, and legacy test controls are disabled. Scoped fixtures and resets, durable event processing, additional commerce workflows and full design verification remain future work; see the [roadmap](docs/ROADMAP.md).

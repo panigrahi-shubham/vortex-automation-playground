@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Orvilo design screen: original work, released under CC0 1.0. See LICENSE.txt. -->
+<meta charset="utf-8">
+<title>Orvilo — 3D flow: order journey</title>
+<style>
+body{margin:0;background:#F4F5F7}
+a{color:#2747F5}a:hover{color:#1B33B8}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+<link rel="stylesheet" href="assets/fonts.css">
+</head>
+<body>
+<div style="min-height: 1000px; background: #F4F5F7; color: #111318; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; padding: 36px 40px; box-sizing: border-box">
+  <header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 20px">
+    <div>
+      <p style="margin: 0 0 6px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; color: #2747F5; letter-spacing: 0.08em"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11.5" fill="none" stroke="#2747F5" stroke-width="3"></circle><circle cx="14" cy="14" r="4.5" fill="#2747F5"></circle></svg>ORVILO · 3D FLOW</p>
+      <h1 style="margin: 0; font-size: 34px; font-weight: 800; letter-spacing: -0.03em">Order journey</h1>
+      <p style="margin: 8px 0 0; font-size: 15px; color: #3B414D; max-width: 720px; line-height: 1.55">From sign-in to delivery. Shopper screens are blue, payment steps amber and order states green. Every state change is written to Postgres, and the pins show where tests take control.</p>
+    </div>
+  </header>
+  <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+    <figure style="margin: 0; flex: 999 1 760px; min-width: 0; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 24px; padding: 16px">
+      <svg role="img" aria-labelledby="dg-t" viewBox="0 0 1000 720" style="display: block; width: 100%; height: auto" font-family="'Plus Jakarta Sans', system-ui, sans-serif">
+        <title id="dg-t">Order journey</title>
+        <defs><pattern id="grid" width="34.64" height="20" patternUnits="userSpaceOnUse"><path d="M0,10 L17.32,0 L34.64,10 L17.32,20 Z" fill="none" stroke="#EEF0F3" stroke-width="1"></path></pattern></defs>
+        <rect width="1000" height="720" fill="url(#grid)"></rect>
+<path d="M470.0,168.0 L608.6,248.0" fill="none" stroke="#8A909C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path><polygon points="608.6,248.0 596.6,247.1 601.8,238.1" fill="#8A909C"></polygon>
+<path d="M608.6,248.0 L747.1,328.0" fill="none" stroke="#8A909C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path><polygon points="747.1,328.0 735.2,327.1 740.4,318.1" fill="#8A909C"></polygon>
+<path d="M747.1,328.0 L885.7,408.0" fill="none" stroke="#8A909C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path><polygon points="885.7,408.0 873.7,407.1 878.9,398.1" fill="#8A909C"></polygon>
+<path d="M885.7,408.0 L747.1,488.0" fill="none" stroke="#8A909C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path><polygon points="747.1,488.0 753.9,478.1 759.1,487.1" fill="#8A909C"></polygon>
+<path d="M747.1,488.0 L608.6,568.0" fill="none" stroke="#8A909C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path><polygon points="608.6,568.0 615.3,558.1 620.5,567.1" fill="#8A909C"></polygon>
+<path d="M608.6,568.0 L470.0,488.0" fill="none" stroke="#8A909C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path><polygon points="470.0,488.0 482.0,488.9 476.7,497.9" fill="#8A909C"></polygon>
+<path d="M470.0,488.0 L331.4,408.0" fill="none" stroke="#8A909C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path><polygon points="331.4,408.0 343.4,408.9 338.2,417.9" fill="#8A909C"></polygon>
+<path d="M331.4,408.0 L192.9,328.0" fill="none" stroke="#8A909C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path><polygon points="192.9,328.0 204.8,328.9 199.6,337.9" fill="#8A909C"></polygon>
+<path d="M192.9,328.0 L331.4,248.0" fill="none" stroke="#8A909C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path><polygon points="331.4,248.0 324.7,257.9 319.5,248.9" fill="#8A909C"></polygon>
+<path d="M885.7,408.0 L525.4,364.0" fill="none" stroke="#3B414D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 6"></path><polygon points="525.4,364.0 536.8,360.1 535.5,370.5" fill="#3B414D"></polygon>
+<path d="M470.0,488.0 L525.4,364.0" fill="none" stroke="#3B414D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 6"></path><polygon points="525.4,364.0 525.8,376.0 516.3,371.7" fill="#3B414D"></polygon>
+<path d="M331.4,408.0 L525.4,364.0" fill="none" stroke="#3B414D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 6"></path><polygon points="525.4,364.0 516.0,371.5 513.7,361.3" fill="#3B414D"></polygon>
+<path d="M192.9,328.0 L525.4,364.0" fill="none" stroke="#3B414D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 6"></path><polygon points="525.4,364.0 514.1,368.0 515.2,357.6" fill="#3B414D"></polygon>
+<polygon points="386.9,168.0 470.0,216.0 470.0,176.0 386.9,128.0" fill="#2747F5" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="553.1,168.0 470.0,216.0 470.0,176.0 553.1,128.0" fill="#1B33B8" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="470.0,80.0 553.1,128.0 470.0,176.0 386.9,128.0" fill="#7D93F9" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<text x="470.0" y="124.4" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">1 Sign in</text>
+<text x="470.0" y="141.4" text-anchor="middle" font-size="12" font-weight="600" fill="#FFFFFF">+ 2-step code</text>
+<polygon points="525.4,248.0 608.6,296.0 608.6,256.0 525.4,208.0" fill="#2747F5" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="691.7,248.0 608.6,296.0 608.6,256.0 691.7,208.0" fill="#1B33B8" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="608.6,160.0 691.7,208.0 608.6,256.0 525.4,208.0" fill="#7D93F9" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<text x="608.6" y="204.4" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">2 Browse</text>
+<text x="608.6" y="221.4" text-anchor="middle" font-size="12" font-weight="600" fill="#FFFFFF">filters · search</text>
+<polygon points="248.3,248.0 331.4,296.0 331.4,264.0 248.3,216.0" fill="#12A15E" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="414.6,248.0 331.4,296.0 331.4,264.0 414.6,216.0" fill="#0B7343" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="331.4,168.0 414.6,216.0 331.4,264.0 248.3,216.0" fill="#6FD3A0" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<text x="331.4" y="212.4" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">10 Delivered</text>
+<text x="331.4" y="229.4" text-anchor="middle" font-size="12" font-weight="600" fill="#FFFFFF">review · return</text>
+<polygon points="664.0,328.0 747.1,376.0 747.1,336.0 664.0,288.0" fill="#2747F5" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="830.3,328.0 747.1,376.0 747.1,336.0 830.3,288.0" fill="#1B33B8" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="747.1,240.0 830.3,288.0 747.1,336.0 664.0,288.0" fill="#7D93F9" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<text x="747.1" y="284.4" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">3 Product</text>
+<text x="747.1" y="301.4" text-anchor="middle" font-size="12" font-weight="600" fill="#FFFFFF">variants · 3D</text>
+<polygon points="109.7,328.0 192.9,376.0 192.9,344.0 109.7,296.0" fill="#12A15E" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="276.0,328.0 192.9,376.0 192.9,344.0 276.0,296.0" fill="#0B7343" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="192.9,248.0 276.0,296.0 192.9,344.0 109.7,296.0" fill="#6FD3A0" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<text x="192.9" y="292.4" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">9 Shipped</text>
+<text x="192.9" y="309.4" text-anchor="middle" font-size="12" font-weight="600" fill="#FFFFFF">live via SSE</text>
+<polygon points="386.9,352.0 546.2,444.0 546.2,408.0 386.9,316.0" fill="#3B414D" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="664.0,376.0 546.2,444.0 546.2,408.0 664.0,340.0" fill="#262A31" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="504.6,248.0 664.0,340.0 546.2,408.0 386.9,316.0" fill="#6B7280" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<text x="525.4" y="324.3" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">Postgres</text>
+<text x="525.4" y="342.3" text-anchor="middle" font-size="13" font-weight="600" fill="#FFFFFF">cart · stock · orders · events</text>
+<polygon points="802.6,408.0 885.7,456.0 885.7,416.0 802.6,368.0" fill="#2747F5" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="968.8,408.0 885.7,456.0 885.7,416.0 968.8,368.0" fill="#1B33B8" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="885.7,320.0 968.8,368.0 885.7,416.0 802.6,368.0" fill="#7D93F9" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<text x="885.7" y="364.4" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">4 Cart</text>
+<text x="885.7" y="381.4" text-anchor="middle" font-size="12" font-weight="600" fill="#FFFFFF">coupons</text>
+<polygon points="248.3,408.0 331.4,456.0 331.4,424.0 248.3,376.0" fill="#12A15E" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="414.6,408.0 331.4,456.0 331.4,424.0 414.6,376.0" fill="#0B7343" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="331.4,328.0 414.6,376.0 331.4,424.0 248.3,376.0" fill="#6FD3A0" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<text x="331.4" y="372.4" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">8 Processing</text>
+<text x="331.4" y="389.4" text-anchor="middle" font-size="12" font-weight="600" fill="#FFFFFF">cancel allowed</text>
+<polygon points="664.0,488.0 747.1,536.0 747.1,484.0 664.0,436.0" fill="#D98E12" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="830.3,488.0 747.1,536.0 747.1,484.0 830.3,436.0" fill="#A86A00" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="747.1,388.0 830.3,436.0 747.1,484.0 664.0,436.0" fill="#F6C46B" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<text x="747.1" y="432.4" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">5 Checkout</text>
+<text x="747.1" y="449.4" text-anchor="middle" font-size="12" font-weight="600" fill="#FFFFFF">address · delivery</text>
+<polygon points="386.9,488.0 470.0,536.0 470.0,504.0 386.9,456.0" fill="#12A15E" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="553.1,488.0 470.0,536.0 470.0,504.0 553.1,456.0" fill="#0B7343" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="470.0,408.0 553.1,456.0 470.0,504.0 386.9,456.0" fill="#6FD3A0" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<text x="470.0" y="452.4" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">7 Placed</text>
+<text x="470.0" y="469.4" text-anchor="middle" font-size="12" font-weight="600" fill="#FFFFFF">ORV-10482</text>
+<polygon points="525.4,568.0 608.6,616.0 608.6,552.0 525.4,504.0" fill="#D98E12" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="691.7,568.0 608.6,616.0 608.6,552.0 691.7,504.0" fill="#A86A00" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<polygon points="608.6,456.0 691.7,504.0 608.6,552.0 525.4,504.0" fill="#F6C46B" stroke="rgba(17,19,24,0.18)" stroke-width="1"></polygon>
+<text x="608.6" y="500.4" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">6 Payment</text>
+<text x="608.6" y="517.4" text-anchor="middle" font-size="12" font-weight="600" fill="#FFFFFF">3-D Secure</text>
+<line x1="553.1" y1="128.0" x2="553.1" y2="82.0" stroke="#111318" stroke-width="1.5"></line>
+<circle cx="553.1" cy="128.0" r="3" fill="#111318"></circle>
+<rect x="522.5" y="60.0" width="61.2" height="22" rx="11" fill="#111318"></rect>
+<text x="553.1" y="75.0" text-anchor="middle" font-size="11.5" font-weight="800" fill="#FFFFFF" font-family="ui-monospace, monospace">@smoke</text>
+<line x1="830.3" y1="288.0" x2="830.3" y2="242.0" stroke="#111318" stroke-width="1.5"></line>
+<circle cx="830.3" cy="288.0" r="3" fill="#111318"></circle>
+<rect x="803.3" y="220.0" width="54.0" height="22" rx="11" fill="#111318"></rect>
+<text x="830.3" y="235.0" text-anchor="middle" font-size="11.5" font-weight="800" fill="#FFFFFF" font-family="ui-monospace, monospace">WebGL</text>
+<line x1="608.6" y1="616.0" x2="608.6" y2="642.0" stroke="#111318" stroke-width="1.5"></line>
+<circle cx="608.6" cy="616.0" r="3" fill="#111318"></circle>
+<rect x="578.0" y="642.0" width="61.2" height="22" rx="11" fill="#111318"></rect>
+<text x="608.6" y="657.0" text-anchor="middle" font-size="11.5" font-weight="800" fill="#FFFFFF" font-family="ui-monospace, monospace">iframe</text>
+<line x1="470.0" y1="536.0" x2="470.0" y2="562.0" stroke="#111318" stroke-width="1.5"></line>
+<circle cx="470.0" cy="536.0" r="3" fill="#111318"></circle>
+<rect x="450.2" y="562.0" width="39.6" height="22" rx="11" fill="#111318"></rect>
+<text x="470.0" y="577.0" text-anchor="middle" font-size="11.5" font-weight="800" fill="#FFFFFF" font-family="ui-monospace, monospace">@db</text>
+<line x1="192.9" y1="376.0" x2="192.9" y2="402.0" stroke="#111318" stroke-width="1.5"></line>
+<circle cx="192.9" cy="376.0" r="3" fill="#111318"></circle>
+<rect x="173.1" y="402.0" width="39.6" height="22" rx="11" fill="#111318"></rect>
+<text x="192.9" y="417.0" text-anchor="middle" font-size="11.5" font-weight="800" fill="#FFFFFF" font-family="ui-monospace, monospace">SSE</text>
+
+      </svg>
+    </figure>
+    <aside style="flex: 1 1 300px; max-width: 360px; display: flex; flex-direction: column; gap: 16px">
+      <section aria-labelledby="lg-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 18px; padding: 18px">
+        <h2 id="lg-h" style="margin: 0 0 12px; font-size: 16px; font-weight: 800">Legend</h2>
+        <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+          <li style="display: flex; gap: 10px; align-items: center"><span aria-hidden="true" style="width: 18px; height: 18px; border-radius: 5px; background: #2747F5; flex: 0 0 auto"></span>Shopper screens</li>
+          <li style="display: flex; gap: 10px; align-items: center"><span aria-hidden="true" style="width: 18px; height: 18px; border-radius: 5px; background: #D98E12; flex: 0 0 auto"></span>Checkout and payment</li>
+          <li style="display: flex; gap: 10px; align-items: center"><span aria-hidden="true" style="width: 18px; height: 18px; border-radius: 5px; background: #12A15E; flex: 0 0 auto"></span>Order states</li>
+          <li style="display: flex; gap: 10px; align-items: center"><span aria-hidden="true" style="width: 18px; height: 18px; border-radius: 5px; background: #3B414D; flex: 0 0 auto"></span>Database</li>
+          <li style="display: flex; gap: 10px; align-items: center"><span aria-hidden="true" style="width: 18px; height: 18px; border-radius: 5px; background: #8A909C; flex: 0 0 auto"></span>Next step (solid) · data write (dashed)</li>
+        </ul>
+      </section>
+      <section aria-labelledby="nt-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 18px; padding: 18px">
+        <h2 id="nt-h" style="margin: 0 0 12px; font-size: 16px; font-weight: 800">Where tests hook in</h2>
+        <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.5; color: #3B414D">
+          <li><strong>@smoke</strong> — sign in with <code>mfa_user</code> and read the code from <code>/api/test/mailbox</code>.</li>
+          <li><strong>WebGL</strong> — 3D viewer exposes <code>data-camera</code> and falls back to images.</li>
+          <li><strong>iframe</strong> — 3-D Secure challenge with card …3220, code 123456.</li>
+          <li><strong>@db</strong> — after placing the order, assert stock went down and an <code>OrderEvent</code> row exists.</li>
+          <li><strong>SSE</strong> — drive status changes with the clock, assert the timeline updates without a reload.</li>
+        </ol>
+      </section>
+    </aside>
+  </div>
+</div>
+</body>
+</html>

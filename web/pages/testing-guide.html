@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Testing Guide · VORTEX</title>
+  <meta name="description" content="Six practical manual testing journeys for the Vortex Automation Playground, with current runtime boundaries and an evidence checklist.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232dd4bf'/%3E%3Ctext x='16' y='22' font-size='16' font-family='Arial' font-weight='700' text-anchor='middle' fill='%23042f2e'%3EV%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/assets/fonts.css">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/orvilo.css">
+  <style>
+    .guide-page .site-header { position: static; }
+    .guide-page .guide-header { justify-content: space-between; }
+    .guide-page .guide-back { color: var(--ink-2); font-weight: 600; white-space: nowrap; }
+    .guide-page main { max-width: 1080px; }
+    .guide-page main a:not(.btn) { text-decoration: underline; text-underline-offset: 2px; }
+    .guide-page .guide-hero { padding: clamp(22px, 5vw, 44px); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+    .guide-page .guide-eyebrow { margin-bottom: 10px; color: var(--accent); font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .guide-page .guide-hero h1 { max-width: 760px; margin-bottom: 14px; font-size: clamp(32px, 6vw, 52px); letter-spacing: -.035em; }
+    .guide-page .guide-lede { max-width: 760px; margin-bottom: 20px; color: var(--ink-2); font-size: 17px; }
+    .guide-page .guide-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .guide-page .guide-section { margin-top: 30px; }
+    .guide-page .guide-section > h2 { margin-bottom: 8px; font-size: 24px; }
+    .guide-page .guide-intro { max-width: 800px; color: var(--ink-2); }
+    .guide-page .guide-basics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+    .guide-page .guide-basic { padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+    .guide-page .guide-basic h3 { margin-bottom: 6px; }
+    .guide-page .guide-basic p { margin: 0; color: var(--ink-2); font-size: 14px; }
+    .guide-page .guide-table-wrap { margin-top: 16px; overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+    .guide-page .guide-table-wrap table { min-width: 720px; }
+    .guide-page .guide-table-wrap th, .guide-page .guide-table-wrap td { vertical-align: top; }
+    .guide-page .guide-table-wrap tbody th { color: var(--ink); font-size: 14px; letter-spacing: 0; text-transform: none; }
+    .guide-page .guide-note { margin-top: 16px; padding: 14px 16px; border-left: 4px solid var(--accent); border-radius: 8px; background: var(--accent-soft); }
+    .guide-page .guide-note p:last-child { margin-bottom: 0; }
+    .guide-page .guide-journey { margin-top: 16px; padding: 24px; scroll-margin-top: 24px; }
+    .guide-page .guide-journey-head { display: flex; align-items: flex-start; gap: 14px; }
+    .guide-page .guide-number { display: grid; flex: 0 0 44px; width: 44px; height: 44px; place-items: center; border-radius: 12px; background: var(--accent); color: var(--accent-ink); font-weight: 800; }
+    .guide-page .guide-kicker { margin-bottom: 4px; color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .guide-page .guide-journey h2 { margin-bottom: 0; font-size: 23px; }
+    .guide-page .guide-meta { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 16px 0 20px; padding: 12px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); list-style: none; color: var(--ink-2); font-size: 13px; }
+    .guide-page .guide-meta strong { color: var(--ink); }
+    .guide-page .guide-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+    .guide-page .guide-columns h3 { margin-bottom: 10px; }
+    .guide-page .guide-steps { margin: 0; padding-left: 22px; }
+    .guide-page .guide-steps li + li { margin-top: 9px; }
+    .guide-page .guide-expect { align-self: start; padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); }
+    .guide-page .guide-expect ul { margin: 0; padding-left: 20px; }
+    .guide-page .guide-expect li + li { margin-top: 7px; }
+    .guide-page .guide-limit { margin: 18px 0 0; padding-top: 14px; border-top: 1px solid var(--line); color: var(--ink-2); font-size: 14px; }
+    .guide-page .guide-checklist { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 16px 0 0; padding: 0; list-style: none; }
+    .guide-page .guide-checklist label { display: flex; min-height: 44px; align-items: flex-start; gap: 10px; padding: 13px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); cursor: pointer; }
+    .guide-page .guide-checklist input { flex: 0 0 auto; width: 18px; height: 18px; margin: 2px 0 0; }
+    .guide-page .guide-checklist small { display: block; margin-top: 3px; color: var(--ink-2); }
+    .guide-page .guide-quality { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+    .guide-page .guide-quality section { padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+    .guide-page .guide-quality h3 { margin-bottom: 6px; }
+    .guide-page .guide-quality p { margin: 0; color: var(--ink-2); }
+    .guide-page .guide-footer { margin-top: 30px; }
+    @media (max-width: 760px) {
+      .guide-page .guide-basics, .guide-page .guide-columns, .guide-page .guide-checklist, .guide-page .guide-quality { grid-template-columns: 1fr; }
+      .guide-page .guide-journey { padding: 18px; }
+      .guide-page .guide-meta { display: grid; gap: 6px; }
+    }
+    @media (max-width: 420px) {
+      .guide-page .guide-actions .btn { width: 100%; white-space: normal; }
+      .guide-page .guide-number { flex-basis: 38px; width: 38px; height: 38px; }
+      .guide-page .guide-journey h2 { font-size: 21px; }
+    }
+  </style>
+</head>
+<body class="guide-page">
+  <a class="skip" href="#guide-main">Skip to testing guide</a>
+  <header class="site-header">
+    <div class="header-inner guide-header">
+      <a class="brand" href="/shop" aria-label="Vortex Automation Playground shop">
+        <span class="brand-mark" aria-hidden="true">V</span>
+        <span class="brand-copy"><span class="brand-name">VORTEX</span><small>AUTOMATION PLAYGROUND</small></span>
+      </a>
+      <a class="guide-back" href="/shop">Back to store</a>
+    </div>
+  </header>
+
+  <main id="guide-main" tabindex="-1" data-testid="testing-guide">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol><li><a href="/shop">Vortex</a></li><li aria-current="page">Testing guide</li></ol>
+    </nav>
+
+    <section class="guide-hero" aria-labelledby="guide-title">
+      <p class="guide-eyebrow">Manual testing · Six practical journeys</p>
+      <h1 id="guide-title">Test Vortex with confidence</h1>
+      <p class="guide-lede">Follow source-backed storefront and UI Lab walkthroughs, compare observable results, and record what actually happened. This guide does not sign you in, create fixtures, reset data, or change server settings.</p>
+      <div class="guide-actions">
+        <a class="btn" href="#journey-auth">Start with sign up</a>
+        <a class="btn secondary" href="/lab">Open UI Lab</a>
+      </div>
+    </section>
+
+    <section class="guide-section" aria-labelledby="before-title">
+      <h2 id="before-title">Before you begin</h2>
+      <p class="guide-intro">Use an isolated local environment and disposable data that you own. A fresh account is not guaranteed to exist, and protected pages may ask you to sign in before continuing.</p>
+      <div class="guide-basics">
+        <section class="guide-basic"><h3>Use test data only</h3><p>Do not enter real payment card details or expect real purchases, charges, refunds, or email delivery.</p></section>
+        <section class="guide-basic"><h3>Keep your own records</h3><p>Note the runtime, browser, viewport, theme, starting state, and actual outcome. Generated account and order IDs will vary.</p></section>
+        <section class="guide-basic"><h3>Avoid shared resets</h3><p>Do not use legacy global reset or chaos controls against a shared instance. This page provides no reset or server-control action.</p></section>
+      </div>
+
+      <div class="guide-table-wrap" tabindex="0" role="region" aria-label="Current runtime comparison">
+        <table>
+          <caption class="sr-only">Current PostgreSQL and legacy memory behavior</caption>
+          <thead><tr><th scope="col">Capability</th><th scope="col">PostgreSQL runtime</th><th scope="col">Legacy memory runtime</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">API and data lifetime</th><td><code>/api/v2</code>; records persist in PostgreSQL.</td><td><code>/api</code>; records live in memory and are lost on restart or legacy reset.</td></tr>
+            <tr><th scope="row">MFA and recovery</th><td>Authenticator-app TOTP MFA. Recovery is conditional development-only functionality using a protected test sink.</td><td>Email OTP flows use the legacy Test Inbox. This is not PostgreSQL authenticator MFA.</td></tr>
+            <tr><th scope="row">Payment and order events</th><td>Simulated payment; the legacy 3-D Secure challenge and live order-event stream are not available.</td><td>Simulated payment includes the legacy 3-D Secure exercise and live order events.</td></tr>
+            <tr><th scope="row">Test controls</th><td>No equivalent legacy global chaos, reset, or Test Inbox capability.</td><td>Global chaos and reset controls affect the whole legacy server; use them only in isolation.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <aside class="guide-note" aria-label="Planned controls are not current controls">
+        <strong>Storage is not a practice mode.</strong>
+        <p>Normal, Practice, and Defect Lab runtime selection, run-scoped reset, and versioned fixture controls are planned work. The current PostgreSQL/legacy storage choice does not provide those controls.</p>
+      </aside>
+    </section>
+
+    <section class="guide-section" aria-labelledby="journeys-title">
+      <h2 id="journeys-title">Journeys</h2>
+      <p class="guide-intro">Run the journeys in order for a complete storefront pass, or use UI Lab independently. Record blocked work as blocked rather than treating an unexecuted step as a pass.</p>
+
+      <article class="card guide-journey" id="journey-auth" aria-labelledby="journey-auth-title">
+        <div class="guide-journey-head"><span class="guide-number" aria-hidden="true">01</span><div><p class="guide-kicker">Account</p><h2 id="journey-auth-title">Sign up and sign in</h2></div></div>
+        <ul class="guide-meta"><li><strong>Start:</strong> <a href="/register"><code>/register</code></a></li><li><strong>Needs:</strong> unique disposable account details</li></ul>
+        <div class="guide-columns">
+          <div><h3>Steps</h3><ol class="guide-steps">
+            <li>Open <a href="/register">Sign up</a>, complete the required fields, and submit.</li>
+            <li>Confirm that the new account reaches the storefront with a signed-in user menu.</li>
+            <li>Sign out from the user menu, then open <a href="/login">Sign in</a> and use the same account.</li>
+            <li>Reload the storefront and check whether the expected session remains active.</li>
+          </ol></div>
+          <section class="guide-expect" aria-label="Expected sign up and sign in outcome"><h3>Expected outcome</h3><ul>
+            <li>Registration signs in the new account without exposing credentials.</li>
+            <li>Signing out removes access to protected pages until sign in succeeds again.</li>
+            <li>An invalid password produces an error and does not create an authenticated session.</li>
+          </ul></section>
+        </div>
+        <p class="guide-limit"><strong>Boundary:</strong> PostgreSQL MFA uses an authenticator app and may require a separate verification challenge. Legacy email OTP uses its Test Inbox instead. PostgreSQL recovery is available only in eligible non-production configurations and does not send real email.</p>
+      </article>
+
+      <article class="card guide-journey" id="journey-catalog" aria-labelledby="journey-catalog-title">
+        <div class="guide-journey-head"><span class="guide-number" aria-hidden="true">02</span><div><p class="guide-kicker">Discovery</p><h2 id="journey-catalog-title">Filter the catalog</h2></div></div>
+        <ul class="guide-meta"><li><strong>Start:</strong> <a href="/shop"><code>/shop</code></a></li><li><strong>Needs:</strong> no signed-in state for browsing</li></ul>
+        <div class="guide-columns">
+          <div><h3>Steps</h3><ol class="guide-steps">
+            <li>Open the <a href="/shop">Shop</a> and record the initial products and result count.</li>
+            <li>Enter a distinctive search term and observe which products remain.</li>
+            <li>Apply a category, stock, or sort control; change one control at a time and compare the results.</li>
+            <li>Clear the filters, then open a product and confirm its name, price, stock, options, and details.</li>
+          </ol></div>
+          <section class="guide-expect" aria-label="Expected catalog outcome"><h3>Expected outcome</h3><ul>
+            <li>Visible products and the result count agree with each applied filter.</li>
+            <li>Clearing filters restores the unfiltered catalog.</li>
+            <li>The product detail page corresponds to the selected product rather than its former row position.</li>
+          </ul></section>
+        </div>
+        <p class="guide-limit"><strong>Boundary:</strong> Search terms, stock, prices, and available variants depend on current data. Do not assume a generated product ID, a fixed result count, or that every product has options.</p>
+      </article>
+
+      <article class="card guide-journey" id="journey-cart" aria-labelledby="journey-cart-title">
+        <div class="guide-journey-head"><span class="guide-number" aria-hidden="true">03</span><div><p class="guide-kicker">Saved items</p><h2 id="journey-cart-title">Save to wishlist and build a cart</h2></div></div>
+        <ul class="guide-meta"><li><strong>Start:</strong> <a href="/wishlist"><code>/wishlist</code></a></li><li><strong>Needs:</strong> your signed-in account and an available product</li></ul>
+        <div class="guide-columns">
+          <div><h3>Steps</h3><ol class="guide-steps">
+            <li>From the Shop, save a product to the wishlist and open <a href="/wishlist">Wishlist</a>.</li>
+            <li>Confirm that the intended product appears once; remove and restore it if you need to test both states.</li>
+            <li>Add an available product to the cart, selecting a valid size and colour first when options are required.</li>
+            <li>Open <a href="/cart">Cart</a>, change the quantity, review the totals, and reload.</li>
+          </ol></div>
+          <section class="guide-expect" aria-label="Expected wishlist and cart outcome"><h3>Expected outcome</h3><ul>
+            <li>Wishlist and cart badges reflect the current saved items and quantities.</li>
+            <li>The cart retains the selected variant and recalculates line and order totals after quantity changes.</li>
+            <li>Reloading preserves the data for the active runtime and session.</li>
+          </ul></section>
+        </div>
+        <p class="guide-limit"><strong>Boundary:</strong> Legacy data survives only until its memory server restarts or resets. Stock and variant availability can block an add or quantity increase; record the error instead of forcing the control.</p>
+      </article>
+
+      <article class="card guide-journey" id="journey-checkout" aria-labelledby="journey-checkout-title">
+        <div class="guide-journey-head"><span class="guide-number" aria-hidden="true">04</span><div><p class="guide-kicker">Purchase simulation</p><h2 id="journey-checkout-title">Checkout and verify an order</h2></div></div>
+        <ul class="guide-meta"><li><strong>Start:</strong> <a href="/cart"><code>/cart</code></a> with items</li><li><strong>Needs:</strong> your signed-in account</li></ul>
+        <div class="guide-columns">
+          <div><h3>Steps</h3><ol class="guide-steps">
+            <li>Begin checkout from a non-empty <a href="/cart">Cart</a>; an empty cart does not start the wizard.</li>
+            <li>Complete Address, Delivery, Payment, and Review using disposable address data and a test card supplied by the Payment step.</li>
+            <li>Before placing the order, compare item quantities, variants, discounts, shipping, tax, and total with the cart.</li>
+            <li>Place the order once, follow the confirmation to <a href="/orders">Orders</a>, and open the new user-owned order from the list.</li>
+          </ol></div>
+          <section class="guide-expect" aria-label="Expected checkout outcome"><h3>Expected outcome</h3><ul>
+            <li>The new order retains the reviewed items, totals, address, delivery, and simulated payment summary.</li>
+            <li>The cart is cleared and the order remains visible after reload.</li>
+            <li>Repeated review clicks do not become evidence of duplicate orders; verify the actual Orders list.</li>
+          </ul></section>
+        </div>
+        <p class="guide-limit"><strong>Boundary:</strong> Payment is simulated: no real charge, refund, or order-confirmation email occurs. PostgreSQL does not offer the legacy 3-D Secure exercise; do not expect that challenge outside the legacy runtime.</p>
+      </article>
+
+      <article class="card guide-journey" id="journey-cancel" aria-labelledby="journey-cancel-title">
+        <div class="guide-journey-head"><span class="guide-number" aria-hidden="true">05</span><div><p class="guide-kicker">Order lifecycle</p><h2 id="journey-cancel-title">Cancel an eligible order</h2></div></div>
+        <ul class="guide-meta"><li><strong>Start:</strong> <a href="/orders"><code>/orders</code></a></li><li><strong>Needs:</strong> your own Placed or Processing order</li></ul>
+        <div class="guide-columns">
+          <div><h3>Steps</h3><ol class="guide-steps">
+            <li>Open <a href="/orders">Orders</a> while signed in and select an order owned by the current account.</li>
+            <li>Confirm that its status is Placed or Processing, then choose Cancel order.</li>
+            <li>Dismiss the confirmation once and verify that the status does not change.</li>
+            <li>Choose Cancel order again, confirm it, and review the status and tracking timeline.</li>
+          </ol></div>
+          <section class="guide-expect" aria-label="Expected cancellation outcome"><h3>Expected outcome</h3><ul>
+            <li>Dismissing the dialog leaves the order unchanged.</li>
+            <li>Confirming changes the order to Cancelled and shows the Placed-to-Cancelled history.</li>
+            <li>The cancellation action disappears, and returned stock is reflected in the catalog.</li>
+          </ul></section>
+        </div>
+        <p class="guide-limit"><strong>Boundary:</strong> Shipped and Delivered orders cannot be cancelled through this journey. Any refund is simulated, not a real payment reversal. Use the Orders list rather than inventing or reusing an order ID.</p>
+      </article>
+
+      <article class="card guide-journey" id="journey-lab" aria-labelledby="journey-lab-title">
+        <div class="guide-journey-head"><span class="guide-number" aria-hidden="true">06</span><div><p class="guide-kicker">Automation techniques</p><h2 id="journey-lab-title">Explore UI Lab</h2></div></div>
+        <ul class="guide-meta"><li><strong>Start:</strong> <a href="/lab"><code>/lab</code></a></li><li><strong>Needs:</strong> no storefront account for the Lab itself</li></ul>
+        <div class="guide-columns">
+          <div><h3>Steps</h3><ol class="guide-steps">
+            <li>Open <a href="/lab">UI Lab</a> and choose one independent card, such as dialogs, frames, form controls, waits, or downloads.</li>
+            <li>Read the card title and technique hint before interacting with its visible controls.</li>
+            <li>Perform the action and observe the card's own output, event, download, frame, or dialog result.</li>
+            <li>Repeat with keyboard input where supported, then reset only that exercise through its provided control when available.</li>
+          </ol></div>
+          <section class="guide-expect" aria-label="Expected UI Lab outcome"><h3>Expected outcome</h3><ul>
+            <li>Each exercise exposes an observable result within its own card or browser surface.</li>
+            <li>Nested-frame and open-shadow-root exercises remain bounded by their actual DOM structure.</li>
+            <li>Deliberately unstable or inaccessible examples affect only their designated exercise.</li>
+          </ul></section>
+        </div>
+        <p class="guide-limit"><strong>Boundary:</strong> Closed shadow-root internals are not promised to be selectable. Browser permissions can affect clipboard and geolocation exercises. The accessibility audit and visual-defect cards are intentionally faulty and are not quality baselines for the rest of the site.</p>
+      </article>
+    </section>
+
+    <section class="guide-section" aria-labelledby="checklist-title">
+      <h2 id="checklist-title">Manual results checklist</h2>
+      <p class="guide-intro">Use these local checkboxes only after recording evidence elsewhere. They are not saved, submitted, or treated as deployment certification.</p>
+      <ul class="guide-checklist">
+        <li><label><input type="checkbox"><span><strong>Account</strong><small>Registration, sign out, sign in, and invalid sign in were observed.</small></span></label></li>
+        <li><label><input type="checkbox"><span><strong>Catalog</strong><small>Filter, clear, and product-detail results agree.</small></span></label></li>
+        <li><label><input type="checkbox"><span><strong>Wishlist and cart</strong><small>Saved product, variant, quantity, totals, and reload behavior were checked.</small></span></label></li>
+        <li><label><input type="checkbox"><span><strong>Checkout</strong><small>The persisted order matches the review and the cart is empty.</small></span></label></li>
+        <li><label><input type="checkbox"><span><strong>Cancellation</strong><small>Both dismissed and confirmed cancellation outcomes were checked.</small></span></label></li>
+        <li><label><input type="checkbox"><span><strong>UI Lab</strong><small>Each attempted exercise produced its documented observable result.</small></span></label></li>
+      </ul>
+    </section>
+
+    <section class="guide-section" aria-labelledby="quality-title">
+      <h2 id="quality-title">Quality checks for this guide</h2>
+      <div class="guide-quality">
+        <section><h3>Keyboard and focus</h3><p>Use <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> from the top. The skip link becomes visible on focus, all links and checkboxes are reachable, and focus indicators remain visible.</p></section>
+        <section><h3>Responsive layout</h3><p>Compare wide desktop and narrow mobile widths. Journey columns collapse, long content wraps, and the runtime table scrolls inside its labelled region rather than widening the page.</p></section>
+        <section><h3>Light and dark themes</h3><p>A test harness can apply the existing <code>data-theme="dark"</code> root hook to compare themes. This static page has no separate theme toggle.</p></section>
+        <section><h3>Reduced motion</h3><p>The shared styles honor the operating-system preference and the existing <code>data-reduced-motion</code> hook. This guide introduces no animation or smooth scrolling.</p></section>
+      </div>
+    </section>
+
+    <section class="guide-section guide-note" aria-labelledby="android-title">
+      <h2 id="android-title">Android is separate work</h2>
+      <p>The Android application is a separate API client, not part of this website. This guide supplies no APK and does not claim Appium coverage. Mobile API behavior, accessibility, and UI automation require their own implementation and verification.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer guide-footer">
+    <div class="inner"><span><strong>VORTEX</strong> · Automation Playground — practice only; no real purchases, payments, or email.</span><span class="row"><a href="/shop">Storefront</a><a href="/lab">UI Lab</a></span></div>
+  </footer>
+</body>
+</html>

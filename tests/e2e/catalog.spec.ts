@@ -131,7 +131,7 @@ test.describe('Product page', () => {
     await shopPage.goto(`q=${encodeURIComponent(PRODUCTS.pragmaticTester.name)}`);
     await shopPage.card(PRODUCTS.pragmaticTester.name).getByTestId('product-name').click();
     await expect(page).toHaveURL(`/product/${PRODUCTS.pragmaticTester.id}`);
-    await expect(page).toHaveTitle(`${PRODUCTS.pragmaticTester.name} · ShopLab`);
+    await expect(page).toHaveTitle(`${PRODUCTS.pragmaticTester.name} · VORTEX`);
     await expect(productPage.title).toHaveText(PRODUCTS.pragmaticTester.name);
     await expect(productPage.price).toHaveText('$24.99');
     const crumbs = page.getByRole('navigation', { name: 'Breadcrumb' });
@@ -220,3 +220,4 @@ test('command palette (Ctrl+K) finds a product and navigates', async ({ page }) 
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL('/product/11');
 });
+

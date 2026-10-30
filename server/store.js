@@ -1,5 +1,5 @@
 // In-memory data store. Everything here is wiped by POST /api/reset.
-const CATEGORIES = ['Electronics', 'Books', 'Home', 'Toys', 'Fashion'];
+const { CATEGORIES, SHIPPING, COUNTRIES } = require('./catalog-metadata.cjs');
 
 const CATALOG = {
   Electronics: [
@@ -110,18 +110,6 @@ const COUPONS = {
   FLAT50: { type: 'flat', value: 50, min: 200, label: '$50 off orders over $200' },
   FREESHIP: { type: 'shipping', value: 0, label: 'Free shipping' },
   EXPIRED20: { type: 'percent', value: 20, expired: true, label: '20% off (expired)' }
-};
-
-const SHIPPING = {
-  standard: { label: 'Standard (5-7 days)', price: 5.99, freeOver: 100 },
-  express: { label: 'Express (2-3 days)', price: 14.99 },
-  nextday: { label: 'Next day', price: 24.99 }
-};
-
-const COUNTRIES = {
-  IN: { name: 'India', states: ['Telangana', 'Karnataka', 'Maharashtra', 'Tamil Nadu', 'Jharkhand', 'Delhi'], zip: /^\d{6}$/, zipHint: '6 digits' },
-  US: { name: 'United States', states: ['California', 'New York', 'Texas', 'Washington', 'Florida'], zip: /^\d{5}$/, zipHint: '5 digits' },
-  UK: { name: 'United Kingdom', states: ['England', 'Scotland', 'Wales', 'Northern Ireland'], zip: /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/i, zipHint: 'UK postcode, e.g. SW1A 1AA' }
 };
 
 const DEFAULT_CHAOS = { latencyMs: 0, errorRate: 0, bugMode: false, sessionTtlSec: 3600, orderProgressSec: 15 };

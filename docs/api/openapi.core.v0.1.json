@@ -1,0 +1,1050 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "VORTEX Core PostgreSQL API",
+    "version": "0.1.0",
+    "description": "Partial, source-backed contract for ten current /api/v2 operations. This is not a complete API description, a legacy /api contract, or runtime verification. All examples are fictitious and are not stable fixtures, credentials, or generated record identifiers."
+  },
+  "servers": [
+    {
+      "url": "/api/v2",
+      "description": "Same-origin PostgreSQL API base. Resolve this relative URL against the scheme and host of the target deployment."
+    }
+  ],
+  "tags": [
+    { "name": "Authentication" },
+    { "name": "Catalog" },
+    { "name": "Cart" },
+    { "name": "Orders" }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "operationId": "registerCustomer",
+        "summary": "Register a customer account",
+        "description": "Creates a customer and returns its public profile. Registration does not create or return an authenticated session. Client-supplied role fields are ignored by the current service.",
+        "security": [],
+        "x-source": [
+          "src/auth/routes.ts:16-36",
+          "src/auth/profile.ts:1-3",
+          "tests/workflows/database-auth.test.cjs:23-34"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RegisterRequest" },
+              "example": {
+                "username": "alex_example",
+                "email": "alex@example.test",
+                "name": "Alex Example",
+                "password": "ExamplePass123",
+                "confirmPassword": "ExamplePass123",
+                "acceptTerms": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Account created. The response is a profile, not a login session.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserProfile" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/MalformedJson" },
+          "409": {
+            "description": "The username or email already exists. The current response does not identify which field conflicted.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "example": { "error": "Account already exists" }
+              }
+            }
+          },
+          "413": { "$ref": "#/components/responses/PayloadTooLarge" },
+          "415": { "$ref": "#/components/responses/UnsupportedEncoding" },
+          "422": {
+            "description": "One or more fields failed validation.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ValidationError" },
+                "example": {
+                  "error": "Validation failed",
+                  "fields": {
+                    "username": "Username must be 3-20 letters, numbers or _",
+                    "acceptTerms": "You must accept the terms"
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "operationId": "loginCustomer",
+        "summary": "Authenticate with username or email and password",
+        "description": "Returns either an authenticated session or an authenticator-MFA challenge. A challenge contains mfaToken but no session token and must not be used as Bearer authentication. MFA verification is outside this partial contract.",
+        "security": [],
+        "x-source": [
+          "src/auth/routes.ts:37-67",
+          "src/auth/throttle.ts:4-14",
+          "src/auth/profile.ts:1-3",
+          "tests/workflows/database-auth.test.cjs:35-54",
+          "tests/workflows/database-mfa.test.cjs:20-34"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginRequest" },
+              "example": {
+                "username": "alex@example.test",
+                "password": "ExamplePass123",
+                "remember": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password authentication succeeded. The exact body depends on whether authenticator MFA is enabled.",
+            "headers": {
+              "Cache-Control": {
+                "description": "Current successful login responses use no-store.",
+                "schema": { "type": "string", "enum": ["no-store"] }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    { "$ref": "#/components/schemas/LoginSuccess" },
+                    { "$ref": "#/components/schemas/MfaChallenge" }
+                  ]
+                },
+                "examples": {
+                  "session": {
+                    "summary": "Session issued when MFA is not enabled",
+                    "value": {
+                      "token": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+                      "expiresAt": "2026-10-30T11:00:00.000Z",
+                      "user": {
+                        "id": "user_example_001",
+                        "username": "alex_example",
+                        "email": "alex@example.test",
+                        "name": "Alex Example",
+                        "phone": "",
+                        "avatar": null,
+                        "role": "customer",
+                        "createdAt": "2026-10-30T09:00:00.000Z"
+                      }
+                    }
+                  },
+                  "mfaChallenge": {
+                    "summary": "Authenticator challenge; not an authenticated session",
+                    "value": {
+                      "mfaRequired": true,
+                      "mfaToken": "fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210",
+                      "sentTo": "your authenticator app"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/MalformedJson" },
+          "401": {
+            "description": "Credentials are invalid, or a concurrent account change prevented session issuance.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "examples": {
+                  "invalidCredentials": { "value": { "error": "Invalid username or password" } },
+                  "authenticationChanged": { "value": { "error": "Please sign in again" } }
+                }
+              }
+            }
+          },
+          "413": { "$ref": "#/components/responses/PayloadTooLarge" },
+          "415": { "$ref": "#/components/responses/UnsupportedEncoding" },
+          "422": {
+            "description": "Username or password is missing, has the wrong type, or exceeds its input limit.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "example": { "error": "Username and password are required" }
+              }
+            }
+          },
+          "423": { "$ref": "#/components/responses/LockedAccount" },
+          "429": { "$ref": "#/components/responses/LoginThrottled" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/me": {
+      "get": {
+        "tags": ["Authentication"],
+        "operationId": "getCurrentProfile",
+        "summary": "Read the authenticated customer's public profile",
+        "description": "Requires the application's own Bearer session token. This is not Supabase Auth.",
+        "security": [{ "bearerSession": [] }],
+        "x-source": [
+          "src/auth/routes.ts:68-68",
+          "src/auth/database-sessions.ts:5-20",
+          "src/auth/profile.ts:1-3",
+          "tests/workflows/database-auth.test.cjs:41-54"
+        ],
+        "responses": {
+          "200": {
+            "description": "Current public profile.",
+            "headers": {
+              "Cache-Control": {
+                "description": "Current profile responses use no-store.",
+                "schema": { "type": "string", "enum": ["no-store"] }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserProfile" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "423": { "$ref": "#/components/responses/LockedAccount" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "tags": ["Authentication"],
+        "operationId": "logoutCustomer",
+        "summary": "Revoke the current session",
+        "description": "Deletes the session identified by the current Bearer token. A later request with that well-formed token receives the session-expired 401 variant.",
+        "security": [{ "bearerSession": [] }],
+        "x-source": [
+          "src/auth/routes.ts:69-74",
+          "src/auth/database-sessions.ts:5-20",
+          "tests/workflows/database-auth.test.cjs:41-50"
+        ],
+        "responses": {
+          "200": {
+            "description": "Current session revoked.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/OkResponse" },
+                "example": { "ok": true }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "423": { "$ref": "#/components/responses/LockedAccount" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/categories": {
+      "get": {
+        "tags": ["Catalog"],
+        "operationId": "listCategories",
+        "summary": "List categories for non-deleted products",
+        "description": "Returns a bare array sorted by category name. Counts include non-deleted products, including out-of-stock products.",
+        "security": [],
+        "x-source": [
+          "src/modules/catalog/routes.ts:7-17",
+          "prisma/schema.prisma:103-120"
+        ],
+        "responses": {
+          "200": {
+            "description": "Category names and product counts.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Category" }
+                },
+                "example": [
+                  { "name": "Books", "count": 8 },
+                  { "name": "Electronics", "count": 12 }
+                ]
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "tags": ["Catalog"],
+        "operationId": "listProducts",
+        "summary": "List, filter, sort, and paginate products",
+        "description": "Returns a pagination envelope and numeric price/rating values. Soft-deleted products are excluded. Only the exact query value inStock=true enables stock filtering; other inStock values are currently ignored.",
+        "security": [],
+        "x-source": [
+          "src/modules/catalog/routes.ts:30-77",
+          "prisma/schema.prisma:103-120",
+          "tests/workflows/database-catalog.test.cjs:18-28"
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "description": "Case-insensitive substring match on product name.",
+            "schema": { "type": "string" },
+            "example": "robot"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "description": "Comma-separated category names. Empty segments are discarded.",
+            "style": "form",
+            "explode": false,
+            "schema": { "type": "string" },
+            "example": "Books,Toys"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "One-based page number. The offset must remain a safe integer.",
+            "schema": { "type": "integer", "minimum": 1, "default": 1 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Items per page.",
+            "schema": { "type": "integer", "minimum": 1, "maximum": 50, "default": 12 }
+          },
+          {
+            "name": "minPrice",
+            "in": "query",
+            "required": false,
+            "description": "Inclusive minimum price. An empty value is ignored. No minPrice/maxPrice ordering check is applied.",
+            "schema": { "type": "number", "minimum": 0 }
+          },
+          {
+            "name": "maxPrice",
+            "in": "query",
+            "required": false,
+            "description": "Inclusive maximum price. An empty value is ignored.",
+            "schema": { "type": "number", "minimum": 0 }
+          },
+          {
+            "name": "minRating",
+            "in": "query",
+            "required": false,
+            "description": "Inclusive minimum average rating. An empty value is ignored.",
+            "schema": { "type": "number", "minimum": 0, "maximum": 5 }
+          },
+          {
+            "name": "inStock",
+            "in": "query",
+            "required": false,
+            "description": "Use the string true to require stock greater than zero. Other values are ignored rather than rejected.",
+            "schema": { "type": "string", "enum": ["true"] }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "Sort order. An omitted or empty value uses ascending product ID.",
+            "schema": {
+              "type": "string",
+              "enum": ["", "rating", "newest", "price_asc", "price_desc", "name_asc", "name_desc"],
+              "default": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matching page. pages is at least one even when total is zero.",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total number of matching products, serialized as an HTTP header.",
+                "required": true,
+                "schema": { "type": "integer", "minimum": 0 }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProductPage" },
+                "example": {
+                  "total": 1,
+                  "page": 1,
+                  "pages": 1,
+                  "limit": 12,
+                  "items": [
+                    {
+                      "id": 101,
+                      "sku": "SL-EXM-101",
+                      "name": "Example Robot Kit",
+                      "description": "Fictitious catalog example.",
+                      "category": "Toys",
+                      "price": 39.99,
+                      "stock": 4,
+                      "variants": null,
+                      "createdAt": "2026-10-01T09:00:00.000Z",
+                      "updatedAt": "2026-10-15T09:00:00.000Z",
+                      "rating": 4.5,
+                      "reviewCount": 2
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Pagination, filter, price, rating, or sort input is invalid.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "examples": {
+                  "pagination": { "value": { "error": "Invalid pagination" } },
+                  "filters": { "value": { "error": "Invalid filters" } },
+                  "price": { "value": { "error": "Invalid price filter" } },
+                  "rating": { "value": { "error": "Invalid rating filter" } },
+                  "sort": { "value": { "error": "Invalid sort" } }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "tags": ["Catalog"],
+        "operationId": "getProduct",
+        "summary": "Read one non-deleted product",
+        "description": "Returns stored product fields with price and rating converted to JSON numbers. The soft-deletion marker is omitted.",
+        "security": [],
+        "x-source": [
+          "src/modules/catalog/routes.ts:79-88",
+          "prisma/schema.prisma:103-120",
+          "tests/workflows/database-catalog.test.cjs:19-28"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Positive integer product identifier. The example is fictitious, not a stable fixture.",
+            "schema": { "type": "integer", "format": "int32", "minimum": 1, "maximum": 2147483647 },
+            "example": 101
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product found.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Product" }
+              }
+            }
+          },
+          "400": {
+            "description": "The path value is not a positive safe 32-bit integer.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "example": { "error": "Invalid product ID" }
+              }
+            }
+          },
+          "404": {
+            "description": "No non-deleted product has this ID.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "example": { "error": "Product not found" }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/cart": {
+      "get": {
+        "tags": ["Cart"],
+        "operationId": "getCart",
+        "summary": "Read the authenticated customer's cart and computed totals",
+        "description": "Returns the current line snapshots and pricing. variant is a stored string (often JSON), not a nested response object. Monetary values are JSON numbers. An absent cart produces an empty cart representation.",
+        "security": [{ "bearerSession": [] }],
+        "x-source": [
+          "src/modules/cart/routes.ts:7-18",
+          "src/modules/cart/service.ts:11-22",
+          "src/modules/cart/pricing.ts:4-20",
+          "src/modules/catalog/variants.ts:14-29",
+          "tests/workflows/database-cart.test.cjs:34-50"
+        ],
+        "responses": {
+          "200": {
+            "description": "Current cart and calculated pricing.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Cart" },
+                "example": {
+                  "items": [
+                    {
+                      "lineId": "line_example_001",
+                      "productId": 101,
+                      "name": "Example Robot Kit",
+                      "qty": 2,
+                      "variant": "",
+                      "price": 39.99,
+                      "lineTotal": 79.98,
+                      "available": true
+                    }
+                  ],
+                  "subtotal": 79.98,
+                  "discount": 0,
+                  "coupon": null,
+                  "couponError": null,
+                  "shippingMethod": "standard",
+                  "shipping": 5.99,
+                  "tax": 6.4,
+                  "total": 92.37,
+                  "count": 2
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "423": { "$ref": "#/components/responses/LockedAccount" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/orders": {
+      "get": {
+        "tags": ["Orders"],
+        "operationId": "listOrders",
+        "summary": "List the authenticated customer's orders",
+        "description": "Returns a bare array, newest first with ID as a tie-breaker. Pages contain at most 25 orders. There is no total count, pages envelope, limit parameter, or server-side status filter in this operation.",
+        "security": [{ "bearerSession": [] }],
+        "x-source": [
+          "src/modules/orders/routes.ts:8-29",
+          "prisma/schema.prisma:167-195",
+          "src/workflows/checkout.ts:41-50"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "One-based page number. Requests beyond the last page return an empty array.",
+            "schema": { "type": "integer", "minimum": 1, "maximum": 1000000, "default": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Up to 25 orders owned by the current customer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Order" }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The page is not an integer from 1 through 1000000.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "example": { "error": "Invalid page" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "423": { "$ref": "#/components/responses/LockedAccount" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/orders/{id}": {
+      "get": {
+        "tags": ["Orders"],
+        "operationId": "getOrder",
+        "summary": "Read one order owned by the authenticated customer",
+        "description": "Returns the stored order, immutable line snapshots, numeric total/unitPrice, and paymentMode=simulated. Missing orders and orders owned by another customer both return 404; there is no separate 403 response or path-ID format validation.",
+        "security": [{ "bearerSession": [] }],
+        "x-source": [
+          "src/modules/orders/routes.ts:8-16",
+          "src/modules/orders/routes.ts:24-34",
+          "prisma/schema.prisma:167-195",
+          "src/workflows/checkout.ts:41-50",
+          "tests/workflows/database-orders.test.cjs:36-47"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Opaque generated order identifier. Do not treat the fictitious example as a stable fixture.",
+            "schema": { "type": "string", "minLength": 1 },
+            "example": "order_example_001"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Owned order found.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Order" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": {
+            "description": "The order does not exist or is not owned by the current customer.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "example": { "error": "Order not found" }
+              }
+            }
+          },
+          "423": { "$ref": "#/components/responses/LockedAccount" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerSession": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "64 lowercase hexadecimal characters",
+        "description": "Application session token returned by successful password login or the excluded MFA-verification flow. Header: Authorization: Bearer <token>. An MFA challenge token is not a session token."
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "required": ["error"],
+        "additionalProperties": false,
+        "properties": {
+          "error": { "type": "string" },
+          "code": { "type": "string", "description": "Present only on documented variants such as SESSION_EXPIRED." }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "required": ["error", "fields"],
+        "additionalProperties": false,
+        "properties": {
+          "error": { "type": "string", "enum": ["Validation failed"] },
+          "fields": {
+            "type": "object",
+            "description": "Only fields that failed validation are present.",
+            "additionalProperties": { "type": "string" }
+          }
+        }
+      },
+      "OkResponse": {
+        "type": "object",
+        "required": ["ok"],
+        "additionalProperties": false,
+        "properties": {
+          "ok": { "type": "boolean", "enum": [true] }
+        }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "required": ["username", "email", "name", "password", "confirmPassword", "acceptTerms"],
+        "properties": {
+          "username": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_]{3,20}$",
+            "description": "Letters, numbers, and underscore. The service lowercases before validation and storage."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$",
+            "description": "Trimmed and lowercased by the service."
+          },
+          "name": { "type": "string", "minLength": 2, "maxLength": 100, "description": "Trimmed before length validation." },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "minLength": 8,
+            "maxLength": 128,
+            "description": "Must contain at least one lowercase letter, one uppercase letter, and one number."
+          },
+          "confirmPassword": { "type": "string", "format": "password", "description": "Must be identical to password." },
+          "acceptTerms": { "type": "boolean", "enum": [true] }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": ["username", "password"],
+        "properties": {
+          "username": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 254,
+            "description": "Username or email. The service trims and lowercases the lookup key after this initial validation."
+          },
+          "password": { "type": "string", "format": "password", "minLength": 1, "maxLength": 128 },
+          "remember": {
+            "type": "boolean",
+            "default": false,
+            "description": "Only boolean true requests the seven-day session; other omitted/false values use the one-hour session."
+          }
+        }
+      },
+      "UserProfile": {
+        "type": "object",
+        "required": ["id", "username", "email", "name", "phone", "avatar", "role", "createdAt"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "description": "Generated opaque user identifier." },
+          "username": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "name": { "type": "string" },
+          "phone": { "type": "string", "description": "Empty string when no phone has been supplied." },
+          "avatar": { "type": "string", "nullable": true },
+          "role": { "type": "string", "example": "customer" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        },
+        "example": {
+          "id": "user_example_001",
+          "username": "alex_example",
+          "email": "alex@example.test",
+          "name": "Alex Example",
+          "phone": "",
+          "avatar": null,
+          "role": "customer",
+          "createdAt": "2026-10-30T09:00:00.000Z"
+        }
+      },
+      "LoginSuccess": {
+        "type": "object",
+        "required": ["token", "expiresAt", "user"],
+        "additionalProperties": false,
+        "properties": {
+          "token": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "Authenticated Bearer session token. Store and transmit only as appropriate for a session credential."
+          },
+          "expiresAt": { "type": "string", "format": "date-time" },
+          "user": { "$ref": "#/components/schemas/UserProfile" }
+        }
+      },
+      "MfaChallenge": {
+        "type": "object",
+        "required": ["mfaRequired", "mfaToken", "sentTo"],
+        "additionalProperties": false,
+        "description": "A five-minute authenticator-MFA challenge. This body has no session token and grants no authenticated API access.",
+        "properties": {
+          "mfaRequired": { "type": "boolean", "enum": [true] },
+          "mfaToken": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "Challenge credential for the excluded MFA-verification operation; not an Authorization Bearer session."
+          },
+          "sentTo": { "type": "string", "enum": ["your authenticator app"] }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "required": ["name", "count"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "count": { "type": "integer", "minimum": 0 }
+        }
+      },
+      "VariantConfiguration": {
+        "type": "object",
+        "nullable": true,
+        "description": "Stored product option JSON. Current variant helpers expect size and color string arrays; the catalog serializer otherwise passes stored JSON through.",
+        "properties": {
+          "size": { "type": "array", "items": { "type": "string" } },
+          "color": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "required": ["id", "sku", "name", "description", "category", "price", "stock", "variants", "createdAt", "updatedAt", "rating", "reviewCount"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "integer", "format": "int32" },
+          "sku": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "category": { "type": "string" },
+          "price": { "type": "number", "format": "double", "description": "Decimal stored in PostgreSQL and serialized as a JSON number." },
+          "stock": { "type": "integer", "format": "int32" },
+          "variants": { "$ref": "#/components/schemas/VariantConfiguration" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "rating": { "type": "number", "format": "double", "description": "Decimal stored in PostgreSQL and serialized as a JSON number." },
+          "reviewCount": { "type": "integer", "format": "int32" }
+        },
+        "example": {
+          "id": 101,
+          "sku": "SL-EXM-101",
+          "name": "Example Robot Kit",
+          "description": "Fictitious catalog example.",
+          "category": "Toys",
+          "price": 39.99,
+          "stock": 4,
+          "variants": null,
+          "createdAt": "2026-10-01T09:00:00.000Z",
+          "updatedAt": "2026-10-15T09:00:00.000Z",
+          "rating": 4.5,
+          "reviewCount": 2
+        }
+      },
+      "ProductPage": {
+        "type": "object",
+        "required": ["total", "page", "pages", "limit", "items"],
+        "additionalProperties": false,
+        "properties": {
+          "total": { "type": "integer", "minimum": 0 },
+          "page": { "type": "integer", "minimum": 1 },
+          "pages": { "type": "integer", "minimum": 1 },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 50 },
+          "items": { "type": "array", "items": { "$ref": "#/components/schemas/Product" } }
+        }
+      },
+      "CartItem": {
+        "type": "object",
+        "required": ["lineId", "productId", "name", "qty", "variant", "price", "lineTotal", "available"],
+        "additionalProperties": false,
+        "properties": {
+          "lineId": { "type": "string" },
+          "productId": { "type": "integer", "format": "int32" },
+          "name": { "type": "string" },
+          "qty": { "type": "integer" },
+          "variant": { "type": "string", "description": "Stored variant key: empty string or a string containing JSON, not a nested object." },
+          "price": { "type": "number", "format": "double" },
+          "lineTotal": { "type": "number", "format": "double" },
+          "available": { "type": "boolean", "description": "Current deletion, aggregate stock, and variant availability for this line." }
+        }
+      },
+      "Cart": {
+        "type": "object",
+        "required": ["items", "subtotal", "discount", "coupon", "couponError", "shippingMethod", "shipping", "tax", "total", "count"],
+        "additionalProperties": false,
+        "properties": {
+          "items": { "type": "array", "items": { "$ref": "#/components/schemas/CartItem" } },
+          "subtotal": { "type": "number", "format": "double" },
+          "discount": { "type": "number", "format": "double" },
+          "coupon": { "type": "string", "nullable": true },
+          "couponError": { "type": "string", "nullable": true },
+          "shippingMethod": { "type": "string", "example": "standard" },
+          "shipping": { "type": "number", "format": "double" },
+          "tax": { "type": "number", "format": "double" },
+          "total": { "type": "number", "format": "double" },
+          "count": { "type": "integer", "minimum": 0, "description": "Sum of quantities, not number of lines." }
+        }
+      },
+      "OrderAddress": {
+        "type": "object",
+        "required": ["name", "line1", "city", "postalCode", "country"],
+        "additionalProperties": false,
+        "description": "Current checkout address snapshot. Optional fields are omitted when blank.",
+        "properties": {
+          "name": { "type": "string" },
+          "line1": { "type": "string" },
+          "line2": { "type": "string" },
+          "city": { "type": "string" },
+          "postalCode": { "type": "string" },
+          "country": { "type": "string" },
+          "state": { "type": "string" },
+          "phone": { "type": "string" }
+        }
+      },
+      "OrderPricing": {
+        "type": "object",
+        "nullable": true,
+        "required": ["subtotal", "discount", "coupon", "couponError", "shippingMethod", "shipping", "tax", "total"],
+        "additionalProperties": false,
+        "description": "Current checkout pricing snapshot. The database column is nullable.",
+        "properties": {
+          "subtotal": { "type": "number", "format": "double" },
+          "discount": { "type": "number", "format": "double" },
+          "coupon": { "type": "string", "nullable": true },
+          "couponError": { "type": "string", "nullable": true },
+          "shippingMethod": { "type": "string" },
+          "shipping": { "type": "number", "format": "double" },
+          "tax": { "type": "number", "format": "double" },
+          "total": { "type": "number", "format": "double" }
+        }
+      },
+      "OrderLine": {
+        "type": "object",
+        "required": ["id", "orderId", "productId", "name", "sku", "quantity", "unitPrice", "variant"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "orderId": { "type": "string" },
+          "productId": { "type": "integer", "format": "int32" },
+          "name": { "type": "string" },
+          "sku": { "type": "string" },
+          "quantity": { "type": "integer" },
+          "unitPrice": { "type": "number", "format": "double", "description": "Decimal snapshot serialized as a JSON number." },
+          "variant": { "type": "string", "description": "Stored variant key: empty string or a string containing JSON." }
+        }
+      },
+      "Order": {
+        "type": "object",
+        "required": ["id", "userId", "idempotencyKey", "status", "total", "address", "pricing", "paymentLast4", "createdAt", "updatedAt", "lines", "paymentMode"],
+        "additionalProperties": false,
+        "description": "Current wire serialization spreads stored order fields, converts total and line unitPrice to numbers, includes lines, and adds paymentMode=simulated.",
+        "properties": {
+          "id": { "type": "string" },
+          "userId": { "type": "string" },
+          "idempotencyKey": { "type": "string", "description": "The checkout idempotency key is currently exposed by this read serialization." },
+          "status": { "type": "string", "example": "Placed" },
+          "total": { "type": "number", "format": "double" },
+          "address": { "$ref": "#/components/schemas/OrderAddress" },
+          "pricing": { "$ref": "#/components/schemas/OrderPricing" },
+          "paymentLast4": { "type": "string", "example": "TEST" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "lines": { "type": "array", "items": { "$ref": "#/components/schemas/OrderLine" } },
+          "paymentMode": { "type": "string", "enum": ["simulated"] }
+        },
+        "example": {
+          "id": "order_example_001",
+          "userId": "user_example_001",
+          "idempotencyKey": "example-checkout-key-001",
+          "status": "Placed",
+          "total": 92.37,
+          "address": {
+            "name": "Alex Example",
+            "line1": "1 Example Road",
+            "city": "Example City",
+            "postalCode": "00000",
+            "country": "EX"
+          },
+          "pricing": {
+            "subtotal": 79.98,
+            "discount": 0,
+            "coupon": null,
+            "couponError": null,
+            "shippingMethod": "standard",
+            "shipping": 5.99,
+            "tax": 6.4,
+            "total": 92.37
+          },
+          "paymentLast4": "TEST",
+          "createdAt": "2026-10-30T10:00:00.000Z",
+          "updatedAt": "2026-10-30T10:00:00.000Z",
+          "lines": [
+            {
+              "id": "order_line_example_001",
+              "orderId": "order_example_001",
+              "productId": 101,
+              "name": "Example Robot Kit",
+              "sku": "SL-EXM-101",
+              "quantity": 2,
+              "unitPrice": 39.99,
+              "variant": ""
+            }
+          ],
+          "paymentMode": "simulated"
+        }
+      }
+    },
+    "responses": {
+      "MalformedJson": {
+        "description": "The request body is not valid JSON.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" },
+            "example": { "error": "Malformed JSON body" }
+          }
+        }
+      },
+      "PayloadTooLarge": {
+        "description": "The JSON request body exceeds the current 200 KB parser limit.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" },
+            "example": { "error": "Payload too large" }
+          }
+        }
+      },
+      "UnsupportedEncoding": {
+        "description": "The request uses compressed or otherwise unsupported body encoding.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" },
+            "example": { "error": "Compressed request bodies are not supported" }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Unhandled route or middleware failure returned by the shared API error handler.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" },
+            "example": { "error": "Internal server error" }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Missing/malformed Bearer credentials produce Unauthorized. A well-formed token with no live session produces Session expired with code SESSION_EXPIRED.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" },
+            "examples": {
+              "missingOrMalformed": { "value": { "error": "Unauthorized" } },
+              "missingExpiredOrRevokedSession": { "value": { "error": "Session expired", "code": "SESSION_EXPIRED" } }
+            }
+          }
+        }
+      },
+      "LockedAccount": {
+        "description": "The authenticated or authenticating account is locked.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" },
+            "example": { "error": "This account is locked" }
+          }
+        }
+      },
+      "LoginThrottled": {
+        "description": "The current login throttle rejected the attempt. No equivalent rate-limit response is declared for the other operations in this partial contract.",
+        "headers": {
+          "Retry-After": {
+            "description": "Whole seconds until the current bucket resets; always at least one.",
+            "required": true,
+            "schema": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" },
+            "example": { "error": "Too many sign-in attempts. Try again later." }
+          }
+        }
+      }
+    }
+  }
+}

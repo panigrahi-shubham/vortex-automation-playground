@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Outer frame</title><link rel="stylesheet" href="/css/app.css"></head>
+<body style="padding:12px;min-height:0;background:var(--surface-2)">
+  <div class="row" style="margin-bottom:8px"><strong>Outer frame</strong><button class="btn sm" id="count" data-testid="outer-counter">Clicked 0 times</button></div>
+  <iframe src="/lab/frame-inner" title="Inner frame" data-testid="inner-frame" style="width:100%;height:150px;border:1px dashed var(--line);border-radius:8px;background:var(--surface)"></iframe>
+  <script>let n = 0; document.getElementById('count').onclick = e => { n++; e.target.textContent = `Clicked ${n} time${n === 1 ? '' : 's'}`; };</script>
+</body></html>
+

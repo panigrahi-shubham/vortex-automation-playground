@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Orvilo design screen: original work, released under CC0 1.0. See LICENSE.txt. -->
+<meta charset="utf-8">
+<title>Orvilo Seller — Add product</title>
+<style>
+body{margin:0;background:#F4F5F7}
+a{color:#2747F5}a:hover{color:#1B33B8}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+<link rel="stylesheet" href="assets/fonts.css">
+</head>
+<body>
+<div style="min-height: 1300px; background: #F4F5F7; color: #111318; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; display: flex">
+  <nav aria-label="Seller" style="width: 240px; flex: 0 0 auto; background: #111318; color: #FFFFFF; padding: 22px 14px; display: flex; flex-direction: column; gap: 4px">
+    <a href="index.html" style="display: flex; align-items: center; gap: 10px; padding: 0 10px 22px; text-decoration: none; color: #FFFFFF; font-weight: 800; font-size: 20px"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11.5" fill="none" stroke="#FFFFFF" stroke-width="3"></circle><circle cx="14" cy="14" r="4.5" fill="#2747F5"></circle></svg>Orvilo <span style="font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 6px; background: #12A15E; color: #FFFFFF">SELLER</span></a>
+    <div style="display: flex; align-items: center; gap: 10px; padding: 10px; margin-bottom: 10px; border-radius: 12px; background: #1C2028">
+      <span aria-hidden="true" style="width: 34px; height: 34px; border-radius: 10px; background: #F1EDE7; color: #111318; display: grid; place-items: center; font-weight: 800; font-size: 13px">KH</span>
+      <span style="font-size: 13px; line-height: 1.35"><strong style="display: block">Keyhaus Store</strong><span style="color: #8A909C">seller_user</span></span>
+    </div>
+    
+      <a href="sellerdelete.html" aria-current="false" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: transparent; color: #C4C9D2; font-weight: 600; font-size: 14px; text-decoration: none">Dashboard<span style="font-size: 12px; color: #8A909C"></span></a>
+    
+      <a href="sellerdelete.html" aria-current="false" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: transparent; color: #C4C9D2; font-weight: 600; font-size: 14px; text-decoration: none">Products<span style="font-size: 12px; color: #8A909C">24</span></a>
+    
+      <a href="selleradd.html" aria-current="page" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: #2A2F38; color: #FFFFFF; font-weight: 600; font-size: 14px; text-decoration: none">Add product<span style="font-size: 12px; color: #8A909C"></span></a>
+    
+      <a href="orders.html" aria-current="false" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: transparent; color: #C4C9D2; font-weight: 600; font-size: 14px; text-decoration: none">Orders<span style="font-size: 12px; color: #8A909C">9</span></a>
+    
+      <a href="messages.html" aria-current="false" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: transparent; color: #C4C9D2; font-weight: 600; font-size: 14px; text-decoration: none">Messages<span style="font-size: 12px; color: #8A909C">3</span></a>
+    
+      <a href="sellerdelete.html" aria-current="false" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: transparent; color: #C4C9D2; font-weight: 600; font-size: 14px; text-decoration: none">Payouts<span style="font-size: 12px; color: #8A909C"></span></a>
+    
+      <a href="settings.html" aria-current="false" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: transparent; color: #C4C9D2; font-weight: 600; font-size: 14px; text-decoration: none">Settings<span style="font-size: 12px; color: #8A909C"></span></a>
+    
+  </nav>
+
+  <main style="flex: 1; min-width: 0; padding: 22px 32px 48px">
+    <nav aria-label="Breadcrumb" style="font-size: 14px; color: #5A6170; margin-bottom: 10px"><a href="sellerdelete.html" style="text-decoration: none">Products</a> / <span aria-current="page">New product</span></nav>
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px; margin-bottom: 16px">
+      <h1 style="margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.03em">Add product</h1>
+      <div style="display: flex; gap: 10px">
+        <a href="sellerdelete.html" style="min-height: 44px; padding: 0 16px; display: grid; place-items: center; border-radius: 10px; color: #3B414D; font-size: 14px; font-weight: 600; text-decoration: none">Cancel</a>
+        <button type="button" style="min-height: 44px; padding: 0 16px; border: 1px solid #D3D7DE; border-radius: 10px; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Save draft</button>
+        <button type="button" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 10px; background: #2747F5; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Publish product</button>
+      </div>
+    </div>
+    <div role="alert" style="display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; padding: 12px 14px; margin-bottom: 18px; border-radius: 12px; background: #FDECEA; border: 1px solid #F5C2BC; color: #8A1C12; font-size: 14px"><strong>2 fields need attention before publishing:</strong><a href="#sku" style="color: #8A1C12; font-weight: 700">SKU</a><a href="#cmp" style="color: #8A1C12; font-weight: 700">Compare-at price</a></div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-start">
+      <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+        <section aria-labelledby="s-basic" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+          <h2 id="s-basic" style="margin: 0; font-size: 16px; font-weight: 800">Basic information</h2>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="t" style="font-size: 14px; font-weight: 600">Product title <span style="color: #B42318">*</span></label>
+            <input id="t" value="Low-Profile Mechanical Keyboard" style="min-height: 44px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="d" style="font-size: 14px; font-weight: 600">Description</label>
+            <textarea id="d" rows="4" style="border: 1px solid #D3D7DE; border-radius: 10px; padding: 10px 12px; font: inherit; font-size: 14px; line-height: 1.5; resize: vertical">A slim 75% keyboard with hot-swappable switches, a USB-C cable and per-key backlight. Works with Windows and macOS.</textarea>
+            <p style="margin: 0; font-size: 12px; color: #5A6170; text-align: right">118 / 2,000</p>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 14px">
+            <div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px">
+              <label for="c" style="font-size: 14px; font-weight: 600">Category <span style="color: #B42318">*</span></label>
+              <select id="c" style="min-height: 44px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 10px; font: inherit; background: #FFFFFF"><option>Electronics › Keyboards</option></select>
+            </div>
+            <div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px">
+              <label for="b" style="font-size: 14px; font-weight: 600">Brand</label>
+              <input id="b" value="Keyhaus" style="min-height: 44px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit">
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="s-media" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 20px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px"><h2 id="s-media" style="margin: 0; font-size: 16px; font-weight: 800">Images</h2><span style="font-size: 13px; color: #5A6170">3 of 8 · drag to reorder · first image is the cover</span></div>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px">
+            
+              <figure style="margin: 0; position: relative; width: 120px; height: 120px; border-radius: 12px; background: #E9EEF6; border: 1px solid #E3E6EB">
+                <span style="position: absolute; left: 8px; top: 8px; padding: 2px 8px; border-radius: 6px; background: #111318; color: #FFFFFF; font-size: 11px; font-weight: 700">Cover</span>
+                <button type="button" aria-label="Remove top.jpg" style="position: absolute; right: 6px; top: 6px; width: 28px; height: 28px; border-radius: 14px; border: 0; background: rgba(17,19,24,0.75); color: #FFFFFF; font-size: 14px; cursor: pointer">✕</button>
+                <figcaption style="position: absolute; left: 8px; bottom: 6px; font-size: 11px; color: #3B414D">top.jpg</figcaption>
+              </figure>
+            
+              <figure style="margin: 0; position: relative; width: 120px; height: 120px; border-radius: 12px; background: #DDE4F0; border: 1px solid #E3E6EB">
+                
+                <button type="button" aria-label="Remove side.jpg" style="position: absolute; right: 6px; top: 6px; width: 28px; height: 28px; border-radius: 14px; border: 0; background: rgba(17,19,24,0.75); color: #FFFFFF; font-size: 14px; cursor: pointer">✕</button>
+                <figcaption style="position: absolute; left: 8px; bottom: 6px; font-size: 11px; color: #3B414D">side.jpg</figcaption>
+              </figure>
+            
+              <figure style="margin: 0; position: relative; width: 120px; height: 120px; border-radius: 12px; background: #F1EDE7; border: 1px solid #E3E6EB">
+                
+                <button type="button" aria-label="Remove box.png" style="position: absolute; right: 6px; top: 6px; width: 28px; height: 28px; border-radius: 14px; border: 0; background: rgba(17,19,24,0.75); color: #FFFFFF; font-size: 14px; cursor: pointer">✕</button>
+                <figcaption style="position: absolute; left: 8px; bottom: 6px; font-size: 11px; color: #3B414D">box.png</figcaption>
+              </figure>
+            
+            <label style="width: 120px; height: 120px; box-sizing: border-box; border-radius: 12px; border: 2px dashed #2747F5; background: #F5F7FF; color: #2747F5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 13px; font-weight: 700; text-align: center; cursor: pointer"><span aria-hidden="true" style="font-size: 24px; line-height: 1">+</span>Drop or browse<input type="file" multiple="" accept="image/png,image/jpeg,image/webp" class="sr-only"></label>
+          </div>
+          <p role="alert" style="margin: 12px 0 0; font-size: 13px; color: #B42318; font-weight: 600">scan.bmp was not added: use PNG, JPG or WebP up to 5 MB.</p>
+        </section>
+
+        <section aria-labelledby="s-price" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 20px">
+          <h2 id="s-price" style="margin: 0 0 14px; font-size: 16px; font-weight: 800">Pricing</h2>
+          <div style="display: flex; flex-wrap: wrap; gap: 14px">
+            <div style="flex: 1 1 160px; display: flex; flex-direction: column; gap: 6px">
+              <label for="pr" style="font-size: 14px; font-weight: 600">Price <span style="color: #B42318">*</span></label>
+              <input id="pr" value="$99.00" style="min-height: 44px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit">
+            </div>
+            <div style="flex: 1 1 160px; display: flex; flex-direction: column; gap: 6px">
+              <label for="cmp" style="font-size: 14px; font-weight: 600">Compare-at price</label>
+              <input id="cmp" value="$89.00" aria-invalid="true" aria-describedby="cmp-e" style="min-height: 44px; border: 2px solid #B42318; border-radius: 10px; padding: 0 12px; font: inherit">
+              <p id="cmp-e" style="margin: 0; font-size: 12px; color: #B42318; font-weight: 600">Must be higher than the price.</p>
+            </div>
+            <div style="flex: 1 1 160px; display: flex; flex-direction: column; gap: 6px">
+              <label for="cost" style="font-size: 14px; font-weight: 600">Cost per item</label>
+              <input id="cost" value="$54.00" style="min-height: 44px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit">
+              <p style="margin: 0; font-size: 12px; color: #5A6170">Margin 45% · profit $45.00</p>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="s-inv" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 20px">
+          <h2 id="s-inv" style="margin: 0 0 14px; font-size: 16px; font-weight: 800">Inventory and variants</h2>
+          <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 16px">
+            <div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px">
+              <label for="sku" style="font-size: 14px; font-weight: 600">SKU <span style="color: #B42318">*</span></label>
+              <input id="sku" value="ELE-0031" aria-invalid="true" aria-describedby="sku-e" style="min-height: 44px; border: 2px solid #B42318; border-radius: 10px; padding: 0 12px; font: inherit; font-family: ui-monospace, monospace">
+              <p id="sku-e" style="margin: 0; font-size: 12px; color: #B42318; font-weight: 600">ELE-0031 is already used by "Mechanical Keyboard".</p>
+            </div>
+            <div style="flex: 1 1 160px; display: flex; flex-direction: column; gap: 6px">
+              <label for="low" style="font-size: 14px; font-weight: 600">Low-stock alert at</label>
+              <input id="low" value="5" inputmode="numeric" style="min-height: 44px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit">
+            </div>
+          </div>
+          <p style="margin: 0 0 8px; font-size: 14px; font-weight: 600">Option: Switch type</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px">
+            <span style="padding: 6px 12px; border-radius: 999px; background: #EEF1FE; color: #2747F5; font-size: 13px; font-weight: 700">Linear ✕</span>
+            <span style="padding: 6px 12px; border-radius: 999px; background: #EEF1FE; color: #2747F5; font-size: 13px; font-weight: 700">Tactile ✕</span>
+            <span style="padding: 6px 12px; border-radius: 999px; background: #EEF1FE; color: #2747F5; font-size: 13px; font-weight: 700">Clicky ✕</span>
+            <button type="button" style="min-height: 32px; padding: 0 12px; border: 1px dashed #8A909C; border-radius: 999px; background: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">+ Add value</button>
+          </div>
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px">
+            <thead><tr style="text-align: left; color: #5A6170; background: #F7F8FA"><th scope="col" style="padding: 9px 10px; font-weight: 600">Variant</th><th scope="col" style="padding: 9px 10px; font-weight: 600">Price</th><th scope="col" style="padding: 9px 10px; font-weight: 600">Stock</th><th scope="col" style="padding: 9px 10px; font-weight: 600">SKU</th></tr></thead>
+            <tbody>
+              
+                <tr style="border-top: 1px solid #EEF0F3"><td style="padding: 8px 10px; font-weight: 700">Linear</td><td style="padding: 8px 10px"><input aria-label="Price for Linear" value="$99.00" style="width: 90px; min-height: 36px; border: 1px solid #D3D7DE; border-radius: 8px; padding: 0 8px; font: inherit; font-size: 14px"></td><td style="padding: 8px 10px"><input aria-label="Stock for Linear" value="14" style="width: 70px; min-height: 36px; border: 1px solid #D3D7DE; border-radius: 8px; padding: 0 8px; font: inherit; font-size: 14px"></td><td style="padding: 8px 10px; font-family: ui-monospace, monospace; color: #3B414D">ELE-0031-LIN</td></tr>
+              
+                <tr style="border-top: 1px solid #EEF0F3"><td style="padding: 8px 10px; font-weight: 700">Tactile</td><td style="padding: 8px 10px"><input aria-label="Price for Tactile" value="$99.00" style="width: 90px; min-height: 36px; border: 1px solid #D3D7DE; border-radius: 8px; padding: 0 8px; font: inherit; font-size: 14px"></td><td style="padding: 8px 10px"><input aria-label="Stock for Tactile" value="9" style="width: 70px; min-height: 36px; border: 1px solid #D3D7DE; border-radius: 8px; padding: 0 8px; font: inherit; font-size: 14px"></td><td style="padding: 8px 10px; font-family: ui-monospace, monospace; color: #3B414D">ELE-0031-TAC</td></tr>
+              
+                <tr style="border-top: 1px solid #EEF0F3"><td style="padding: 8px 10px; font-weight: 700">Clicky</td><td style="padding: 8px 10px"><input aria-label="Price for Clicky" value="$104.00" style="width: 90px; min-height: 36px; border: 1px solid #D3D7DE; border-radius: 8px; padding: 0 8px; font: inherit; font-size: 14px"></td><td style="padding: 8px 10px"><input aria-label="Stock for Clicky" value="0" style="width: 70px; min-height: 36px; border: 1px solid #D3D7DE; border-radius: 8px; padding: 0 8px; font: inherit; font-size: 14px"></td><td style="padding: 8px 10px; font-family: ui-monospace, monospace; color: #3B414D">ELE-0031-CLK</td></tr>
+              
+            </tbody>
+          </table>
+        </section>
+      </div>
+
+      <aside style="flex: 1 1 300px; max-width: 360px; display: flex; flex-direction: column; gap: 16px">
+        <section aria-labelledby="s-status" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
+          <h2 id="s-status" style="margin: 0 0 4px; font-size: 16px; font-weight: 800">Status</h2>
+          <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border: 2px solid #2747F5; background: #EEF1FE; border-radius: 10px; font-size: 14px; font-weight: 700"><input type="radio" name="st" checked="" style="width: 18px; height: 18px; accent-color: #2747F5">Draft — only you can see it</label>
+          <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border: 1px solid #D3D7DE; border-radius: 10px; font-size: 14px; font-weight: 600"><input type="radio" name="st" style="width: 18px; height: 18px">Active — visible in the shop</label>
+          <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border: 1px solid #D3D7DE; border-radius: 10px; font-size: 14px; font-weight: 600"><input type="radio" name="st" style="width: 18px; height: 18px">Scheduled</label>
+        </section>
+        <section aria-labelledby="s-check" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 20px">
+          <h2 id="s-check" style="margin: 0 0 4px; font-size: 16px; font-weight: 800">Ready to publish</h2>
+          <p style="margin: 0 0 12px; font-size: 13px; color: #5A6170">5 of 7 done</p>
+          <div role="progressbar" aria-valuemin="0" aria-valuemax="7" aria-valuenow="5" aria-label="Publishing checklist" style="height: 8px; border-radius: 4px; background: #EEF0F3; margin-bottom: 14px"><span style="display: block; width: 71%; height: 8px; border-radius: 4px; background: #0F7A4A"></span></div>
+          <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px">
+            
+              <li style="display: flex; gap: 10px; color: #0B5E39"><span aria-hidden="true" style="width: 20px; font-weight: 800">✓</span>Title and description</li>
+            
+              <li style="display: flex; gap: 10px; color: #0B5E39"><span aria-hidden="true" style="width: 20px; font-weight: 800">✓</span>Category</li>
+            
+              <li style="display: flex; gap: 10px; color: #0B5E39"><span aria-hidden="true" style="width: 20px; font-weight: 800">✓</span>At least one image</li>
+            
+              <li style="display: flex; gap: 10px; color: #0B5E39"><span aria-hidden="true" style="width: 20px; font-weight: 800">✓</span>Price</li>
+            
+              <li style="display: flex; gap: 10px; color: #0B5E39"><span aria-hidden="true" style="width: 20px; font-weight: 800">✓</span>Variants with stock</li>
+            
+              <li style="display: flex; gap: 10px; color: #8A1C12"><span aria-hidden="true" style="width: 20px; font-weight: 800">○</span>Unique SKU</li>
+            
+              <li style="display: flex; gap: 10px; color: #8A1C12"><span aria-hidden="true" style="width: 20px; font-weight: 800">○</span>Valid compare-at price</li>
+            
+          </ul>
+        </section>
+        <section aria-labelledby="s-prev" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 20px">
+          <h2 id="s-prev" style="margin: 0 0 12px; font-size: 16px; font-weight: 800">Shop preview</h2>
+          <div style="border: 1px solid #E3E6EB; border-radius: 14px; overflow: hidden">
+            <div style="height: 140px; background: #E9EEF6"></div>
+            <div style="padding: 12px"><p style="margin: 0; font-size: 11px; font-weight: 700; color: #5A6170; letter-spacing: 0.06em">ELECTRONICS</p><p style="margin: 4px 0; font-weight: 700">Low-Profile Mechanical Keyboard</p><p style="margin: 0; font-weight: 800">$99.00</p></div>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VORTEX · AUTOMATION PLAYGROUND</title>
+  <meta name="description" content="VORTEX — AUTOMATION PLAYGROUND. Built to Break. Designed to Test.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232dd4bf'/%3E%3Ctext x='16' y='22' font-size='16' font-family='Arial' font-weight='700' text-anchor='middle' fill='%23042f2e'%3EV%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/assets/fonts.css"><link rel="stylesheet" href="/css/app.css"><link rel="stylesheet" href="/css/orvilo.css">
+  <script>
+    // apply theme before first paint (no flash) — stored per browser
+    try { const t = localStorage.getItem('shoplab.theme'); if (t) document.documentElement.dataset.theme = t; } catch {}
+  </script>
+</head>
+<body>
+  <a class="skip" href="#app">Skip to content</a>
+  <div class="loader" id="loader" data-testid="loader" role="progressbar" aria-label="Loading" hidden></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <button class="icon-btn hamburger btn-ghost-dark" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav" data-testid="hamburger">☰</button>
+      <a class="brand" href="/shop" data-testid="brand" aria-label="VORTEX Automation Playground home"><span class="brand-mark" aria-hidden="true">V</span><span class="brand-copy"><span class="brand-name">VORTEX</span><small>AUTOMATION PLAYGROUND</small></span></a>
+      <nav class="main-nav" id="main-nav" aria-label="Main" data-testid="main-nav">
+        <a href="/shop" data-testid="nav-shop">Shop</a>
+        <a href="/orders" data-testid="nav-orders" data-auth>Orders</a>
+        <a href="/admin" data-testid="nav-admin" data-admin hidden>Admin</a>
+        <a href="/lab" data-testid="nav-lab">UI Lab</a>
+        <a href="/mailbox" data-testid="nav-mailbox" data-legacy-only>Test Inbox</a>
+        <a href="/docs" data-testid="nav-docs">API Docs</a>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-link palette-btn" id="palette-btn" aria-label="Search (Ctrl+K)" data-testid="palette-open" title="Search (Ctrl+K)">⌕</button>
+        <a class="icon-link" href="/wishlist" data-testid="nav-wishlist" aria-label="Wishlist">♡ <span class="count" id="wishlist-count" data-testid="wishlist-count">0</span></a>
+        <a class="icon-link" href="/cart" data-testid="nav-cart" aria-label="Cart">🛒 <span class="count" id="cart-count" data-testid="cart-badge">0</span></a>
+        <div id="user-slot"></div>
+      </div>
+    </div>
+  </header>
+
+  <main id="app" tabindex="-1" aria-live="polite"></main>
+
+  <footer class="site-footer">
+    <div class="inner">
+      <span><strong>VORTEX</strong> · AUTOMATION PLAYGROUND — Built to Break. Designed to Test. Nothing here is real.</span>
+      <span class="row">
+        <a href="/terms" target="_blank" rel="noopener" data-testid="footer-terms">Terms ↗</a>
+        <a href="/docs">API docs</a>
+        <a href="/pages/about.html" data-testid="footer-about">About us</a>
+        <a href="/pages/testing-guide.html" target="_self" data-testid="footer-testing-guide">Testing guide</a>
+        <button class="btn link sm" id="theme-toggle" data-testid="theme-toggle" aria-label="Toggle dark mode">◐ Theme</button>
+      </span>
+    </div>
+  </footer>
+
+  <div class="toasts" id="toasts" role="status" aria-live="polite" data-testid="toasts"></div>
+  <div id="overlay-root"></div>
+
+  <details class="chaos card" id="chaos" data-testid="chaos-panel" data-legacy-only>
+    <summary><span>⚡ Chaos panel</span> <span class="chaos-dot" id="chaos-dot" data-testid="chaos-indicator"></span></summary>
+    <div class="inner">
+      <p class="muted small">Global server settings. Affects every user — use <code>x-shoplab-*</code> headers for per-test chaos.</p>
+      <div class="field"><label for="c-lat">Latency (ms)</label><input id="c-lat" type="number" min="0" max="10000" step="100" data-testid="chaos-latency"></div>
+      <div class="field"><label for="c-err">Error rate (0–1)</label><input id="c-err" type="number" min="0" max="1" step="0.1" data-testid="chaos-error"></div>
+      <div class="field"><label for="c-ttl">Session TTL (sec)</label><input id="c-ttl" type="number" min="1" data-testid="chaos-ttl"></div>
+      <div class="field"><label for="c-prog">Order auto-progress (sec, 0 = off)</label><input id="c-prog" type="number" min="0" data-testid="chaos-progress"></div>
+      <label class="check" style="margin-bottom:12px"><input id="c-bug" type="checkbox" data-testid="chaos-bug"> Bug mode (seeded bugs for everyone)</label>
+      <div class="row"><button class="btn sm" id="c-apply" data-testid="chaos-apply">Apply</button><button class="btn secondary sm" id="c-reset" data-testid="chaos-reset">Reset server</button></div>
+    </div>
+  </details>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
+
+
+

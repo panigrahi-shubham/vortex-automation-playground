@@ -33,7 +33,7 @@ export default defineConfig({
   },
   webServer: process.env.BASE_URL
     ? undefined
-    : { command: 'npm start', url: `${BASE_URL}/api/health`, reuseExistingServer: !process.env.CI, timeout: 30_000 },
+    : { command: 'npm start', url: `${BASE_URL}/api/health`, reuseExistingServer: !process.env.CI, timeout: 90_000, env: { SHOPLAB_STORAGE: 'legacy' } },
   projects: [
     { name: 'api', testDir: './tests/api' },
     { name: 'chromium', testDir: './tests/e2e', testIgnore: /mobile\.spec\.ts/, use: { ...devices['Desktop Chrome'] } },

@@ -9,7 +9,7 @@ const card = (page: import('@playwright/test').Page, name: string) => page.getBy
 
 test('native alert / confirm / prompt', async ({ page }) => {
   const c = card(page, 'dialogs');
-  page.once('dialog', async d => { expect(d.type()).toBe('alert'); expect(d.message()).toBe('Hello from ShopLab!'); await d.accept(); });
+  page.once('dialog', async d => { expect(d.type()).toBe('alert'); expect(d.message()).toBe('Hello from VORTEX!'); await d.accept(); });
   await c.getByRole('button', { name: 'Alert' }).click();
   await expect(c.getByTestId('dialog-result')).toHaveText('Alert dismissed');
 
@@ -25,7 +25,7 @@ test('native alert / confirm / prompt', async ({ page }) => {
 test('new tab (target=_blank)', async ({ page, context }) => {
   const [tab] = await Promise.all([context.waitForEvent('page'), card(page, 'windows').getByRole('link', { name: 'Open terms in new tab' }).click()]);
   await tab.waitForLoadState();
-  await expect(tab).toHaveTitle('Terms of Service · ShopLab');
+  await expect(tab).toHaveTitle('Terms of Service · VORTEX');
   await tab.close();
 });
 
@@ -60,7 +60,9 @@ test('shadow DOM: open roots are pierced automatically, closed roots are not', a
 });
 
 test('drag and drop between kanban columns', async ({ page }) => {
+  await page.evaluate(() => document.fonts.ready);
   const c = card(page, 'dnd');
+  await c.scrollIntoViewIfNeeded();
   await c.getByText('Automate login').dragTo(c.getByTestId('col-done'));
   await expect(c.getByTestId('col-done').getByTestId('task')).toHaveText(['Automate login']);
   await expect(c.getByTestId('dnd-result')).toHaveText('Moved “Automate login” to Done');
@@ -249,3 +251,6 @@ test('visual snapshot of a stable component', async ({ page }) => {
   await page.getByLabel(/Introduce a 2px layout shift/).check();
   await expect(page.getByTestId('visual-target')).not.toHaveScreenshot('order-card.png');
 });
+
+
+

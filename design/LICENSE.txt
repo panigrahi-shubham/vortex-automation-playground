@@ -1,0 +1,40 @@
+Orvilo design screens — licence
+
+1. Pages, styles, icons, diagrams and screenshots (everything except assets/fonts/)
+
+   CC0 1.0 Universal — Public Domain Dedication.
+
+   To the extent possible under law, the authors have waived all copyright
+   and related or neighbouring rights to these files. You may copy, modify,
+   distribute and use them, including for commercial purposes, without asking
+   permission and without giving credit.
+
+   Full legal text: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+2. Font: assets/fonts/ (Plus Jakarta Sans)
+
+   Copyright 2020 The Plus Jakarta Sans Project Authors.
+   Licensed under the SIL Open Font License 1.1 — see
+   assets/fonts/OFL-LICENSE.txt. The font is free to use, embed and ship
+   with websites and apps. It may not be sold on its own.
+
+What is and is not included
+
+- Every screen layout, colour, illustration, icon and 3D diagram was drawn
+  for this project. No code, images or icons were copied from any other
+  store, theme, template or UI kit.
+- Product images are plain colour tiles, so there are no stock photos.
+- "Orvilo", "Orvi", "Keyhaus", the products, people, emails, addresses and
+  order numbers are made up. The card numbers are public payment-testing
+  numbers that only work in test modes.
+- Tool names in the architecture diagram (Vercel, Supabase, Prisma,
+  Playwright, GitHub Actions, cron-job.org) are used only to say what the
+  stack runs on. No logos are included.
+- General layout patterns (a filter sidebar, a stepped checkout, a chat
+  layout) are common conventions that anyone may use. Similar patterns
+  appear in open-source stores such as Next.js Commerce, Medusa, Saleor and
+  Shopify Dawn, but nothing was taken from them.
+
+Before you launch under the Orvilo name, check that it is not already
+registered as a trademark where you operate. This licence covers copyright
+only, not trademarks.

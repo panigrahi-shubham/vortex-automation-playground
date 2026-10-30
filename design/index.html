@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Orvilo design screen: original work, released under CC0 1.0. See LICENSE.txt. -->
+<meta charset="utf-8">
+<title>Orvilo — Shop all products</title>
+<style>
+body{margin:0;background:#F4F5F7}
+a{color:#2747F5}a:hover{color:#1B33B8}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+<link rel="stylesheet" href="assets/fonts.css">
+</head>
+<body>
+<div style="min-height: 1560px; background: #F4F5F7; color: #111318; font-family: 'Plus Jakarta Sans', system-ui, sans-serif">
+  <div style="background: #111318; color: #FFFFFF; font-size: 13px; text-align: center; padding: 8px 16px">Orvilo is a demo store for test automation practice. No real orders, payments or deliveries.</div>
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E3E6EB">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 14px 32px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px">
+      <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #111318; font-weight: 800; font-size: 22px; letter-spacing: -0.02em">
+        <svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11.5" fill="none" stroke="#2747F5" stroke-width="3"></circle><circle cx="14" cy="14" r="4.5" fill="#2747F5"></circle></svg>Orvilo
+      </a>
+      <nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 4px 22px; font-size: 15px; font-weight: 600">
+        <a href="index.html" aria-current="page" style="color: #2747F5; text-decoration: none">Shop</a>
+        <a href="orders.html" style="color: #3B414D; text-decoration: none">Orders</a>
+        <a href="lab.html" style="color: #3B414D; text-decoration: none">UI Lab</a>
+        <a href="inbox.html" style="color: #3B414D; text-decoration: none">Test inbox</a>
+        <a href="docs.html" style="color: #3B414D; text-decoration: none">API docs</a>
+      </nav>
+      <form role="search" style="flex: 1 1 280px; display: flex; align-items: center; gap: 10px; background: #F4F5F7; border: 1px solid #E3E6EB; border-radius: 12px; padding: 0 12px; min-height: 44px">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5A6170" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+        <label for="shop-search" class="sr-only">Search products</label>
+        <input id="shop-search" type="search" placeholder="Search products" style="flex: 1; border: 0; background: transparent; font: inherit; font-size: 15px; color: #111318; min-height: 42px; outline-offset: 2px">
+        <kbd style="font: inherit; font-size: 12px; color: #5A6170; border: 1px solid #D3D7DE; border-radius: 6px; padding: 2px 6px">Ctrl K</kbd>
+      </form>
+      <div style="display: flex; align-items: center; gap: 6px">
+        <a href="account.html" aria-label="Wishlist, 2 items" style="position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; color: #111318">
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"></path></svg>
+          <span style="position: absolute; top: 4px; right: 3px; min-width: 18px; height: 18px; border-radius: 9px; background: #111318; color: #FFFFFF; font-size: 11px; font-weight: 700; display: grid; place-items: center">2</span>
+        </a>
+        <a href="cart.html" aria-label="Cart, 3 items" style="position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; color: #111318">
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8Z"></path><path d="M9 8a3 3 0 0 1 6 0"></path></svg>
+          <span style="position: absolute; top: 4px; right: 3px; min-width: 18px; height: 18px; border-radius: 9px; background: #2747F5; color: #FFFFFF; font-size: 11px; font-weight: 700; display: grid; place-items: center">3</span>
+        </a>
+        <a href="account.html" aria-label="Your account" style="display: grid; place-items: center; width: 40px; height: 40px; margin-left: 4px; border-radius: 20px; background: #EEF1FE; color: #2747F5; font-weight: 700; font-size: 14px; text-decoration: none">SU</a>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 1280px; margin: 0 auto; padding: 28px 32px 56px">
+    <nav aria-label="Breadcrumb" style="font-size: 13px; color: #5A6170; display: flex; gap: 8px"><a href="index.html" style="color: #5A6170">Home</a><span aria-hidden="true">/</span><span aria-current="page">All products</span></nav>
+    <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; margin: 12px 0 24px">
+      <div>
+        <h1 style="margin: 0; font-size: 34px; font-weight: 800; letter-spacing: -0.03em">All products</h1>
+        <p style="margin: 6px 0 0; color: #5A6170; font-size: 15px" role="status">44 products match · showing 1–12</p>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px">
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #3B414D">Sort by
+          <select style="min-height: 44px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit; font-size: 14px; background: #FFFFFF; color: #111318">
+            <option>Featured</option><option>Price: low to high</option><option>Price: high to low</option><option>Top rated</option><option>Newest</option><option>Name A–Z</option>
+          </select>
+        </label>
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #3B414D">Show
+          <select style="min-height: 44px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit; font-size: 14px; background: #FFFFFF; color: #111318"><option>12</option><option>24</option><option>48</option></select>
+        </label>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start">
+      <aside aria-label="Filters" style="flex: 1 1 240px; max-width: 280px; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 22px">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 700">Filters</h2>
+          <button type="button" style="border: 0; background: none; color: #2747F5; font: inherit; font-size: 14px; font-weight: 600; min-height: 44px; padding: 0 4px; cursor: pointer">Clear all</button>
+        </div>
+        <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px">
+          <legend style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #5A6170; margin-bottom: 10px">Category</legend>
+          
+            <label style="display: flex; align-items: center; gap: 10px; font-size: 15px; min-height: 32px"><input type="checkbox" style="width: 18px; height: 18px; accent-color: #2747F5"><span style="flex: 1">Electronics</span><span style="color: #5A6170; font-size: 13px">14</span></label>
+          
+            <label style="display: flex; align-items: center; gap: 10px; font-size: 15px; min-height: 32px"><input type="checkbox" style="width: 18px; height: 18px; accent-color: #2747F5"><span style="flex: 1">Fashion</span><span style="color: #5A6170; font-size: 13px">18</span></label>
+          
+            <label style="display: flex; align-items: center; gap: 10px; font-size: 15px; min-height: 32px"><input type="checkbox" style="width: 18px; height: 18px; accent-color: #2747F5"><span style="flex: 1">Home</span><span style="color: #5A6170; font-size: 13px">9</span></label>
+          
+            <label style="display: flex; align-items: center; gap: 10px; font-size: 15px; min-height: 32px"><input type="checkbox" style="width: 18px; height: 18px; accent-color: #2747F5"><span style="flex: 1">Sports</span><span style="color: #5A6170; font-size: 13px">7</span></label>
+          
+        </fieldset>
+        <fieldset style="border: 0; margin: 0; padding: 0">
+          <legend style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #5A6170; margin-bottom: 10px">Price</legend>
+          <div style="display: flex; gap: 8px; align-items: flex-end">
+            <label style="flex: 1; font-size: 13px; color: #3B414D; display: flex; flex-direction: column; gap: 4px">Min<input type="number" value="20" style="min-height: 40px; border: 1px solid #D3D7DE; border-radius: 8px; padding: 0 10px; font: inherit; width: 100%; box-sizing: border-box"></label>
+            <label style="flex: 1; font-size: 13px; color: #3B414D; display: flex; flex-direction: column; gap: 4px">Max<input type="number" value="150" style="min-height: 40px; border: 1px solid #D3D7DE; border-radius: 8px; padding: 0 10px; font: inherit; width: 100%; box-sizing: border-box"></label>
+            <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid #D3D7DE; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Apply price</button>
+          </div>
+        </fieldset>
+        <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+          <legend style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #5A6170; margin-bottom: 10px">Rating</legend>
+          <label style="display: flex; gap: 10px; align-items: center; font-size: 15px; min-height: 32px"><input type="radio" name="rating" checked="" style="width: 18px; height: 18px; accent-color: #2747F5">4 stars and up</label>
+          <label style="display: flex; gap: 10px; align-items: center; font-size: 15px; min-height: 32px"><input type="radio" name="rating" style="width: 18px; height: 18px; accent-color: #2747F5">3 stars and up</label>
+          <label style="display: flex; gap: 10px; align-items: center; font-size: 15px; min-height: 32px"><input type="radio" name="rating" style="width: 18px; height: 18px; accent-color: #2747F5">Any rating</label>
+        </fieldset>
+        <label style="display: flex; align-items: center; justify-content: space-between; font-size: 15px; font-weight: 600; min-height: 44px">In stock only<input type="checkbox" style="width: 20px; height: 20px; accent-color: #2747F5"></label>
+      </aside>
+
+      <section aria-label="Products" style="flex: 999 1 560px; min-width: 0">
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px" aria-label="Active filters">
+          
+            <button type="button" aria-label="Remove filter $20 – $150" style="display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 12px; border-radius: 18px; border: 1px solid #C9D2FD; background: #EEF1FE; color: #1B33B8; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">$20 – $150<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+          
+            <button type="button" aria-label="Remove filter 4 stars and up" style="display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 12px; border-radius: 18px; border: 1px solid #C9D2FD; background: #EEF1FE; color: #1B33B8; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">4 stars and up<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+          
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px">
+          
+            <article style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column">
+              <a href="product.html" style="position: relative; display: grid; place-items: center; aspect-ratio: 4 / 3; background: #F1EDE7; color: #5A6170; text-decoration: none">
+                <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="10" r="1.6"></circle><path d="m21 16-5-5-8 8"></path></svg>
+                <span class="sr-only">Photo of Classic Hoodie</span>
+                
+              </a>
+              <div style="padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1">
+                <p style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5A6170">Fashion</p>
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 1.3"><a href="product.html" style="color: #111318; text-decoration: none">Classic Hoodie</a></h3>
+                <p style="margin: 0; font-size: 13px; color: #3B414D" aria-label="Rated 4.6 out of 5 from 128 reviews"><span aria-hidden="true" style="color: #A44A00">★</span> 4.6 <span style="color: #5A6170">(128)</span></p>
+                <div style="display: flex; align-items: baseline; gap: 8px; margin-top: auto">
+                  <span style="font-size: 18px; font-weight: 800">$59.00</span>
+                  
+                </div>
+                <div style="display: flex; gap: 8px">
+                  <button type="button" style="flex: 1; min-height: 44px; border-radius: 10px; border: 0; background: #2747F5; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Add to cart</button>
+                  <button type="button" aria-label="Save Classic Hoodie to wishlist" style="width: 44px; min-height: 44px; border-radius: 10px; border: 1px solid #D3D7DE; background: #FFFFFF; display: grid; place-items: center; cursor: pointer; color: #111318"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"></path></svg></button>
+                </div>
+              </div>
+            </article>
+          
+            <article style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column">
+              <a href="product.html" style="position: relative; display: grid; place-items: center; aspect-ratio: 4 / 3; background: #E9EEF6; color: #5A6170; text-decoration: none">
+                <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="10" r="1.6"></circle><path d="m21 16-5-5-8 8"></path></svg>
+                <span class="sr-only">Photo of Mechanical Keyboard</span>
+                
+                  <span style="position: absolute; top: 12px; left: 12px; padding: 4px 10px; border-radius: 999px; background: #FDECDD; color: #8A3B00; font-size: 12px; font-weight: 700">Sale</span>
+                
+              </a>
+              <div style="padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1">
+                <p style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5A6170">Electronics</p>
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 1.3"><a href="product.html" style="color: #111318; text-decoration: none">Mechanical Keyboard</a></h3>
+                <p style="margin: 0; font-size: 13px; color: #3B414D" aria-label="Rated 4.8 out of 5 from 342 reviews"><span aria-hidden="true" style="color: #A44A00">★</span> 4.8 <span style="color: #5A6170">(342)</span></p>
+                <div style="display: flex; align-items: baseline; gap: 8px; margin-top: auto">
+                  <span style="font-size: 18px; font-weight: 800">$89.00</span>
+                  <s style="font-size: 14px; color: #5A6170">$119.00</s>
+                </div>
+                <div style="display: flex; gap: 8px">
+                  <button type="button" style="flex: 1; min-height: 44px; border-radius: 10px; border: 0; background: #2747F5; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Add to cart</button>
+                  <button type="button" aria-label="Save Mechanical Keyboard to wishlist" style="width: 44px; min-height: 44px; border-radius: 10px; border: 1px solid #D3D7DE; background: #FFFFFF; display: grid; place-items: center; cursor: pointer; color: #111318"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"></path></svg></button>
+                </div>
+              </div>
+            </article>
+          
+            <article style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column">
+              <a href="product.html" style="position: relative; display: grid; place-items: center; aspect-ratio: 4 / 3; background: #F1EDE7; color: #5A6170; text-decoration: none">
+                <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="10" r="1.6"></circle><path d="m21 16-5-5-8 8"></path></svg>
+                <span class="sr-only">Photo of Running Shoes</span>
+                
+                  <span style="position: absolute; top: 12px; left: 12px; padding: 4px 10px; border-radius: 999px; background: #FFF4D6; color: #6B4E00; font-size: 12px; font-weight: 700">Low stock</span>
+                
+              </a>
+              <div style="padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1">
+                <p style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5A6170">Fashion</p>
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 1.3"><a href="product.html" style="color: #111318; text-decoration: none">Running Shoes</a></h3>
+                <p style="margin: 0; font-size: 13px; color: #3B414D" aria-label="Rated 4.4 out of 5 from 96 reviews"><span aria-hidden="true" style="color: #A44A00">★</span> 4.4 <span style="color: #5A6170">(96)</span></p>
+                <div style="display: flex; align-items: baseline; gap: 8px; margin-top: auto">
+                  <span style="font-size: 18px; font-weight: 800">$110.00</span>
+                  
+                </div>
+                <div style="display: flex; gap: 8px">
+                  <button type="button" style="flex: 1; min-height: 44px; border-radius: 10px; border: 0; background: #2747F5; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Add to cart</button>
+                  <button type="button" aria-label="Save Running Shoes to wishlist" style="width: 44px; min-height: 44px; border-radius: 10px; border: 1px solid #D3D7DE; background: #FFFFFF; display: grid; place-items: center; cursor: pointer; color: #111318"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"></path></svg></button>
+                </div>
+              </div>
+            </article>
+          
+            <article style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column">
+              <a href="product.html" style="position: relative; display: grid; place-items: center; aspect-ratio: 4 / 3; background: #E9EEF6; color: #5A6170; text-decoration: none">
+                <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="10" r="1.6"></circle><path d="m21 16-5-5-8 8"></path></svg>
+                <span class="sr-only">Photo of Wireless Earbuds</span>
+                
+              </a>
+              <div style="padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1">
+                <p style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5A6170">Electronics</p>
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 1.3"><a href="product.html" style="color: #111318; text-decoration: none">Wireless Earbuds</a></h3>
+                <p style="margin: 0; font-size: 13px; color: #3B414D" aria-label="Rated 4.2 out of 5 from 210 reviews"><span aria-hidden="true" style="color: #A44A00">★</span> 4.2 <span style="color: #5A6170">(210)</span></p>
+                <div style="display: flex; align-items: baseline; gap: 8px; margin-top: auto">
+                  <span style="font-size: 18px; font-weight: 800">$74.00</span>
+                  
+                </div>
+                <div style="display: flex; gap: 8px">
+                  <button type="button" style="flex: 1; min-height: 44px; border-radius: 10px; border: 0; background: #2747F5; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Add to cart</button>
+                  <button type="button" aria-label="Save Wireless Earbuds to wishlist" style="width: 44px; min-height: 44px; border-radius: 10px; border: 1px solid #D3D7DE; background: #FFFFFF; display: grid; place-items: center; cursor: pointer; color: #111318"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"></path></svg></button>
+                </div>
+              </div>
+            </article>
+          
+            <article style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column">
+              <a href="product.html" style="position: relative; display: grid; place-items: center; aspect-ratio: 4 / 3; background: #EDF2EC; color: #5A6170; text-decoration: none">
+                <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="10" r="1.6"></circle><path d="m21 16-5-5-8 8"></path></svg>
+                <span class="sr-only">Photo of Ceramic Pour-Over Set</span>
+                
+              </a>
+              <div style="padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1">
+                <p style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5A6170">Home</p>
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 1.3"><a href="product.html" style="color: #111318; text-decoration: none">Ceramic Pour-Over Set</a></h3>
+                <p style="margin: 0; font-size: 13px; color: #3B414D" aria-label="Rated 4.7 out of 5 from 58 reviews"><span aria-hidden="true" style="color: #A44A00">★</span> 4.7 <span style="color: #5A6170">(58)</span></p>
+                <div style="display: flex; align-items: baseline; gap: 8px; margin-top: auto">
+                  <span style="font-size: 18px; font-weight: 800">$42.00</span>
+                  
+                </div>
+                <div style="display: flex; gap: 8px">
+                  <button type="button" style="flex: 1; min-height: 44px; border-radius: 10px; border: 0; background: #2747F5; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Add to cart</button>
+                  <button type="button" aria-label="Save Ceramic Pour-Over Set to wishlist" style="width: 44px; min-height: 44px; border-radius: 10px; border: 1px solid #D3D7DE; background: #FFFFFF; display: grid; place-items: center; cursor: pointer; color: #111318"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"></path></svg></button>
+                </div>
+              </div>
+            </article>
+          
+            <article style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column">
+              <a href="product.html" style="position: relative; display: grid; place-items: center; aspect-ratio: 4 / 3; background: #EDF2EC; color: #5A6170; text-decoration: none">
+                <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="10" r="1.6"></circle><path d="m21 16-5-5-8 8"></path></svg>
+                <span class="sr-only">Photo of Adjustable Desk Lamp</span>
+                
+                  <span style="position: absolute; top: 12px; left: 12px; padding: 4px 10px; border-radius: 999px; background: #E9EBEF; color: #3B414D; font-size: 12px; font-weight: 700">Out of stock</span>
+                
+              </a>
+              <div style="padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1">
+                <p style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5A6170">Home</p>
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 1.3"><a href="product.html" style="color: #111318; text-decoration: none">Adjustable Desk Lamp</a></h3>
+                <p style="margin: 0; font-size: 13px; color: #3B414D" aria-label="Rated 4.5 out of 5 from 77 reviews"><span aria-hidden="true" style="color: #A44A00">★</span> 4.5 <span style="color: #5A6170">(77)</span></p>
+                <div style="display: flex; align-items: baseline; gap: 8px; margin-top: auto">
+                  <span style="font-size: 18px; font-weight: 800">$65.00</span>
+                  
+                </div>
+                <div style="display: flex; gap: 8px">
+                  <button type="button" disabled="" style="flex: 1; min-height: 44px; border-radius: 10px; border: 0; background: #E9EBEF; color: #3B414D; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Notify me</button>
+                  <button type="button" aria-label="Save Adjustable Desk Lamp to wishlist" style="width: 44px; min-height: 44px; border-radius: 10px; border: 1px solid #D3D7DE; background: #FFFFFF; display: grid; place-items: center; cursor: pointer; color: #111318"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"></path></svg></button>
+                </div>
+              </div>
+            </article>
+          
+            <article style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column">
+              <a href="product.html" style="position: relative; display: grid; place-items: center; aspect-ratio: 4 / 3; background: #F3ECEF; color: #5A6170; text-decoration: none">
+                <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="10" r="1.6"></circle><path d="m21 16-5-5-8 8"></path></svg>
+                <span class="sr-only">Photo of Yoga Mat Pro</span>
+                
+                  <span style="position: absolute; top: 12px; left: 12px; padding: 4px 10px; border-radius: 999px; background: #FDECDD; color: #8A3B00; font-size: 12px; font-weight: 700">Sale</span>
+                
+              </a>
+              <div style="padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1">
+                <p style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5A6170">Sports</p>
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 1.3"><a href="product.html" style="color: #111318; text-decoration: none">Yoga Mat Pro</a></h3>
+                <p style="margin: 0; font-size: 13px; color: #3B414D" aria-label="Rated 4.3 out of 5 from 140 reviews"><span aria-hidden="true" style="color: #A44A00">★</span> 4.3 <span style="color: #5A6170">(140)</span></p>
+                <div style="display: flex; align-items: baseline; gap: 8px; margin-top: auto">
+                  <span style="font-size: 18px; font-weight: 800">$38.00</span>
+                  <s style="font-size: 14px; color: #5A6170">$48.00</s>
+                </div>
+                <div style="display: flex; gap: 8px">
+                  <button type="button" style="flex: 1; min-height: 44px; border-radius: 10px; border: 0; background: #2747F5; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Add to cart</button>
+                  <button type="button" aria-label="Save Yoga Mat Pro to wishlist" style="width: 44px; min-height: 44px; border-radius: 10px; border: 1px solid #D3D7DE; background: #FFFFFF; display: grid; place-items: center; cursor: pointer; color: #111318"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"></path></svg></button>
+                </div>
+              </div>
+            </article>
+          
+            <article style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column">
+              <a href="product.html" style="position: relative; display: grid; place-items: center; aspect-ratio: 4 / 3; background: #F1EDE7; color: #5A6170; text-decoration: none">
+                <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="10" r="1.6"></circle><path d="m21 16-5-5-8 8"></path></svg>
+                <span class="sr-only">Photo of Canvas Backpack</span>
+                
+              </a>
+              <div style="padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1">
+                <p style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5A6170">Fashion</p>
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 1.3"><a href="product.html" style="color: #111318; text-decoration: none">Canvas Backpack</a></h3>
+                <p style="margin: 0; font-size: 13px; color: #3B414D" aria-label="Rated 4.6 out of 5 from 189 reviews"><span aria-hidden="true" style="color: #A44A00">★</span> 4.6 <span style="color: #5A6170">(189)</span></p>
+                <div style="display: flex; align-items: baseline; gap: 8px; margin-top: auto">
+                  <span style="font-size: 18px; font-weight: 800">$68.00</span>
+                  
+                </div>
+                <div style="display: flex; gap: 8px">
+                  <button type="button" style="flex: 1; min-height: 44px; border-radius: 10px; border: 0; background: #2747F5; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Add to cart</button>
+                  <button type="button" aria-label="Save Canvas Backpack to wishlist" style="width: 44px; min-height: 44px; border-radius: 10px; border: 1px solid #D3D7DE; background: #FFFFFF; display: grid; place-items: center; cursor: pointer; color: #111318"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"></path></svg></button>
+                </div>
+              </div>
+            </article>
+          
+        </div>
+        <nav aria-label="Pagination" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; margin-top: 32px">
+          <a href="index.html" style="min-width: 44px; min-height: 44px; display: grid; place-items: center; padding: 0 14px; border-radius: 10px; border: 1px solid #D3D7DE; background: #FFFFFF; color: #111318; text-decoration: none; font-weight: 600; font-size: 14px">Previous</a>
+          <a href="index.html" aria-current="page" style="min-width: 44px; min-height: 44px; display: grid; place-items: center; border-radius: 10px; background: #111318; color: #FFFFFF; text-decoration: none; font-weight: 700">1</a>
+          <a href="index.html" style="min-width: 44px; min-height: 44px; display: grid; place-items: center; border-radius: 10px; border: 1px solid #D3D7DE; background: #FFFFFF; color: #111318; text-decoration: none; font-weight: 600">2</a>
+          <a href="index.html" style="min-width: 44px; min-height: 44px; display: grid; place-items: center; border-radius: 10px; border: 1px solid #D3D7DE; background: #FFFFFF; color: #111318; text-decoration: none; font-weight: 600">3</a>
+          <a href="index.html" style="min-width: 44px; min-height: 44px; display: grid; place-items: center; border-radius: 10px; border: 1px solid #D3D7DE; background: #FFFFFF; color: #111318; text-decoration: none; font-weight: 600">4</a>
+          <a href="index.html" style="min-width: 44px; min-height: 44px; display: grid; place-items: center; padding: 0 14px; border-radius: 10px; border: 1px solid #D3D7DE; background: #FFFFFF; color: #111318; text-decoration: none; font-weight: 600; font-size: 14px">Next</a>
+        </nav>
+      </section>
+    </div>
+  </main>
+
+  <footer style="border-top: 1px solid #E3E6EB; background: #FFFFFF">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 24px 32px; display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: space-between; font-size: 14px; color: #5A6170">
+      <span>Orvilo — a practice store for Playwright and API testing.</span>
+      <span style="display: flex; flex-wrap: wrap; gap: 20px"><a href="docs.html" style="color: #3B414D">API docs</a><a href="lab.html" style="color: #3B414D">UI Lab</a><a href="inbox.html" style="color: #3B414D">Test inbox</a></span>
+    </div>
+  </footer>
+</div>
+</body>
+</html>

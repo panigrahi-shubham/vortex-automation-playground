@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Orvilo design screen: original work, released under CC0 1.0. See LICENSE.txt. -->
+<meta charset="utf-8">
+<title>Orvilo — Account</title>
+<style>
+body{margin:0;background:#F4F5F7}
+a{color:#2747F5}a:hover{color:#1B33B8}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+<link rel="stylesheet" href="assets/fonts.css">
+</head>
+<body>
+<div style="min-height: 1000px; background: #F4F5F7; color: #111318; font-family: 'Plus Jakarta Sans', system-ui, sans-serif">
+  <div style="background: #111318; color: #FFFFFF; font-size: 13px; text-align: center; padding: 8px 16px">Orvilo is a demo store for test automation practice. Profile data resets with the demo.</div>
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E3E6EB">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 14px 32px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; min-height: 44px">
+      <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #111318; font-weight: 800; font-size: 22px; letter-spacing: -0.02em"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11.5" fill="none" stroke="#2747F5" stroke-width="3"></circle><circle cx="14" cy="14" r="4.5" fill="#2747F5"></circle></svg>Orvilo</a>
+      <nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 4px 22px; font-size: 15px; font-weight: 600; flex: 1">
+        <a href="index.html" style="color: #3B414D; text-decoration: none">Shop</a>
+        <a href="orders.html" style="color: #3B414D; text-decoration: none">Orders</a>
+        <a href="lab.html" style="color: #3B414D; text-decoration: none">UI Lab</a>
+        <a href="inbox.html" style="color: #3B414D; text-decoration: none">Test inbox</a>
+        <a href="docs.html" style="color: #3B414D; text-decoration: none">API docs</a>
+      </nav>
+      <a href="account.html" aria-current="page" aria-label="Your account" style="display: grid; place-items: center; width: 40px; height: 40px; border-radius: 20px; background: #2747F5; color: #FFFFFF; font-weight: 700; font-size: 14px; text-decoration: none">SU</a>
+    </div>
+  </header>
+
+  <main style="max-width: 1100px; margin: 0 auto; padding: 28px 32px 56px; display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start">
+    <nav aria-label="Account" style="flex: 1 1 220px; max-width: 260px; display: flex; flex-direction: column; gap: 4px">
+      <p style="margin: 0 0 10px; font-size: 13px; font-weight: 700; color: #5A6170; text-transform: uppercase; letter-spacing: 0.06em">Account</p>
+      
+        <a href="account.html" aria-current="page" style="min-height: 44px; display: flex; align-items: center; padding: 0 14px; border-radius: 10px; background: #EEF1FE; color: #2747F5; font-weight: 600; font-size: 15px; text-decoration: none">Profile</a>
+      
+        <a href="orders.html" aria-current="false" style="min-height: 44px; display: flex; align-items: center; padding: 0 14px; border-radius: 10px; background: transparent; color: #3B414D; font-weight: 600; font-size: 15px; text-decoration: none">Orders</a>
+      
+        <a href="account.html" aria-current="false" style="min-height: 44px; display: flex; align-items: center; padding: 0 14px; border-radius: 10px; background: transparent; color: #3B414D; font-weight: 600; font-size: 15px; text-decoration: none">Addresses</a>
+      
+        <a href="index.html" aria-current="false" style="min-height: 44px; display: flex; align-items: center; padding: 0 14px; border-radius: 10px; background: transparent; color: #3B414D; font-weight: 600; font-size: 15px; text-decoration: none">Wishlist</a>
+      
+        <a href="verify.html" aria-current="false" style="min-height: 44px; display: flex; align-items: center; padding: 0 14px; border-radius: 10px; background: transparent; color: #3B414D; font-weight: 600; font-size: 15px; text-decoration: none">Security</a>
+      
+        <a href="inbox.html" aria-current="false" style="min-height: 44px; display: flex; align-items: center; padding: 0 14px; border-radius: 10px; background: transparent; color: #3B414D; font-weight: 600; font-size: 15px; text-decoration: none">Notifications</a>
+      
+      <button type="button" style="margin-top: 12px; min-height: 44px; text-align: left; padding: 0 14px; border: 0; border-radius: 10px; background: none; color: #B42318; font: inherit; font-weight: 700; font-size: 15px; cursor: pointer">Sign out</button>
+    </nav>
+
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
+      <h1 style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.03em">Profile</h1>
+      <div role="status" style="padding: 12px 14px; border-radius: 12px; background: #E6F4EC; border: 1px solid #B9E0C9; color: #0B5E39; font-size: 14px; font-weight: 600">Profile saved.</div>
+
+      <section aria-labelledby="av-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 20px">
+        <span aria-hidden="true" style="width: 88px; height: 88px; border-radius: 44px; background: #EEF1FE; color: #2747F5; display: grid; place-items: center; font-weight: 800; font-size: 30px">SU</span>
+        <div style="flex: 1 1 260px">
+          <h2 id="av-h" style="margin: 0; font-size: 16px; font-weight: 800">Profile photo</h2>
+          <p style="margin: 4px 0 12px; font-size: 13px; color: #5A6170">PNG or JPG · up to 2 MB · at least 200 × 200 px</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px">
+            <label style="min-height: 42px; padding: 0 16px; display: grid; place-items: center; border-radius: 10px; background: #111318; color: #FFFFFF; font-size: 14px; font-weight: 700; cursor: pointer">Upload photo<input type="file" accept="image/png,image/jpeg" class="sr-only"></label>
+            <button type="button" style="min-height: 42px; padding: 0 16px; border: 1px solid #D3D7DE; border-radius: 10px; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Remove</button>
+          </div>
+          <p role="alert" style="margin: 10px 0 0; font-size: 13px; color: #B42318; font-weight: 600">holiday.gif was not uploaded: only PNG and JPG are allowed.</p>
+        </div>
+      </section>
+
+      <section aria-labelledby="pd-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 22px">
+        <h2 id="pd-h" style="margin: 0 0 16px; font-size: 16px; font-weight: 800">Personal details</h2>
+        <form style="display: flex; flex-wrap: wrap; gap: 16px">
+          
+            <div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 6px">
+              <label for="fn" style="font-size: 14px; font-weight: 600">First name</label>
+              <input id="fn" value="Sam" type="text" style="min-height: 46px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit">
+            </div>
+          
+            <div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 6px">
+              <label for="ln" style="font-size: 14px; font-weight: 600">Last name</label>
+              <input id="ln" value="User" type="text" style="min-height: 46px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit">
+            </div>
+          
+            <div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 6px">
+              <label for="em" style="font-size: 14px; font-weight: 600">Email</label>
+              <input id="em" value="sam.user@orvilo.test" type="email" style="min-height: 46px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit">
+            </div>
+          
+            <div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 6px">
+              <label for="ph" style="font-size: 14px; font-weight: 600">Phone</label>
+              <input id="ph" value="+1 555 0100" type="tel" style="min-height: 46px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit">
+            </div>
+          
+            <div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 6px">
+              <label for="dob" style="font-size: 14px; font-weight: 600">Date of birth</label>
+              <input id="dob" value="1994-05-17" type="date" style="min-height: 46px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit">
+            </div>
+          
+            <div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 6px">
+              <label for="un" style="font-size: 14px; font-weight: 600">Username</label>
+              <input id="un" value="standard_user" type="text" style="min-height: 46px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit">
+            </div>
+          
+          <div style="flex: 1 1 100%; display: flex; gap: 10px; justify-content: flex-end; padding-top: 6px">
+            <button type="button" style="min-height: 46px; padding: 0 18px; border: 1px solid #D3D7DE; border-radius: 10px; background: #FFFFFF; font: inherit; font-weight: 600; cursor: pointer">Discard changes</button>
+            <button type="button" style="min-height: 46px; padding: 0 22px; border: 0; border-radius: 10px; background: #2747F5; color: #FFFFFF; font: inherit; font-weight: 700; cursor: pointer">Save profile</button>
+          </div>
+        </form>
+      </section>
+
+      <section aria-labelledby="sec-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 20px; padding: 22px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px">
+        <div>
+          <h2 id="sec-h" style="margin: 0; font-size: 16px; font-weight: 800">Two-step verification</h2>
+          <p style="margin: 4px 0 0; font-size: 14px; color: #5A6170">On · codes go to the test inbox</p>
+        </div>
+        <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600"><span>Enabled</span><input type="checkbox" role="switch" checked="" style="width: 44px; height: 24px; accent-color: #2747F5"></label>
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Orvilo design screen: original work, released under CC0 1.0. See LICENSE.txt. -->
+<meta charset="utf-8">
+<title>Orvilo Seller — Delete product</title>
+<style>
+body{margin:0;background:#F4F5F7}
+a{color:#2747F5}a:hover{color:#1B33B8}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+<link rel="stylesheet" href="assets/fonts.css">
+</head>
+<body>
+<div style="position: relative; min-height: 1000px; background: #F4F5F7; color: #111318; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; display: flex">
+  <nav aria-label="Seller" style="width: 240px; flex: 0 0 auto; background: #111318; color: #FFFFFF; padding: 22px 14px; display: flex; flex-direction: column; gap: 4px">
+    <a href="index.html" style="display: flex; align-items: center; gap: 10px; padding: 0 10px 22px; text-decoration: none; color: #FFFFFF; font-weight: 800; font-size: 20px"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11.5" fill="none" stroke="#FFFFFF" stroke-width="3"></circle><circle cx="14" cy="14" r="4.5" fill="#2747F5"></circle></svg>Orvilo <span style="font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 6px; background: #12A15E; color: #FFFFFF">SELLER</span></a>
+    <div style="display: flex; align-items: center; gap: 10px; padding: 10px; margin-bottom: 10px; border-radius: 12px; background: #1C2028">
+      <span aria-hidden="true" style="width: 34px; height: 34px; border-radius: 10px; background: #F1EDE7; color: #111318; display: grid; place-items: center; font-weight: 800; font-size: 13px">KH</span>
+      <span style="font-size: 13px; line-height: 1.35"><strong style="display: block">Keyhaus Store</strong><span style="color: #8A909C">seller_user</span></span>
+    </div>
+    
+      <a href="sellerdelete.html" aria-current="false" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: transparent; color: #C4C9D2; font-weight: 600; font-size: 14px; text-decoration: none">Dashboard<span style="font-size: 12px; color: #8A909C"></span></a>
+    
+      <a href="sellerdelete.html" aria-current="page" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: #2A2F38; color: #FFFFFF; font-weight: 600; font-size: 14px; text-decoration: none">Products<span style="font-size: 12px; color: #8A909C">24</span></a>
+    
+      <a href="selleradd.html" aria-current="false" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: transparent; color: #C4C9D2; font-weight: 600; font-size: 14px; text-decoration: none">Add product<span style="font-size: 12px; color: #8A909C"></span></a>
+    
+      <a href="orders.html" aria-current="false" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: transparent; color: #C4C9D2; font-weight: 600; font-size: 14px; text-decoration: none">Orders<span style="font-size: 12px; color: #8A909C">9</span></a>
+    
+      <a href="messages.html" aria-current="false" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: transparent; color: #C4C9D2; font-weight: 600; font-size: 14px; text-decoration: none">Messages<span style="font-size: 12px; color: #8A909C">3</span></a>
+    
+      <a href="sellerdelete.html" aria-current="false" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: transparent; color: #C4C9D2; font-weight: 600; font-size: 14px; text-decoration: none">Payouts<span style="font-size: 12px; color: #8A909C"></span></a>
+    
+      <a href="settings.html" aria-current="false" style="min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 10px; background: transparent; color: #C4C9D2; font-weight: 600; font-size: 14px; text-decoration: none">Settings<span style="font-size: 12px; color: #8A909C"></span></a>
+    
+  </nav>
+
+  <main aria-hidden="true" style="flex: 1; min-width: 0; padding: 22px 32px 48px">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px; margin-bottom: 16px">
+      <h1 style="margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.03em">My products</h1>
+      <a href="selleradd.html" style="min-height: 44px; padding: 0 18px; display: grid; place-items: center; border-radius: 10px; background: #2747F5; color: #FFFFFF; font-size: 14px; font-weight: 700; text-decoration: none">+ Add product</a>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px">
+      
+        <span style="padding: 8px 14px; border-radius: 10px; background: #111318; color: #FFFFFF; border: 1px solid #E3E6EB; font-size: 14px; font-weight: 600">All <span style="opacity: 0.7">24</span></span>
+      
+        <span style="padding: 8px 14px; border-radius: 10px; background: #FFFFFF; color: #3B414D; border: 1px solid #E3E6EB; font-size: 14px; font-weight: 600">Active <span style="opacity: 0.7">19</span></span>
+      
+        <span style="padding: 8px 14px; border-radius: 10px; background: #FFFFFF; color: #3B414D; border: 1px solid #E3E6EB; font-size: 14px; font-weight: 600">Draft <span style="opacity: 0.7">3</span></span>
+      
+        <span style="padding: 8px 14px; border-radius: 10px; background: #FFFFFF; color: #3B414D; border: 1px solid #E3E6EB; font-size: 14px; font-weight: 600">Archived <span style="opacity: 0.7">1</span></span>
+      
+        <span style="padding: 8px 14px; border-radius: 10px; background: #FFFFFF; color: #3B414D; border: 1px solid #E3E6EB; font-size: 14px; font-weight: 600">Trash <span style="opacity: 0.7">1</span></span>
+      
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px">
+      
+        <article style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 14px; overflow: hidden">
+          <div style="position: relative; height: 130px; background: #E9EEF6"><span style="position: absolute; left: 10px; top: 10px; padding: 2px 8px; border-radius: 6px; background: #E6F4EC; color: #0B5E39; font-size: 11px; font-weight: 800">Active</span></div>
+          <div style="padding: 12px">
+            <p style="margin: 0; font-weight: 700; font-size: 14px">Mechanical Keyboard</p>
+            <p style="margin: 4px 0 10px; font-size: 13px; color: #5A6170">$89.00 · 12 in stock</p>
+            <div style="display: flex; gap: 8px"><span style="flex: 1; min-height: 34px; display: grid; place-items: center; border: 1px solid #D3D7DE; border-radius: 8px; font-size: 13px; font-weight: 600">Edit</span><span style="flex: 1; min-height: 34px; display: grid; place-items: center; border: 1px solid #F5C2BC; border-radius: 8px; color: #B42318; font-size: 13px; font-weight: 700">Delete</span></div>
+          </div>
+        </article>
+      
+        <article style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 14px; overflow: hidden">
+          <div style="position: relative; height: 130px; background: #DDE4F0"><span style="position: absolute; left: 10px; top: 10px; padding: 2px 8px; border-radius: 6px; background: #F1F2F4; color: #5A6170; font-size: 11px; font-weight: 800">Draft</span></div>
+          <div style="padding: 12px">
+            <p style="margin: 0; font-weight: 700; font-size: 14px">Low-Profile Keyboard</p>
+            <p style="margin: 4px 0 10px; font-size: 13px; color: #5A6170">$99.00 · 23 in stock</p>
+            <div style="display: flex; gap: 8px"><span style="flex: 1; min-height: 34px; display: grid; place-items: center; border: 1px solid #D3D7DE; border-radius: 8px; font-size: 13px; font-weight: 600">Edit</span><span style="flex: 1; min-height: 34px; display: grid; place-items: center; border: 1px solid #F5C2BC; border-radius: 8px; color: #B42318; font-size: 13px; font-weight: 700">Delete</span></div>
+          </div>
+        </article>
+      
+        <article style="background: #FFFFFF; border: 2px solid #B42318; border-radius: 14px; overflow: hidden">
+          <div style="position: relative; height: 130px; background: #E8F1F3"><span style="position: absolute; left: 10px; top: 10px; padding: 2px 8px; border-radius: 6px; background: #F1F2F4; color: #5A6170; font-size: 11px; font-weight: 800">Draft</span></div>
+          <div style="padding: 12px">
+            <p style="margin: 0; font-weight: 700; font-size: 14px">Trail Water Bottle</p>
+            <p style="margin: 4px 0 10px; font-size: 13px; color: #5A6170">$24.00 · 0 in stock</p>
+            <div style="display: flex; gap: 8px"><span style="flex: 1; min-height: 34px; display: grid; place-items: center; border: 1px solid #D3D7DE; border-radius: 8px; font-size: 13px; font-weight: 600">Edit</span><span style="flex: 1; min-height: 34px; display: grid; place-items: center; border: 1px solid #F5C2BC; border-radius: 8px; color: #B42318; font-size: 13px; font-weight: 700">Delete</span></div>
+          </div>
+        </article>
+      
+        <article style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 14px; overflow: hidden">
+          <div style="position: relative; height: 130px; background: #F1EDE7"><span style="position: absolute; left: 10px; top: 10px; padding: 2px 8px; border-radius: 6px; background: #E6F4EC; color: #0B5E39; font-size: 11px; font-weight: 800">Active</span></div>
+          <div style="padding: 12px">
+            <p style="margin: 0; font-weight: 700; font-size: 14px">Wrist Rest</p>
+            <p style="margin: 4px 0 10px; font-size: 13px; color: #5A6170">$19.00 · 40 in stock</p>
+            <div style="display: flex; gap: 8px"><span style="flex: 1; min-height: 34px; display: grid; place-items: center; border: 1px solid #D3D7DE; border-radius: 8px; font-size: 13px; font-weight: 600">Edit</span><span style="flex: 1; min-height: 34px; display: grid; place-items: center; border: 1px solid #F5C2BC; border-radius: 8px; color: #B42318; font-size: 13px; font-weight: 700">Delete</span></div>
+          </div>
+        </article>
+      
+        <article style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 14px; overflow: hidden">
+          <div style="position: relative; height: 130px; background: #F3ECF4"><span style="position: absolute; left: 10px; top: 10px; padding: 2px 8px; border-radius: 6px; background: #FFF4E0; color: #8A5300; font-size: 11px; font-weight: 800">Low stock</span></div>
+          <div style="padding: 12px">
+            <p style="margin: 0; font-weight: 700; font-size: 14px">Keycap Set</p>
+            <p style="margin: 4px 0 10px; font-size: 13px; color: #5A6170">$35.00 · 4 in stock</p>
+            <div style="display: flex; gap: 8px"><span style="flex: 1; min-height: 34px; display: grid; place-items: center; border: 1px solid #D3D7DE; border-radius: 8px; font-size: 13px; font-weight: 600">Edit</span><span style="flex: 1; min-height: 34px; display: grid; place-items: center; border: 1px solid #F5C2BC; border-radius: 8px; color: #B42318; font-size: 13px; font-weight: 700">Delete</span></div>
+          </div>
+        </article>
+      
+        <article style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 14px; overflow: hidden">
+          <div style="position: relative; height: 130px; background: #EDF2EC"><span style="position: absolute; left: 10px; top: 10px; padding: 2px 8px; border-radius: 6px; background: #E6F4EC; color: #0B5E39; font-size: 11px; font-weight: 800">Active</span></div>
+          <div style="padding: 12px">
+            <p style="margin: 0; font-weight: 700; font-size: 14px">USB-C Cable</p>
+            <p style="margin: 4px 0 10px; font-size: 13px; color: #5A6170">$12.00 · 88 in stock</p>
+            <div style="display: flex; gap: 8px"><span style="flex: 1; min-height: 34px; display: grid; place-items: center; border: 1px solid #D3D7DE; border-radius: 8px; font-size: 13px; font-weight: 600">Edit</span><span style="flex: 1; min-height: 34px; display: grid; place-items: center; border: 1px solid #F5C2BC; border-radius: 8px; color: #B42318; font-size: 13px; font-weight: 700">Delete</span></div>
+          </div>
+        </article>
+      
+        <article style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 14px; overflow: hidden">
+          <div style="position: relative; height: 130px; background: #E9EEF6"><span style="position: absolute; left: 10px; top: 10px; padding: 2px 8px; border-radius: 6px; background: #E6F4EC; color: #0B5E39; font-size: 11px; font-weight: 800">Active</span></div>
+          <div style="padding: 12px">
+            <p style="margin: 0; font-weight: 700; font-size: 14px">Desk Mat</p>
+            <p style="margin: 4px 0 10px; font-size: 13px; color: #5A6170">$29.00 · 17 in stock</p>
+            <div style="display: flex; gap: 8px"><span style="flex: 1; min-height: 34px; display: grid; place-items: center; border: 1px solid #D3D7DE; border-radius: 8px; font-size: 13px; font-weight: 600">Edit</span><span style="flex: 1; min-height: 34px; display: grid; place-items: center; border: 1px solid #F5C2BC; border-radius: 8px; color: #B42318; font-size: 13px; font-weight: 700">Delete</span></div>
+          </div>
+        </article>
+      
+        <article style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 14px; overflow: hidden">
+          <div style="position: relative; height: 130px; background: #F1EDE7"><span style="position: absolute; left: 10px; top: 10px; padding: 2px 8px; border-radius: 6px; background: #E6F4EC; color: #0B5E39; font-size: 11px; font-weight: 800">Active</span></div>
+          <div style="padding: 12px">
+            <p style="margin: 0; font-weight: 700; font-size: 14px">Switch Tester</p>
+            <p style="margin: 4px 0 10px; font-size: 13px; color: #5A6170">$15.00 · 31 in stock</p>
+            <div style="display: flex; gap: 8px"><span style="flex: 1; min-height: 34px; display: grid; place-items: center; border: 1px solid #D3D7DE; border-radius: 8px; font-size: 13px; font-weight: 600">Edit</span><span style="flex: 1; min-height: 34px; display: grid; place-items: center; border: 1px solid #F5C2BC; border-radius: 8px; color: #B42318; font-size: 13px; font-weight: 700">Delete</span></div>
+          </div>
+        </article>
+      
+    </div>
+  </main>
+
+  <div style="position: absolute; inset: 0; background: rgba(17,19,24,0.55); display: grid; place-items: center; padding: 24px">
+    <div role="alertdialog" aria-modal="true" aria-labelledby="del-h" aria-describedby="del-d" style="width: 100%; max-width: 520px; background: #FFFFFF; border-radius: 20px; padding: 26px; box-shadow: 0 24px 60px rgba(17,19,24,0.35); display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; gap: 14px; align-items: flex-start">
+        <span aria-hidden="true" style="flex: 0 0 auto; width: 44px; height: 44px; border-radius: 12px; background: #FDECEA; color: #B42318; display: grid; place-items: center; font-weight: 800; font-size: 20px">!</span>
+        <div>
+          <h2 id="del-h" style="margin: 0; font-size: 20px; font-weight: 800">Delete "Trail Water Bottle"?</h2>
+          <p id="del-d" style="margin: 6px 0 0; font-size: 14px; color: #3B414D; line-height: 1.55">It will be hidden from the shop and moved to Trash for 30 days. Past orders that include it are kept.</p>
+        </div>
+      </div>
+      <ul style="margin: 0; padding: 12px 14px 12px 32px; background: #FFF8EB; border: 1px solid #F3D9A4; border-radius: 12px; font-size: 13px; color: #6B4200; line-height: 1.6">
+        <li>3 shoppers have it in their cart. It will be removed and they will get a message.</li>
+        <li>1 open order is still Processing. That order is not affected.</li>
+      </ul>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="confirm-sku" style="font-size: 14px; font-weight: 600">Type the SKU <code style="font-family: ui-monospace, monospace; background: #F4F5F7; padding: 1px 6px; border-radius: 5px">OUT-0009</code> to confirm</label>
+        <input id="confirm-sku" value="OUT-0009" autocomplete="off" style="min-height: 44px; border: 2px solid #0F7A4A; border-radius: 10px; padding: 0 12px; font: inherit; font-family: ui-monospace, monospace">
+      </div>
+      <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; min-height: 32px"><input type="checkbox" style="width: 18px; height: 18px; accent-color: #B42318">Delete permanently now (skip Trash, cannot be undone)</label>
+      <div style="display: flex; justify-content: flex-end; gap: 10px">
+        <button type="button" style="min-height: 46px; padding: 0 18px; border: 1px solid #D3D7DE; border-radius: 10px; background: #FFFFFF; font: inherit; font-weight: 600; cursor: pointer">Cancel</button>
+        <button type="button" style="min-height: 46px; padding: 0 18px; border: 0; border-radius: 10px; background: #B42318; color: #FFFFFF; font: inherit; font-weight: 700; cursor: pointer">Move to Trash</button>
+      </div>
+    </div>
+  </div>
+
+  <div role="status" style="position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); display: flex; align-items: center; gap: 16px; padding: 12px 14px 12px 18px; border-radius: 14px; background: #111318; color: #FFFFFF; font-size: 14px; box-shadow: 0 12px 30px rgba(17,19,24,0.3)">
+    <span>"Canvas Backpack" moved to Trash</span>
+    <button type="button" style="min-height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: #2A2F38; color: #FFFFFF; font: inherit; font-weight: 700; cursor: pointer">Undo · 8 s</button>
+  </div>
+</div>
+</body>
+</html>

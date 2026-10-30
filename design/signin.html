@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Orvilo design screen: original work, released under CC0 1.0. See LICENSE.txt. -->
+<meta charset="utf-8">
+<title>Orvilo — Sign in</title>
+<style>
+body{margin:0;background:#F4F5F7}
+a{color:#2747F5}a:hover{color:#1B33B8}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+<link rel="stylesheet" href="assets/fonts.css">
+</head>
+<body>
+<div style="min-height: 900px; background: #F4F5F7; color: #111318; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; display: flex; flex-direction: column">
+  <div style="background: #111318; color: #FFFFFF; font-size: 13px; text-align: center; padding: 8px 16px">Orvilo is a demo store for test automation practice. Use the test accounts below.</div>
+  <div style="flex: 1; display: flex; flex-wrap: wrap">
+    <section aria-label="About Orvilo" style="flex: 1 1 520px; background: #111318; color: #FFFFFF; padding: 56px 64px; display: flex; flex-direction: column; justify-content: space-between; gap: 40px">
+      <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #FFFFFF; font-weight: 800; font-size: 24px"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11.5" fill="none" stroke="#FFFFFF" stroke-width="3"></circle><circle cx="14" cy="14" r="4.5" fill="#2747F5"></circle></svg>Orvilo</a>
+      <div>
+        <h2 style="margin: 0; font-size: 44px; line-height: 1.1; font-weight: 800; letter-spacing: -0.03em; max-width: 460px">A real-feeling store built to be tested.</h2>
+        <p style="margin: 16px 0 0; font-size: 17px; line-height: 1.6; color: #C4C9D2; max-width: 440px">Sign in, buy something, break something. Every flow is stable, documented and resettable.</p>
+      </div>
+      <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; font-size: 15px; color: #DDE1E8">
+        <li>✓ Cart, coupons and checkout with test cards</li>
+        <li>✓ Two-step verification with a test inbox</li>
+        <li>✓ Admin tools, UI Lab and an OpenAPI contract</li>
+      </ul>
+    </section>
+
+    <main style="flex: 1 1 520px; display: grid; place-items: center; padding: 48px 32px">
+      <div style="width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 20px">
+        <div>
+          <h1 style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.03em">Sign in</h1>
+          <p style="margin: 8px 0 0; color: #5A6170; font-size: 15px">New here? <a href="#">Create an account</a></p>
+        </div>
+        <div role="alert" style="display: flex; gap: 10px; padding: 12px 14px; border-radius: 12px; background: #FDECEA; border: 1px solid #F5C2BC; color: #8A1C12; font-size: 14px; line-height: 1.45"><span aria-hidden="true" style="font-weight: 800">!</span><span><strong>Username or password is incorrect.</strong> 2 attempts left before the account is locked for 15 minutes.</span></div>
+        <form style="display: flex; flex-direction: column; gap: 16px">
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="u" style="font-size: 14px; font-weight: 600">Username or email</label>
+            <input id="u" value="standard_user" autocomplete="username" style="min-height: 48px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 14px; font: inherit; background: #FFFFFF">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline"><label for="p" style="font-size: 14px; font-weight: 600">Password</label><a href="inbox.html" style="font-size: 14px; font-weight: 600">Forgot password?</a></div>
+            <div style="position: relative">
+              <input id="p" type="password" value="wrongpass" aria-invalid="true" autocomplete="current-password" style="box-sizing: border-box; width: 100%; min-height: 48px; border: 2px solid #B42318; border-radius: 10px; padding: 0 70px 0 14px; font: inherit; background: #FFFFFF">
+              <button type="button" aria-label="Show password" style="position: absolute; right: 4px; top: 4px; height: 40px; padding: 0 12px; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 600; color: #2747F5; cursor: pointer">Show</button>
+            </div>
+          </div>
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; min-height: 32px"><input type="checkbox" checked="" style="width: 18px; height: 18px; accent-color: #2747F5">Keep me signed in for 7 days</label>
+          <a href="verify.html" style="min-height: 50px; display: grid; place-items: center; border-radius: 12px; background: #2747F5; color: #FFFFFF; font-weight: 700; font-size: 16px; text-decoration: none">Sign in</a>
+        </form>
+        <details open="" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 14px; padding: 14px 16px">
+          <summary style="cursor: pointer; font-weight: 700; font-size: 14px; min-height: 28px">Test accounts · password <code style="font-family: ui-monospace, monospace; background: #F4F5F7; padding: 2px 6px; border-radius: 6px">orvilo123</code></summary>
+          <ul style="list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 2px; font-size: 13px">
+            
+              <li style="display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-top: 1px solid #EEF0F3"><code style="font-family: ui-monospace, monospace; font-weight: 600">standard_user</code><span style="color: #5A6170; text-align: right">Normal shopper</span></li>
+            
+              <li style="display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-top: 1px solid #EEF0F3"><code style="font-family: ui-monospace, monospace; font-weight: 600">mfa_user</code><span style="color: #5A6170; text-align: right">Asks for a 6-digit code</span></li>
+            
+              <li style="display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-top: 1px solid #EEF0F3"><code style="font-family: ui-monospace, monospace; font-weight: 600">locked_user</code><span style="color: #5A6170; text-align: right">Always locked out</span></li>
+            
+              <li style="display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-top: 1px solid #EEF0F3"><code style="font-family: ui-monospace, monospace; font-weight: 600">slow_user</code><span style="color: #5A6170; text-align: right">Every request takes 3 s</span></li>
+            
+              <li style="display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-top: 1px solid #EEF0F3"><code style="font-family: ui-monospace, monospace; font-weight: 600">admin</code><span style="color: #5A6170; text-align: right">Admin tools enabled</span></li>
+            
+          </ul>
+        </details>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

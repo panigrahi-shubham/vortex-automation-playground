@@ -75,5 +75,6 @@ test('block third-party noise / images by resource type', async ({ page, shopPag
   });
   await shopPage.goto();
   await expect(shopPage.cards).toHaveCount(12);
-  expect(blocked).toEqual([]); // product images are inline SVG, so nothing needed blocking
+  expect(blocked.every(url => new URL(url).pathname.startsWith('/assets/fonts/'))).toBe(true); // bundled fonts may be blocked; products remain inline SVG
 });
+

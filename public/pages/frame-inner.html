@@ -1,8 +1,0 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>Inner frame</title><link rel="stylesheet" href="/css/app.css"></head>
-<body style="padding:12px;min-height:0">
-  <strong>Inner frame</strong>
-  <form class="row" id="f" style="margin-top:8px;flex-wrap:nowrap"><label class="sr-only" for="name">Your name</label><input id="name" placeholder="Your name" data-testid="inner-name"><button class="btn sm" data-testid="inner-greet">Greet</button></form>
-  <p id="out" data-testid="inner-greeting" style="margin-top:8px"></p>
-  <script>document.getElementById('f').onsubmit = e => { e.preventDefault(); document.getElementById('out').textContent = `Hello, ${document.getElementById('name').value || 'stranger'}!`; };</script>
-</body></html>

@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Orvilo design screen: original work, released under CC0 1.0. See LICENSE.txt. -->
+<meta charset="utf-8">
+<title>Orvilo — API docs</title>
+<style>
+body{margin:0;background:#F4F5F7}
+a{color:#2747F5}a:hover{color:#1B33B8}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+<link rel="stylesheet" href="assets/fonts.css">
+</head>
+<body>
+<div style="min-height: 1100px; background: #F4F5F7; color: #111318; font-family: 'Plus Jakarta Sans', system-ui, sans-serif">
+  <div style="background: #111318; color: #FFFFFF; font-size: 13px; text-align: center; padding: 8px 16px">Orvilo is a demo store for test automation practice. The API is rate-limited to 60 requests per minute per session.</div>
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E3E6EB">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 14px 32px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; min-height: 44px">
+      <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #111318; font-weight: 800; font-size: 22px; letter-spacing: -0.02em"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11.5" fill="none" stroke="#2747F5" stroke-width="3"></circle><circle cx="14" cy="14" r="4.5" fill="#2747F5"></circle></svg>Orvilo</a>
+      <nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 4px 22px; font-size: 15px; font-weight: 600; flex: 1">
+        <a href="index.html" style="color: #3B414D; text-decoration: none">Shop</a>
+        <a href="orders.html" style="color: #3B414D; text-decoration: none">Orders</a>
+        <a href="lab.html" style="color: #3B414D; text-decoration: none">UI Lab</a>
+        <a href="inbox.html" style="color: #3B414D; text-decoration: none">Test inbox</a>
+        <a href="docs.html" aria-current="page" style="color: #2747F5; text-decoration: none; box-shadow: inset 0 -2px 0 #2747F5">API docs</a>
+      </nav>
+      <a href="account.html" aria-label="Your account" style="display: grid; place-items: center; width: 40px; height: 40px; border-radius: 20px; background: #EEF1FE; color: #2747F5; font-weight: 700; font-size: 14px; text-decoration: none">SU</a>
+    </div>
+  </header>
+
+  <div style="max-width: 1280px; margin: 0 auto; padding: 24px 32px 48px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+    <nav aria-label="Endpoints" style="flex: 1 1 280px; max-width: 320px; background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 14px">
+      <label class="sr-only" for="ep-q">Filter endpoints</label>
+      <input id="ep-q" placeholder="Filter endpoints" style="box-sizing: border-box; width: 100%; min-height: 40px; border: 1px solid #D3D7DE; border-radius: 10px; padding: 0 12px; font: inherit; font-size: 14px; margin-bottom: 10px">
+      
+        <p style="margin: 12px 8px 6px; font-size: 12px; font-weight: 700; color: #5A6170; text-transform: uppercase; letter-spacing: 0.06em">Auth</p>
+        
+          <a href="docs.html" aria-current="false" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 8px; border-radius: 8px; background: transparent; text-decoration: none; color: #111318; font-size: 13px"><span style="width: 52px; text-align: center; font-size: 11px; font-weight: 800; padding: 2px 0; border-radius: 5px; background: #E6F4EC; color: #0B5E39">POST</span><code style="font-family: ui-monospace, monospace">/auth/login</code></a>
+        
+          <a href="docs.html" aria-current="false" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 8px; border-radius: 8px; background: transparent; text-decoration: none; color: #111318; font-size: 13px"><span style="width: 52px; text-align: center; font-size: 11px; font-weight: 800; padding: 2px 0; border-radius: 5px; background: #E6F4EC; color: #0B5E39">POST</span><code style="font-family: ui-monospace, monospace">/auth/verify</code></a>
+        
+          <a href="docs.html" aria-current="false" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 8px; border-radius: 8px; background: transparent; text-decoration: none; color: #111318; font-size: 13px"><span style="width: 52px; text-align: center; font-size: 11px; font-weight: 800; padding: 2px 0; border-radius: 5px; background: #E6F4EC; color: #0B5E39">POST</span><code style="font-family: ui-monospace, monospace">/auth/logout</code></a>
+        
+      
+        <p style="margin: 12px 8px 6px; font-size: 12px; font-weight: 700; color: #5A6170; text-transform: uppercase; letter-spacing: 0.06em">Catalogue</p>
+        
+          <a href="docs.html" aria-current="false" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 8px; border-radius: 8px; background: transparent; text-decoration: none; color: #111318; font-size: 13px"><span style="width: 52px; text-align: center; font-size: 11px; font-weight: 800; padding: 2px 0; border-radius: 5px; background: #EEF1FE; color: #1B33B8">GET</span><code style="font-family: ui-monospace, monospace">/products</code></a>
+        
+          <a href="docs.html" aria-current="false" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 8px; border-radius: 8px; background: transparent; text-decoration: none; color: #111318; font-size: 13px"><span style="width: 52px; text-align: center; font-size: 11px; font-weight: 800; padding: 2px 0; border-radius: 5px; background: #EEF1FE; color: #1B33B8">GET</span><code style="font-family: ui-monospace, monospace">/products/{id}</code></a>
+        
+      
+        <p style="margin: 12px 8px 6px; font-size: 12px; font-weight: 700; color: #5A6170; text-transform: uppercase; letter-spacing: 0.06em">Cart</p>
+        
+          <a href="docs.html" aria-current="false" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 8px; border-radius: 8px; background: transparent; text-decoration: none; color: #111318; font-size: 13px"><span style="width: 52px; text-align: center; font-size: 11px; font-weight: 800; padding: 2px 0; border-radius: 5px; background: #EEF1FE; color: #1B33B8">GET</span><code style="font-family: ui-monospace, monospace">/cart</code></a>
+        
+          <a href="docs.html" aria-current="page" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 8px; border-radius: 8px; background: #EEF1FE; text-decoration: none; color: #111318; font-size: 13px"><span style="width: 52px; text-align: center; font-size: 11px; font-weight: 800; padding: 2px 0; border-radius: 5px; background: #E6F4EC; color: #0B5E39">POST</span><code style="font-family: ui-monospace, monospace">/cart/items</code></a>
+        
+          <a href="docs.html" aria-current="false" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 8px; border-radius: 8px; background: transparent; text-decoration: none; color: #111318; font-size: 13px"><span style="width: 52px; text-align: center; font-size: 11px; font-weight: 800; padding: 2px 0; border-radius: 5px; background: #FFF4E0; color: #8A5300">PATCH</span><code style="font-family: ui-monospace, monospace">/cart/items/{id}</code></a>
+        
+          <a href="docs.html" aria-current="false" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 8px; border-radius: 8px; background: transparent; text-decoration: none; color: #111318; font-size: 13px"><span style="width: 52px; text-align: center; font-size: 11px; font-weight: 800; padding: 2px 0; border-radius: 5px; background: #FDECEA; color: #8A1C12">DELETE</span><code style="font-family: ui-monospace, monospace">/cart/items/{id}</code></a>
+        
+      
+        <p style="margin: 12px 8px 6px; font-size: 12px; font-weight: 700; color: #5A6170; text-transform: uppercase; letter-spacing: 0.06em">Orders</p>
+        
+          <a href="docs.html" aria-current="false" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 8px; border-radius: 8px; background: transparent; text-decoration: none; color: #111318; font-size: 13px"><span style="width: 52px; text-align: center; font-size: 11px; font-weight: 800; padding: 2px 0; border-radius: 5px; background: #E6F4EC; color: #0B5E39">POST</span><code style="font-family: ui-monospace, monospace">/orders</code></a>
+        
+          <a href="docs.html" aria-current="false" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 8px; border-radius: 8px; background: transparent; text-decoration: none; color: #111318; font-size: 13px"><span style="width: 52px; text-align: center; font-size: 11px; font-weight: 800; padding: 2px 0; border-radius: 5px; background: #EEF1FE; color: #1B33B8">GET</span><code style="font-family: ui-monospace, monospace">/orders/{id}/events</code></a>
+        
+      
+        <p style="margin: 12px 8px 6px; font-size: 12px; font-weight: 700; color: #5A6170; text-transform: uppercase; letter-spacing: 0.06em">Test tools</p>
+        
+          <a href="docs.html" aria-current="false" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 8px; border-radius: 8px; background: transparent; text-decoration: none; color: #111318; font-size: 13px"><span style="width: 52px; text-align: center; font-size: 11px; font-weight: 800; padding: 2px 0; border-radius: 5px; background: #E6F4EC; color: #0B5E39">POST</span><code style="font-family: ui-monospace, monospace">/test/reset</code></a>
+        
+          <a href="docs.html" aria-current="false" style="display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 8px; border-radius: 8px; background: transparent; text-decoration: none; color: #111318; font-size: 13px"><span style="width: 52px; text-align: center; font-size: 11px; font-weight: 800; padding: 2px 0; border-radius: 5px; background: #EEF1FE; color: #1B33B8">GET</span><code style="font-family: ui-monospace, monospace">/test/mailbox</code></a>
+        
+      
+    </nav>
+
+    <main style="flex: 999 1 620px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: flex-start">
+        <div>
+          <p style="margin: 0 0 8px; display: flex; align-items: center; gap: 10px"><span style="font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 6px; background: #E6F4EC; color: #0B5E39">POST</span><code style="font-family: ui-monospace, monospace; font-size: 18px; font-weight: 700">/api/v1/cart/items</code></p>
+          <h1 style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.02em">Add an item to the cart</h1>
+          <p style="margin: 8px 0 0; font-size: 15px; color: #3B414D; max-width: 620px; line-height: 1.55">Adds a product variant to the signed-in user's cart, or increases its quantity if it is already there. Stock is reserved for 15 minutes.</p>
+        </div>
+        <div style="display: flex; gap: 8px">
+          <a href="docs.html" style="min-height: 40px; padding: 0 14px; display: grid; place-items: center; border: 1px solid #D3D7DE; border-radius: 10px; background: #FFFFFF; color: #111318; font-size: 14px; font-weight: 600; text-decoration: none">openapi.json</a>
+          <a href="docs.html" style="min-height: 40px; padding: 0 14px; display: grid; place-items: center; border: 1px solid #D3D7DE; border-radius: 10px; background: #FFFFFF; color: #111318; font-size: 14px; font-weight: 600; text-decoration: none">Postman collection</a>
+        </div>
+      </div>
+
+      <section aria-labelledby="req-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 20px">
+        <h2 id="req-h" style="margin: 0 0 12px; font-size: 16px; font-weight: 800">Request body</h2>
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px">
+          <thead><tr style="text-align: left; color: #5A6170"><th style="padding: 8px 0; font-weight: 600">Field</th><th style="padding: 8px 0; font-weight: 600">Type</th><th style="padding: 8px 0; font-weight: 600">Rules</th></tr></thead>
+          <tbody>
+            
+              <tr style="border-top: 1px solid #EEF0F3"><td style="padding: 9px 0"><code style="font-family: ui-monospace, monospace; font-weight: 700">productId</code> <span style="font-size: 12px; color: #B42318; font-weight: 700">required</span></td><td style="padding: 9px 0; color: #3B414D">string</td><td style="padding: 9px 0; color: #3B414D">An existing SKU</td></tr>
+            
+              <tr style="border-top: 1px solid #EEF0F3"><td style="padding: 9px 0"><code style="font-family: ui-monospace, monospace; font-weight: 700">variant</code> <span style="font-size: 12px; color: #B42318; font-weight: 700"></span></td><td style="padding: 9px 0; color: #3B414D">string</td><td style="padding: 9px 0; color: #3B414D">Required when the product has variants</td></tr>
+            
+              <tr style="border-top: 1px solid #EEF0F3"><td style="padding: 9px 0"><code style="font-family: ui-monospace, monospace; font-weight: 700">quantity</code> <span style="font-size: 12px; color: #B42318; font-weight: 700">required</span></td><td style="padding: 9px 0; color: #3B414D">integer</td><td style="padding: 9px 0; color: #3B414D">1 to 5</td></tr>
+            
+          </tbody>
+        </table>
+      </section>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 18px">
+        <section aria-labelledby="ex-h" style="flex: 1 1 300px; min-width: 0; background: #14171C; color: #E4E7EC; border-radius: 16px; padding: 18px 20px">
+          <h2 id="ex-h" style="margin: 0 0 10px; font-size: 14px; font-weight: 700; color: #FFFFFF">Example request</h2>
+          <pre style="margin: 0; font-family: ui-monospace, monospace; font-size: 13px; line-height: 1.6; white-space: pre-wrap; word-break: break-word">curl -X POST "$ORVILO_URL/api/v1/cart/items" \
+  -H "Authorization: Bearer &lt;token&gt;" \
+  -H "Content-Type: application/json" \
+  -d '{"productId":"ELE-0031","variant":"tactile-graphite","quantity":1}'</pre>
+        </section>
+        <section aria-labelledby="res-h" style="flex: 1 1 300px; min-width: 0; background: #14171C; color: #E4E7EC; border-radius: 16px; padding: 18px 20px">
+          <div style="display: flex; gap: 6px; margin-bottom: 10px" role="tablist" aria-label="Response examples">
+            <button type="button" role="tab" aria-selected="true" style="min-height: 30px; padding: 0 10px; border: 0; border-radius: 7px; background: #2A6B48; color: #FFFFFF; font: inherit; font-size: 12px; font-weight: 700">201</button>
+            <button type="button" role="tab" aria-selected="false" style="min-height: 30px; padding: 0 10px; border: 0; border-radius: 7px; background: #2A2F38; color: #C4C9D2; font: inherit; font-size: 12px; font-weight: 700">400</button>
+            <button type="button" role="tab" aria-selected="false" style="min-height: 30px; padding: 0 10px; border: 0; border-radius: 7px; background: #2A2F38; color: #C4C9D2; font: inherit; font-size: 12px; font-weight: 700">401</button>
+            <button type="button" role="tab" aria-selected="false" style="min-height: 30px; padding: 0 10px; border: 0; border-radius: 7px; background: #2A2F38; color: #C4C9D2; font: inherit; font-size: 12px; font-weight: 700">409</button>
+          </div>
+          <h2 id="res-h" class="sr-only">Example response</h2>
+          <pre style="margin: 0; font-family: ui-monospace, monospace; font-size: 13px; line-height: 1.6; white-space: pre-wrap">{
+  "cartId": "c_8f21",
+  "items": [
+    { "productId": "ELE-0031", "quantity": 1,
+      "unitPrice": 89.00 }
+  ],
+  "subtotal": 89.00,
+  "reservedUntil": "2026-10-28T14:27:00Z"
+}</pre>
+        </section>
+      </div>
+
+      <section aria-labelledby="err-h" style="background: #FFFFFF; border: 1px solid #E3E6EB; border-radius: 16px; padding: 20px">
+        <h2 id="err-h" style="margin: 0 0 12px; font-size: 16px; font-weight: 800">Errors</h2>
+        <ul style="list-style: none; margin: 0; padding: 0; font-size: 14px; display: flex; flex-direction: column; gap: 8px">
+          <li><code style="font-family: ui-monospace, monospace; font-weight: 700">400 VALIDATION_ERROR</code> — quantity is not an integer from 1 to 5</li>
+          <li><code style="font-family: ui-monospace, monospace; font-weight: 700">401 UNAUTHENTICATED</code> — missing or expired token</li>
+          <li><code style="font-family: ui-monospace, monospace; font-weight: 700">409 OUT_OF_STOCK</code> — not enough stock to reserve</li>
+          <li><code style="font-family: ui-monospace, monospace; font-weight: 700">429 RATE_LIMITED</code> — see the Retry-After header</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+</div>
+</body>
+</html>

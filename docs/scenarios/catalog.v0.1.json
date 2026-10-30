@@ -1,0 +1,575 @@
+{
+  "catalogVersion": "0.1.0",
+  "contractVersion": "0.1",
+  "status": "source-backed draft",
+  "scenarioCount": 10,
+  "modeSemantics": {
+    "normal": "Target contract classification for reliable business behavior; not a current runtime selector.",
+    "practice": "Target contract classification for automation exercises; not a current runtime selector.",
+    "defect-lab": "Target contract classification only; no defect-lab scenario is published in this catalog."
+  },
+  "storageModes": {
+    "memory": "Legacy Express memory storage exposed through /api; forced by SHOPLAB_STORAGE=legacy or used when DATABASE_URL is absent.",
+    "postgres": "PostgreSQL storage exposed through /api/v2 when DATABASE_URL is configured and SHOPLAB_STORAGE is not legacy."
+  },
+  "fixtureSemantics": {
+    "fixtureVersion": null,
+    "details": "No fixture-version API or immutable published fixture bundle exists. fixtureVersion is null on every scenario rather than inventing a version. Current prerequisites name the existing seed or disposable-account mechanism."
+  },
+  "resetSemantics": {
+    "legacy-global": "Playwright global setup calls POST /api/reset once before the legacy reference run. This is global and destructive to disposable memory state, not a run-scoped reset.",
+    "disposable-postgres-cleanup": "The database smoke script removes its own disposable account and related records. This is cleanup for that script, not a general scenario-reset API.",
+    "unavailable": "No scenario-scoped or test-run-scoped reset endpoint is implemented."
+  },
+  "scenarios": [
+    {
+      "scenarioId": "AUTH-LOGIN-001",
+      "scenarioVersion": "1.0.0",
+      "title": "Standard customer signs in and restores an authenticated session",
+      "difficulty": "level-1-beginner",
+      "implementationStatus": "implemented-source-backed",
+      "requiredMode": "normal",
+      "supportedStorageModes": ["memory"],
+      "route": "/login",
+      "fixtureVersion": null,
+      "prerequisites": [
+        "Run against a disposable legacy-memory environment with the current seed.",
+        "Use the standard_user fixture identifier and PASSWORD from tests/support/test-data.ts; do not copy credentials into an external manifest.",
+        "Start with a signed-out browser context."
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "action": "Open /login, fill the username and password, and submit.",
+          "selectors": ["label: Username or email", "label: Password (exact)", "role=button name=Sign in"]
+        },
+        {
+          "order": 2,
+          "action": "Open the signed-in user menu after navigation to /shop.",
+          "selectors": ["data-testid=user-menu", "data-testid=signed-in-as"]
+        },
+        {
+          "order": 3,
+          "action": "For the separate storage assertion, inspect localStorage after UI login.",
+          "selectors": ["localStorage key: shoplab.token"]
+        }
+      ],
+      "observableResults": [
+        "The browser reaches /shop.",
+        "A toast containing Welcome back is visible.",
+        "The signed-in identity is standard_user.",
+        "The separate session test observes a UUID-shaped token under shoplab.token."
+      ],
+      "timeoutPolicy": "Existing Playwright defaults: 30000 ms test timeout and 7000 ms assertion timeout.",
+      "reset": {
+        "availability": "legacy-global",
+        "details": "The reference suite resets global memory state once in global setup; there is no per-scenario reset."
+      },
+      "cleanup": "Close the browser context. Seeded users remain until the next legacy global reset.",
+      "sourceReferences": [
+        "tests/e2e/auth.spec.ts:7-14",
+        "tests/e2e/auth.spec.ts:127-140",
+        "tests/pages/login-page.ts:12-31",
+        "tests/support/global-setup.ts:4-14"
+      ],
+      "knownLimitations": [
+        "This scenario describes the legacy seeded login, not PostgreSQL authenticator MFA.",
+        "Session persistence is evidenced by the existing token test; this is not a cross-browser or long-duration expiry certification."
+      ]
+    },
+    {
+      "scenarioId": "AUTH-EMAIL-OTP-001",
+      "scenarioVersion": "1.0.0",
+      "title": "Legacy email OTP challenge uses the matching test-inbox message",
+      "difficulty": "level-2-intermediate",
+      "implementationStatus": "implemented-source-backed",
+      "requiredMode": "normal",
+      "supportedStorageModes": ["memory"],
+      "route": "/login/verify",
+      "fixtureVersion": null,
+      "prerequisites": [
+        "Run against legacy memory storage with the mfa_user seed and test mailbox available.",
+        "Start signed out and use the PASSWORD fixture from tests/support/test-data.ts."
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "action": "Sign in as mfa_user and capture the login response mfaToken.",
+          "selectors": ["label: Username or email", "label: Password (exact)", "role=button name=Sign in", "POST /api/login"]
+        },
+        {
+          "order": 2,
+          "action": "Read the test mailbox and select the message whose ref equals this login response's mfaToken.",
+          "selectors": ["GET /api/test/mailbox?to=mfa_user@shoplab.test", "mail field: ref", "mail field: code"]
+        },
+        {
+          "order": 3,
+          "action": "Type the six-digit code into the first auto-advancing digit input and submit.",
+          "selectors": ["label: Digit 1", "role=button name=Verify and sign in"]
+        }
+      ],
+      "observableResults": [
+        "Password login navigates to /login/verify.",
+        "data-testid=otp-sent-to displays m***@shoplab.test.",
+        "A matching mailbox message supplies the current code even if other mailbox entries exist.",
+        "Successful verification reaches /shop and data-testid=user-name is Mfa User."
+      ],
+      "timeoutPolicy": "Existing Playwright defaults: 30000 ms test timeout and 7000 ms assertion timeout.",
+      "reset": {
+        "availability": "legacy-global",
+        "details": "Only the legacy global reset is available; mailbox and challenge state are not run-scoped."
+      },
+      "cleanup": "Close the browser context. Mailbox and memory fixtures remain until global reset.",
+      "sourceReferences": [
+        "tests/e2e/auth.spec.ts:84-99",
+        "tests/e2e/auth.spec.ts:101-107"
+      ],
+      "knownLimitations": [
+        "This is legacy email OTP, not PostgreSQL authenticator TOTP or backup-code MFA.",
+        "The test mailbox is a development/test surface and must not be treated as a production email integration."
+      ]
+    },
+    {
+      "scenarioId": "AUTH-MFA-001",
+      "scenarioVersion": "1.0.0",
+      "title": "PostgreSQL authenticator enrollment, backup-code sign-in, and disablement",
+      "difficulty": "level-3-advanced",
+      "implementationStatus": "implemented-source-backed",
+      "requiredMode": "practice",
+      "supportedStorageModes": ["postgres"],
+      "route": "/account/security",
+      "fixtureVersion": null,
+      "prerequisites": [
+        "Use an authorized disposable PostgreSQL development environment and a newly registered smoke account.",
+        "Build the current TypeScript backend before running the existing database smoke script.",
+        "Generate TOTP values at runtime from the enrollment secret with the pinned otplib dependency.",
+        "Keep generated secrets, passwords, tokens, and backup codes out of the catalog and external reports."
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "action": "Open security settings, enter the disposable account's current password, and begin enrollment.",
+          "selectors": ["data-testid=mfa-settings-form", "data-testid=mfa-password", "data-testid=mfa-action"]
+        },
+        {
+          "order": 2,
+          "action": "Read the enrollment secret, generate the current TOTP, submit it, and capture the eight one-use backup codes.",
+          "selectors": ["data-testid=mfa-secret", "data-testid=mfa-code", "data-testid=mfa-backup-codes"]
+        },
+        {
+          "order": 3,
+          "action": "Sign out, authenticate with the disposable username and password, then use one backup code at the challenge.",
+          "selectors": ["data-testid=username", "data-testid=password", "data-testid=login-btn", "data-testid=mfa-backup-code", "data-testid=otp-submit"]
+        },
+        {
+          "order": 4,
+          "action": "Return to security settings and disable MFA with the current password and a different backup code.",
+          "selectors": ["data-testid=mfa-settings-form", "data-testid=mfa-password", "data-testid=mfa-code", "data-testid=mfa-action", "data-testid=mfa-status"]
+        }
+      ],
+      "observableResults": [
+        "Enrollment returns a secret and exactly eight backup codes.",
+        "Backup-code verification reaches /shop.",
+        "After disablement, data-testid=mfa-status is Not enabled.",
+        "The smoke flow consumes different backup codes for sign-in and disablement."
+      ],
+      "timeoutPolicy": "Use the database smoke script's waits and overall test timeout; do not shorten security-state waits without rerunning the source scenario.",
+      "reset": {
+        "availability": "unavailable",
+        "details": "No run-scoped reset exists. The smoke script instead deletes its disposable account and related records."
+      },
+      "cleanup": "Use the existing smoke-v2-storefront.cjs cleanupUser path for its own disposable account; never substitute a global database reset.",
+      "sourceReferences": [
+        "scripts/smoke-v2-storefront.cjs:12-37",
+        "scripts/smoke-v2-storefront.cjs:277-305",
+        "scripts/smoke-v2-storefront.cjs:354-358",
+        "package.json:26"
+      ],
+      "knownLimitations": [
+        "The current smoke proves enrollment, backup-code sign-in, and disablement; it is not a complete replay-rejection or authenticator-interoperability matrix.",
+        "The scenario uses variables from a disposable runtime account and must never contain hard-coded database IDs, generated secrets, or credentials."
+      ]
+    },
+    {
+      "scenarioId": "AUTH-DENIED-001",
+      "scenarioVersion": "1.0.0",
+      "title": "Customer is denied admin navigation and admin API access",
+      "difficulty": "level-2-intermediate",
+      "implementationStatus": "implemented-source-backed",
+      "requiredMode": "normal",
+      "supportedStorageModes": ["memory"],
+      "route": "/admin",
+      "fixtureVersion": null,
+      "prerequisites": [
+        "Run against legacy memory storage.",
+        "Authenticate as a freshly registered non-admin customer through the existing user fixture."
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "action": "Open /admin as the customer and inspect the main navigation.",
+          "selectors": ["data-testid=access-denied", "role=navigation name=Main", "role=link name=Admin"]
+        },
+        {
+          "order": 2,
+          "action": "With the same customer API context, request the tested admin endpoints, including a write attempt.",
+          "selectors": ["GET /api/admin/stats", "GET /api/admin/products", "POST /api/admin/products", "GET /api/admin/users", "PATCH /api/admin/orders/ORD-1"]
+        }
+      ],
+      "observableResults": [
+        "data-testid=access-denied contains Access denied.",
+        "The Admin link in Main navigation is hidden.",
+        "Every tested admin API request returns HTTP 403."
+      ],
+      "timeoutPolicy": "Existing Playwright defaults: 30000 ms test timeout and 7000 ms assertion timeout.",
+      "reset": {
+        "availability": "legacy-global",
+        "details": "The reference run uses the global memory reset, not an authorization-specific reset."
+      },
+      "cleanup": "Close customer API and browser contexts; no admin records should be created.",
+      "sourceReferences": [
+        "tests/e2e/admin.spec.ts:4-8",
+        "tests/api/admin.api.spec.ts:3-7",
+        "tests/support/fixtures.ts:45-56"
+      ],
+      "knownLimitations": [
+        "The endpoint list is the current reference set, not a proof that every possible future admin route is covered.",
+        "Hiding navigation is supporting UI evidence; HTTP 403 is the authorization assertion."
+      ]
+    },
+    {
+      "scenarioId": "CATALOG-FILTER-001",
+      "scenarioVersion": "1.0.0",
+      "title": "Price range and in-stock filters update the URL and visible products",
+      "difficulty": "level-1-beginner",
+      "implementationStatus": "implemented-source-backed",
+      "requiredMode": "normal",
+      "supportedStorageModes": ["memory"],
+      "route": "/shop",
+      "fixtureVersion": null,
+      "prerequisites": [
+        "Run as a guest against the current legacy product seed.",
+        "Use products returned by the current catalog rather than row position as product identity."
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "action": "Open /shop and wait for the product grid to finish loading.",
+          "selectors": ["data-testid=product-grid attribute aria-busy=false", "data-testid=product-card"]
+        },
+        {
+          "order": 2,
+          "action": "Set minimum price to 20 and maximum price to 50, then apply the price filter.",
+          "selectors": ["label: Minimum price", "label: Maximum price", "role=button name=Apply price"]
+        },
+        {
+          "order": 3,
+          "action": "Check In stock only and wait for the grid again.",
+          "selectors": ["role=checkbox name=In stock only", "data-testid=product-grid attribute aria-busy=false"]
+        },
+        {
+          "order": 4,
+          "action": "Read every displayed product price and search the visible cards for Out of stock.",
+          "selectors": ["data-testid=product-card", "data-testid=product-price", "text: Out of stock"]
+        }
+      ],
+      "observableResults": [
+        "The URL contains minPrice=20, maxPrice=50, and inStock=true.",
+        "Every displayed price is between 20 and 50 inclusive.",
+        "No visible product card contains Out of stock."
+      ],
+      "timeoutPolicy": "Existing Playwright defaults: 30000 ms test timeout and 7000 ms assertion timeout; wait for aria-busy=false after each filter.",
+      "reset": {
+        "availability": "legacy-global",
+        "details": "Filtering is read-only; the suite-level memory reset restores the seed before a run."
+      },
+      "cleanup": "Clear filters or close the guest browser context; no persistent user records are created.",
+      "sourceReferences": [
+        "tests/e2e/catalog.spec.ts:66-80",
+        "tests/pages/shop-page.ts:18-60"
+      ],
+      "knownLimitations": [
+        "This exact filter assertion is sourced from the legacy reference test, not the PostgreSQL smoke.",
+        "The scenario verifies visible results and URL state, not the database query plan or all pagination combinations."
+      ]
+    },
+    {
+      "scenarioId": "SHOP-CHECKOUT-001",
+      "scenarioVersion": "1.0.0",
+      "title": "Customer searches, checks out, and opens the persisted order detail",
+      "difficulty": "level-2-intermediate",
+      "implementationStatus": "implemented-source-backed",
+      "requiredMode": "normal",
+      "supportedStorageModes": ["memory", "postgres"],
+      "route": "/shop",
+      "fixtureVersion": null,
+      "prerequisites": [
+        "Use a signed-in disposable customer and an authorized disposable environment.",
+        "Resolve Robot Building Kit by search and visible product name; never hard-code a PostgreSQL product ID.",
+        "For PostgreSQL, use the current seeded catalog and the existing database smoke script with its own newly registered account.",
+        "Use only the published test card data from tests/support/test-data.ts; no real payment details."
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "action": "Search for robot and open the exact Robot Building Kit product by its visible product-name link.",
+          "selectors": ["role=searchbox name=Search products", "data-testid=product-card", "data-testid=product-name"]
+        },
+        {
+          "order": 2,
+          "action": "Increase quantity from one to two and add the product to the cart.",
+          "selectors": ["role=button name=Increase quantity", "data-testid=product-detail data-testid=add-to-cart", "data-testid=cart-badge"]
+        },
+        {
+          "order": 3,
+          "action": "Open Cart, record the order-summary total, and proceed to checkout.",
+          "selectors": ["role=link name=Cart", "data-testid=order-summary", "data-testid=total", "role=link name=Proceed to checkout"]
+        },
+        {
+          "order": 4,
+          "action": "Complete Address, Delivery, Payment, and Review using the existing checkout fixtures.",
+          "selectors": ["role=list name=Checkout progress [aria-current=step]", "label: Full name", "label: Phone", "label: Address line 1", "label: City", "label: Country", "label: State / region", "label: Postal code", "role=button name=Continue to delivery", "role=button name=Continue to payment", "label: Card number", "label: Expiry (MM/YY)", "label: CVV", "label: Name on card", "role=button name=Review order"]
+        },
+        {
+          "order": 5,
+          "action": "Verify the review, accept the terms, place the order, and retain the generated order ID.",
+          "selectors": ["data-testid=card-last4", "data-testid=review-item", "data-testid=summary-total", "role=checkbox name=/I agree to the terms of sale/", "role=button name=/Place order/", "data-testid=order-success", "data-testid=order-id", "data-testid=order-total"]
+        },
+        {
+          "order": 6,
+          "action": "Open View order and compare its identity, status, and total with confirmation.",
+          "selectors": ["role=link name=View order", "data-testid=order-heading", "data-testid=order-status", "data-testid=order-total", "data-testid=cart-badge"]
+        }
+      ],
+      "observableResults": [
+        "The cart badge is 2 after adding quantity two.",
+        "The review shows card last4 4242, Robot Building Kit × 2, and the same total recorded in the cart.",
+        "Confirmation displays Thank you for your order!, a generated order ID, and the unchanged total.",
+        "The cart badge returns to 0.",
+        "Order detail shows the generated order ID, Placed, and the unchanged total.",
+        "The PostgreSQL smoke additionally covers SAVE10, express shipping, invoice download, and cancellation with a generated order ID."
+      ],
+      "timeoutPolicy": "Legacy uses Playwright defaults. The PostgreSQL smoke allows 25000 ms for navigation to checkout completion.",
+      "reset": {
+        "availability": "legacy-global; disposable-postgres-cleanup",
+        "details": "Memory has only the global suite reset. PostgreSQL has no run-scoped reset; the smoke cleans up only its disposable account and related records."
+      },
+      "cleanup": "For memory, close the context and use the next authorized global reset. For PostgreSQL, let the existing smoke cleanup cancel and remove its own orders and account; do not reset shared data.",
+      "sourceReferences": [
+        "tests/e2e/checkout.spec.ts:6-41",
+        "tests/pages/checkout-page.ts:17-72",
+        "tests/pages/shop-page.ts:33-59",
+        "scripts/smoke-v2-storefront.cjs:100-105",
+        "scripts/smoke-v2-storefront.cjs:135-213",
+        "scripts/smoke-v2-storefront.cjs:354-358"
+      ],
+      "knownLimitations": [
+        "The exact Robot Building Kit, total-equality, and View order assertions are from the legacy test; the PostgreSQL smoke covers the same business flow but is not an identical step-for-step trace.",
+        "This scenario alone does not prove stored-total integrity, stock reduction, duplicate-request idempotency, or cancellation stock restoration; those require separate API/database invariants before claiming full contract acceptance.",
+        "A success toast or confirmation page alone is not sufficient evidence; retain the generated order ID and inspect order detail."
+      ]
+    },
+    {
+      "scenarioId": "ORDER-CANCEL-001",
+      "scenarioVersion": "1.0.0",
+      "title": "Customer confirms or aborts cancellation from order detail",
+      "difficulty": "level-2-intermediate",
+      "implementationStatus": "implemented-source-backed",
+      "requiredMode": "normal",
+      "supportedStorageModes": ["memory", "postgres"],
+      "route": "/orders/{orderId}",
+      "fixtureVersion": null,
+      "prerequisites": [
+        "Authenticate as a disposable customer and create an order owned by that customer.",
+        "Resolve orderId at runtime from the created order or confirmation page; never hard-code a PostgreSQL ID.",
+        "The order must still be in a cancellable state."
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "action": "Open the generated order detail and select Cancel order.",
+          "selectors": ["data-testid=order-heading", "role=button name=Cancel order"]
+        },
+        {
+          "order": 2,
+          "action": "In the confirmation dialog named Cancel {orderId}?, choose Keep order.",
+          "selectors": ["role=dialog name=Cancel {orderId}?", "role=button name=Keep order", "data-testid=order-status"]
+        },
+        {
+          "order": 3,
+          "action": "Reopen cancellation and choose Yes, cancel order.",
+          "selectors": ["role=button name=Cancel order", "role=button name=Yes, cancel order", "data-testid=timeline-cancelled"]
+        }
+      ],
+      "observableResults": [
+        "Keep order leaves status Placed.",
+        "Confirmed cancellation changes status to Cancelled.",
+        "The Cancelled timeline step has data-done=true.",
+        "The Cancel order button is hidden after cancellation.",
+        "The PostgreSQL smoke confirms cancellation through data-testid=cancel-order, data-testid=confirm-ok, and data-testid=order-status."
+      ],
+      "timeoutPolicy": "Existing Playwright defaults; wait for the server-backed order status rather than assuming the click is sufficient.",
+      "reset": {
+        "availability": "legacy-global; disposable-postgres-cleanup",
+        "details": "No scenario-scoped reset exists. The memory suite resets globally; PostgreSQL smoke removes its own disposable records."
+      },
+      "cleanup": "Retain the cancelled order for assertions, then use only the owning test's existing cleanup path.",
+      "sourceReferences": [
+        "tests/e2e/orders.spec.ts:24-36",
+        "tests/pages/orders-page.ts:16-35",
+        "scripts/smoke-v2-storefront.cjs:209-213"
+      ],
+      "knownLimitations": [
+        "The Keep order dialog branch is asserted in the legacy test; the PostgreSQL smoke confirms the cancellation branch.",
+        "Stock restoration and financial side effects are not asserted by this UI scenario and must not be inferred from status text alone."
+      ]
+    },
+    {
+      "scenarioId": "UI-DIALOG-001",
+      "scenarioVersion": "1.0.0",
+      "title": "Native alert, confirm, and prompt produce observable lab results",
+      "difficulty": "level-1-beginner",
+      "implementationStatus": "implemented-source-backed",
+      "requiredMode": "practice",
+      "supportedStorageModes": ["memory"],
+      "route": "/lab",
+      "fixtureVersion": null,
+      "prerequisites": [
+        "Open /lab in a guest browser context.",
+        "Register one-shot dialog handlers before clicking each triggering button."
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "action": "Within the dialogs lab card, accept the alert and assert its type and message.",
+          "selectors": ["data-testid=lab-dialogs", "role=button name=Alert", "data-testid=dialog-result"]
+        },
+        {
+          "order": 2,
+          "action": "Dismiss the confirm dialog.",
+          "selectors": ["data-testid=lab-dialogs", "role=button name=Confirm", "data-testid=dialog-result"]
+        },
+        {
+          "order": 3,
+          "action": "Accept the prompt with Rupesh and verify its default value was Tester.",
+          "selectors": ["data-testid=lab-dialogs", "role=button name=Prompt", "data-testid=dialog-result"]
+        }
+      ],
+      "observableResults": [
+        "The alert message is Hello from VORTEX! and the result is Alert dismissed.",
+        "Dismissing confirm produces Confirmed: Cancel.",
+        "Accepting the prompt produces Hello, Rupesh!."
+      ],
+      "timeoutPolicy": "Existing Playwright defaults: 30000 ms test timeout and 7000 ms assertion timeout.",
+      "reset": {
+        "availability": "legacy-global",
+        "details": "The lab is client-side practice state; no scenario-scoped reset endpoint exists. Reloading resets the card for a fresh context."
+      },
+      "cleanup": "Close the browser context; no database record is required.",
+      "sourceReferences": [
+        "tests/e2e/lab.spec.ts:5-23"
+      ],
+      "knownLimitations": [
+        "Browser automation must handle native dialogs through tool events, not DOM locators.",
+        "This is target Practice classification, not evidence of an implemented Practice mode selector."
+      ]
+    },
+    {
+      "scenarioId": "UI-FRAME-001",
+      "scenarioVersion": "1.0.0",
+      "title": "Nested frames preserve independent interaction contexts",
+      "difficulty": "level-2-intermediate",
+      "implementationStatus": "implemented-source-backed",
+      "requiredMode": "practice",
+      "supportedStorageModes": ["memory"],
+      "route": "/lab",
+      "fixtureVersion": null,
+      "prerequisites": [
+        "Open /lab in a guest browser context.",
+        "Use frame locators rooted at the published outer-frame and inner-frame test IDs."
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "action": "Inside the outer frame, click the button initially named Clicked 0 times.",
+          "selectors": ["frameLocator: [data-testid=outer-frame]", "role=button name=/Clicked 0 times/", "data-testid=outer-counter"]
+        },
+        {
+          "order": 2,
+          "action": "From the outer frame, enter the nested inner frame, fill Your name with Rupesh, and select Greet.",
+          "selectors": ["frameLocator: [data-testid=inner-frame]", "label: Your name", "role=button name=Greet", "data-testid=inner-greeting"]
+        }
+      ],
+      "observableResults": [
+        "The outer frame counter becomes Clicked 1 time.",
+        "The inner frame greeting becomes Hello, Rupesh!."
+      ],
+      "timeoutPolicy": "Existing Playwright defaults: 30000 ms test timeout and 7000 ms assertion timeout.",
+      "reset": {
+        "availability": "legacy-global",
+        "details": "No frame-specific reset API exists; use a fresh page or reload /lab."
+      },
+      "cleanup": "Close the browser context; no persistent business records are created.",
+      "sourceReferences": [
+        "tests/e2e/lab.spec.ts:39-47"
+      ],
+      "knownLimitations": [
+        "A page-level locator is not a substitute for the correct frame context.",
+        "The scenario does not claim cross-origin iframe support beyond the current lab pages."
+      ]
+    },
+    {
+      "scenarioId": "UI-SHADOW-001",
+      "scenarioVersion": "1.0.0",
+      "title": "Open shadow roots are selectable and closed internals stay behind the public API",
+      "difficulty": "level-3-advanced",
+      "implementationStatus": "implemented-source-backed",
+      "requiredMode": "practice",
+      "supportedStorageModes": ["memory"],
+      "route": "/lab",
+      "fixtureVersion": null,
+      "prerequisites": [
+        "Open /lab in a guest browser context and scope locators to data-testid=lab-shadow.",
+        "Use an automation tool with open-shadow-root locator support.",
+        "Do not rely on closed-root internals; use only the component's documented public reveal method."
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "action": "Select the 4 stars button inside the open shadow component.",
+          "selectors": ["data-testid=lab-shadow", "role=button name=4 stars", "data-testid=shadow-rating-text", "data-testid=shadow-host"]
+        },
+        {
+          "order": 2,
+          "action": "Inspect the nested open shadow chip and its slotted light-DOM text.",
+          "selectors": ["data-testid=shadow-chip attribute part=chip", "lab-chip text=shadow-in-shadow"]
+        },
+        {
+          "order": 3,
+          "action": "Assert that the closed-root Reveal secret button is not locator-visible, then call reveal() on closed-shadow-host.",
+          "selectors": ["role=button name=Reveal secret expected count=0", "data-testid=closed-shadow-host", "public method: reveal()", "data-testid=closed-shadow-host attribute revealed=true"]
+        }
+      ],
+      "observableResults": [
+        "The rating text is You rated 4/5 and shadow-host has value=4.",
+        "The nested chip has part=chip and lab-chip contains shadow-in-shadow.",
+        "No Reveal secret button is selectable through the closed root.",
+        "Calling the public reveal() method sets revealed=true on closed-shadow-host."
+      ],
+      "timeoutPolicy": "Existing Playwright defaults: 30000 ms test timeout and 7000 ms assertion timeout.",
+      "reset": {
+        "availability": "legacy-global",
+        "details": "No shadow-component reset endpoint exists; use a fresh page or reload /lab."
+      },
+      "cleanup": "Close the browser context; no persistent business records are created.",
+      "sourceReferences": [
+        "tests/e2e/lab.spec.ts:49-60"
+      ],
+      "knownLimitations": [
+        "Closed-root internals are deliberately not promised to be selectable.",
+        "Calling reveal() is component API interaction, not general closed-shadow-root piercing.",
+        "Open-root locator behavior is tool-specific; another recorder must demonstrate equivalent behavior before claiming compatibility."
+      ]
+    }
+  ]
+}

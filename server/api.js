@@ -3,6 +3,8 @@ const crypto = require('crypto');
 const { db, reset, recomputeRatings, CATEGORIES, COUPONS, SHIPPING, COUNTRIES, DEFAULT_CHAOS } = require('./store');
 
 const api = express.Router();
+const { guard, productionLocked } = require('../src/test-hooks/guard');
+api.use(guard);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const r2 = n => Math.round(n * 100) / 100;
 const fail = (res, status, error, extra = {}) => res.status(status).json({ error, ...extra });
@@ -27,32 +29,9 @@ api.use(async (req, res, next) => {
 });
 
 /* ---------------- auth helpers ---------------- */
-function tokenOf(req) {
-  const h = req.get('authorization') || '';
-  if (h.startsWith('Bearer ')) return h.slice(7);
-  return req.query.token || '';
-}
-function issueSession(username, remember) {
-  const token = crypto.randomUUID();
-  const ttl = remember ? 7 * 24 * 3600 : db.chaos.sessionTtlSec;
-  db.sessions[token] = { username, expiresAt: Date.now() + ttl * 1000 };
-  return { token, expiresAt: new Date(db.sessions[token].expiresAt).toISOString() };
-}
-function auth(req, res, next) {
-  const t = tokenOf(req);
-  const s = db.sessions[t];
-  if (!t || !s) return fail(res, 401, 'Unauthorized');
-  if (Date.now() > s.expiresAt) { delete db.sessions[t]; return fail(res, 401, 'Session expired', { code: 'SESSION_EXPIRED' }); }
-  const user = db.users[s.username];
-  if (!user) return fail(res, 401, 'Unauthorized');
-  if (user.locked) return fail(res, 423, 'This account is locked');
-  req.user = user;
-  req.token = t;
-  next();
-}
-const admin = (req, res, next) => (req.user.role === 'admin' ? next() : fail(res, 403, 'Admin access required'));
+const { tokenOf, issueSession, auth, admin } = require('../src/auth/sessions');
 // Seeded bugs are on when: global bug mode, problem_user, or the x-shoplab-bugs: 1 header.
-const bug = req => db.chaos.bugMode || !!(req.user && req.user.bug) || req.get('x-shoplab-bugs') === '1';
+const bug = req => !productionLocked() && (db.chaos.bugMode || !!(req.user && req.user.bug) || req.get('x-shoplab-bugs') === '1');
 const publicUser = u => ({ username: u.username, email: u.email, name: u.name, phone: u.phone, role: u.role, avatar: u.avatar, createdAt: u.createdAt });
 
 // `ref` ties a mail to the request that caused it (e.g. the mfaToken) so parallel tests can find *their* code
@@ -590,7 +569,7 @@ api.put('/admin/products/:id', auth, admin, (req, res) => {
 });
 api.delete('/admin/products/:id', auth, admin, (req, res) => {
   const p = findProduct(req, res); if (!p) return;
-  db.products = db.products.filter(x => x.id !== p.id);
+  require('../src/workflows/delete-product').deleteProduct(db, p.id);
   res.status(204).end();
 });
 api.get('/admin/orders', auth, admin, (req, res) => res.json(db.orders));
@@ -645,3 +624,5 @@ api.use((err, req, res, next) => {
 });
 
 module.exports = api;
+
+
