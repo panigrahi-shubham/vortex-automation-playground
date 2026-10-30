@@ -2,7 +2,7 @@
 
 **Built to Break. Designed to Test.**
 
-[Visit the live playground](https://shoplabdemowebsite.vercel.app) · [Testing guide](https://shoplabdemowebsite.vercel.app/pages/testing-guide.html) · [About](https://shoplabdemowebsite.vercel.app/pages/about.html) · [Future roadmap](docs/ROADMAP.md)
+[Visit the live playground](https://vortex-automation-playground.vercel.app) · [Testing guide](https://vortex-automation-playground.vercel.app/pages/testing-guide.html) · [About](https://vortex-automation-playground.vercel.app/pages/about.html) · [Future roadmap](docs/ROADMAP.md)
 
 VORTEX is an existing Express and vanilla-JavaScript e-commerce application for practising browser, API and database automation. It includes catalog, account, cart, checkout and order journeys plus UI laboratories, network controls and intentionally defective legacy exercises.
 
