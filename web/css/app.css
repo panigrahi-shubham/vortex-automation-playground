@@ -270,6 +270,9 @@ tbody tr:hover { background: var(--surface-2); }
 .lab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; align-items: start; }
 .lab-grid .card h2 { font-size: 16px; display: flex; justify-content: space-between; gap: 8px; }
 .lab-grid .card h2 .tag { font-size: 11px; font-family: var(--mono); color: var(--muted); font-weight: 500; }
+.vortex-lab-options { margin-bottom: 16px; }
+.vortex-lab-options select { width: auto; }
+.vortex-lab-actions { margin-top: 12px; }
 .out { font-family: var(--mono); font-size: 13px; background: var(--surface-2); border: 1px dashed var(--line); border-radius: 6px; padding: 6px 10px; min-height: 32px; margin-top: 8px; word-break: break-word; }
 .kanban { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .kanban .col { background: var(--surface-2); border: 1px dashed var(--line); border-radius: 8px; padding: 8px; min-height: 140px; }

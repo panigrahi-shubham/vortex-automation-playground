@@ -13,7 +13,7 @@ const routes = [
   [/^\/settings$/, 'account', 'settings'],
   [/^\/account(?:\/(profile|security|avatar|settings))?$/, 'account', 'render'],
   [/^\/admin(?:\/(products|orders|users))?$/, 'admin', 'render'],
-  [/^\/lab$/, 'lab', 'render'], [/^\/mailbox$/, 'mailbox', 'render'], [/^\/docs$/, 'docs', 'render']
+  [/^\/lab(?:\/([\w-]+))?$/, 'lab', 'render'], [/^\/mailbox$/, 'mailbox', 'render'], [/^\/docs$/, 'docs', 'render']
 ];
 
 let renderId = 0;
@@ -52,7 +52,7 @@ window.addEventListener('popstate', router);
 window.addEventListener('route', router);
 
 // Intercept same-origin links for client-side navigation
-const SERVER_PAGES = /^\/(api|terms|bank|lab\/)/;
+const SERVER_PAGES = /^\/(api|terms|bank|lab\/(?:popup|frame-outer|frame-inner)(?:[/?#]|$))/;
 document.addEventListener('click', e => {
   const a = e.target.closest('a[href]');
   if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
