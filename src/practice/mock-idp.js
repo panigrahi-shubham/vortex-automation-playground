@@ -1,5 +1,6 @@
 const express = require('express');
 const { createHmac, randomBytes, timingSafeEqual } = require('node:crypto');
+const { sendDocument } = require('../http/hardening');
 
 const cookieName = 'vortex_sso_grant';
 const localKey = randomBytes(32);
@@ -76,7 +77,7 @@ function mockIdp({ database, production }) {
     res.redirect(303, '/mock-idp/callback?code=' + mint('code', nonce, 60000));
   });
 
-  router.get('/callback', (_req, res) => res.send(html('Finishing practice sign in',
+  router.get('/callback', (_req, res) => sendDocument(res, html('Finishing practice sign in',
     '<p id="vortex-sso-status" role="status">Exchanging the authorization code…</p><script type="module" src="/js/vortex-sso-callback.js"></script>')));
 
   router.post('/exchange', async (req, res, next) => {

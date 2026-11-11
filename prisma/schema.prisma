@@ -53,6 +53,19 @@ model RateLimit {
   @@index([resetsAt])
 }
 
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String
+  action    String
+  targetId  String
+  state     String?
+  requestId String?
+  createdAt DateTime @default(now())
+
+  @@index([actorId, createdAt])
+  @@index([targetId, createdAt])
+}
+
 model MfaCredential {
   userId String @id
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

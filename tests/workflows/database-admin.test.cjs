@@ -5,6 +5,7 @@ const {once}=require('node:events');
 require('dotenv').config();
 test('admin authorization, product lifecycle, order transitions and session revocation',{skip:!process.env.DATABASE_URL},async()=>{
  const {prisma:db}=require('../../dist/db/client'),{tokenHash}=require('../../dist/auth/passwords'),app=require('../../src/app');
+ const {throttleKey}=require('../../dist/auth/throttle');
  const users=[],tokens=[],products=[],orderIds=[];let server;
  try{
   for(const role of ['admin','customer']){
@@ -12,6 +13,9 @@ test('admin authorization, product lifecycle, order transitions and session revo
    users.push(await db.user.create({data:{username:name,email:`${name}@example.test`,name:'Admin fixture',passwordHash:'unused',role,sessions:{create:{tokenHash:tokenHash(token),expiresAt:new Date(Date.now()+180000)}}}}));
   }
   server=app.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://127.0.0.1:${server.address().port}/api/v2`;
+  const readiness = await fetch(base.replace(/\/v2$/, '/ready'));
+  assert.equal(readiness.status, 200);
+  assert.deepEqual(await readiness.json(), { ready: true, storage: 'postgres' });
   const request=(path,method='GET',body,token=tokens[0])=>fetch(base+path,{method,headers:{'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`} : {}),'Idempotency-Key':randomUUID()},...(body===undefined?{}:{body:JSON.stringify(body)})});
   assert.equal((await request('/admin/stats','GET',undefined,'')).status,401);
   for(const path of ['/admin/products','/admin/orders','/admin/users','/admin/stats'])assert.equal((await request(path,'GET',undefined,tokens[1])).status,403);
@@ -20,6 +24,7 @@ test('admin authorization, product lifecycle, order transitions and session revo
   assert.equal((await request('/admin/products','POST',{...data,category:['Books']})).status,422);
   const created=await request('/admin/products','POST',data);assert.equal(created.status,200);const product=await created.json();products.push(product.id);
   const updated=await request(`/admin/products/${product.id}`,'PUT',{...data,price:15,role:'admin',sku:'injected'});assert.equal(updated.status,200);assert.equal((await updated.json()).sku,product.sku);
+  assert.equal((await request('/cart/shipping','PUT',{method:'nextday'},tokens[1])).status,200);
   const checkout=async()=>{
    assert.equal((await request('/cart','POST',{productId:product.id,qty:1},tokens[1])).status,200);
    const r=await request('/checkout','POST',{address:{name:'Tester',line1:'1 Road',city:'Mumbai',postalCode:'400001',country:'IN'},testPayment:'approved',acceptTerms:true},tokens[1]);assert.equal(r.status,200);const o=(await r.json()).order;orderIds.push(o.id);return o;
@@ -37,14 +42,28 @@ test('admin authorization, product lifecycle, order transitions and session revo
   assert.equal(await db.orderLine.count({where:{productId:product.id}}),2);
   assert.equal((await request(`/products/${product.id}`)).status,404);
   const list=await (await request('/admin/users')).json();assert.ok(list.every(u=>u.passwordHash===undefined));
+  const cartLimitKey = throttleKey('vortex-cart', users[1].id);
+  await db.rateLimit.update({ where: { key: cartLimitKey }, data: { count: 120, resetsAt: new Date(Date.now() + 60000) } });
+  assert.equal((await request('/cart', 'GET', undefined, tokens[1])).status, 200);
+  const limited = await request('/cart', 'DELETE', undefined, tokens[1]);
+  assert.equal(limited.status, 429);
+  assert.ok(Number(limited.headers.get('retry-after')) > 0);
   assert.equal((await request(`/admin/users/${users[0].username}`,'PATCH',{locked:true})).status,422);
   assert.equal((await request(`/admin/users/${users[1].username}`,'PATCH',{locked:false,role:'admin'})).status,422);
   assert.equal((await request(`/admin/users/${users[1].username}`,'PATCH',{locked:true})).status,200);
   assert.equal((await request('/me','GET',undefined,tokens[1])).status,401);
   await db.user.update({where:{id:users[0].id},data:{role:'customer'}});
   assert.equal((await request('/admin/stats')).status,403);
+  const audit = await db.auditLog.findMany({ where: { actorId: users[0].id } });
+  assert.ok(audit.some(entry => entry.action === 'vortex.product.created' && entry.targetId === String(product.id)));
+  assert.ok(audit.some(entry => entry.action === 'vortex.product.deleted' && entry.targetId === String(product.id)));
+  assert.ok(audit.some(entry => entry.action === 'vortex.order.status-changed' && entry.targetId === second.id && entry.state === 'Delivered'));
+  assert.ok(audit.some(entry => entry.action === 'vortex.user.locked' && entry.targetId === users[1].id));
+  assert.equal(audit.filter(entry => entry.targetId === first.id && entry.state === 'Cancelled').length, 1);
  }finally{
   if(server){server.closeAllConnections();await new Promise(r=>server.close(r));}
+  await db.auditLog.deleteMany({ where: { actorId: { in: users.map(user => user.id) } } });
+  await db.rateLimit.deleteMany({ where: { key: { in: users.flatMap(user => ['vortex-cart', 'vortex-checkout'].map(scope => throttleKey(scope, user.id))) } } });
   await db.outboxEvent.deleteMany({where:{aggregateId:{in:[...orderIds,...products.map(String)]}}});
   await db.order.deleteMany({where:{userId:{in:users.map(u=>u.id)}}});await db.user.deleteMany({where:{id:{in:users.map(u=>u.id)}}});await db.product.deleteMany({where:{id:{in:products}}});await db.$disconnect();
  }

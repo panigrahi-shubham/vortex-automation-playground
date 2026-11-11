@@ -1,6 +1,8 @@
+import { validateV2, productPath, pagination, z, text } from '../../http/validation';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { Router, Request, RequestHandler } from 'express';
 import { requireSession } from '../../auth/database-sessions';
+import { rateLimit } from '../../auth/throttle';
 import { transaction } from '../../db/transaction';
 import { WorkflowError } from '../../workflows/errors';
 
@@ -19,14 +21,14 @@ export function reviewRoutes(db: PrismaClient) {
     if (!/^\d+$/.test(String(req.params.id)) || !Number.isSafeInteger(value) || value < 1 || value > 2147483647) throw new WorkflowError(400, 'Invalid product ID');
     return value;
   };
-  router.get('/products/:id/reviews', handle(async req => {
+  router.get('/products/:id/reviews', validateV2({ params: productPath, query: pagination }), handle(async req => {
     const productId = id(req), page = Number(req.query.page ?? 1);
     if (!Number.isSafeInteger(page) || page < 1 || page > 1000000) throw new WorkflowError(400, 'Invalid page');
     if (!await db.product.findFirst({ where: { id: productId, deletedAt: null } })) throw new WorkflowError(404, 'Product not found');
     return (await db.review.findMany({ where: { productId }, include: { user: { select: { username: true } } }, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], take: 50, skip: (page - 1) * 50 }))
       .map(({ user, userId, ...review }) => ({ ...review, username: user.username }));
   }));
-  router.post('/products/:id/reviews', requireSession(db), handle(async (req, userId) => {
+  router.post('/products/:id/reviews', requireSession(db), rateLimit(db, 'vortex-reviews', (_req, res) => res.locals.user.id, 20, 60), validateV2({ params: productPath, body: z.object({ rating: z.number().int(), title: text, body: text }) }), handle(async (req, userId) => {
     const productId = id(req);
     const { rating, title, body } = req.body || {};
     if (!Number.isInteger(rating) || rating < 1 || rating > 5) throw new WorkflowError(422, 'Choose a rating from 1 to 5');

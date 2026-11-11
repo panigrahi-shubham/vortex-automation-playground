@@ -11,5 +11,6 @@ playwright/.cache/
 audit.json
 
 .local/
+.vortex-static/
 
 dist/

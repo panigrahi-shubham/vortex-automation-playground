@@ -1,3 +1,4 @@
+import { validateV2, z, text } from '../http/validation';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { Router } from 'express';
 import { requireSession } from './database-sessions';
@@ -8,7 +9,7 @@ import { WorkflowError } from '../workflows/errors';
 
 export function accountRoutes(db: PrismaClient) {
   const router = Router(), auth = requireSession(db);
-  router.put('/me', auth, async (req, res, next) => {
+  router.put('/me', auth, validateV2({ body: z.object({ name: text, email: text, phone: text, currentPassword: text.optional() }) }), async (req, res, next) => {
     const { name, email, phone, currentPassword } = req.body || {};
     const fields: Record<string, string> = {};
     if (typeof name !== 'string' || name.trim().length < 2 || name.trim().length > 100) fields.name = 'Full name must be 2-100 characters';
@@ -33,7 +34,7 @@ export function accountRoutes(db: PrismaClient) {
       next(error);
     }
   });
-  router.put('/me/password', auth, async (req, res, next) => {
+  router.put('/me/password', auth, validateV2({ body: z.object({ currentPassword: text, newPassword: text }) }), async (req, res, next) => {
     const { currentPassword, newPassword } = req.body || {};
     if (typeof currentPassword !== 'string' || currentPassword.length > 128 || !validPassword(newPassword)) { res.status(422).json({ error: 'Use a current password and a new password of 8-128 characters with upper, lower case and a number' }); return; }
     try {
@@ -56,8 +57,8 @@ export function accountRoutes(db: PrismaClient) {
       next(error);
     }
   });
-  router.get('/me/settings', auth, (_req, res) => { res.set('Cache-Control', 'no-store').json(res.locals.user.settings); });
-  router.put('/me/settings', auth, async (req, res, next) => {
+  router.get('/me/settings', auth, validateV2(), (_req, res) => { res.set('Cache-Control', 'no-store').json(res.locals.user.settings); });
+  router.put('/me/settings', auth, validateV2({ body: z.object({ orderEmails: z.boolean(), marketingEmails: z.boolean(), reducedMotion: z.boolean(), theme: z.enum(['system', 'light', 'dark']) }) }, { message: 'Invalid settings' }), async (req, res, next) => {
     const { orderEmails, marketingEmails, theme, reducedMotion } = req.body || {};
     if (typeof orderEmails !== 'boolean' || typeof marketingEmails !== 'boolean' || typeof reducedMotion !== 'boolean' || !['system', 'light', 'dark'].includes(theme)) { res.status(422).json({ error: 'Invalid settings' }); return; }
     try {

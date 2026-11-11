@@ -1,4 +1,5 @@
-import { consume, throttleKey } from './throttle';
+import { validateV2, z, text } from '../http/validation';
+import { clientIp, consume, throttleKey, rateLimit } from './throttle';
 import { Prisma, PrismaClient, User } from '@prisma/client';
 import { Router } from 'express';
 import { randomBytes } from 'node:crypto';
@@ -13,7 +14,7 @@ const dummyHash = hashPassword(randomBytes(32).toString('hex'));
 export function authRoutes(db: PrismaClient) {
   const router = Router();
   const auth = requireSession(db);
-  router.post('/register', async (req, res, next) => {
+  router.post('/register', rateLimit(db, 'vortex-register', clientIp, 60, 60), validateV2({ body: z.object({ username: text, email: text, name: text, password: text, confirmPassword: text, acceptTerms: z.boolean() }) }), async (req, res, next) => {
     try {
       const b = req.body || {};
       const username = typeof b.username === 'string' ? b.username.toLowerCase() : '';
@@ -34,7 +35,7 @@ export function authRoutes(db: PrismaClient) {
       next(error);
     }
   });
-  router.post('/login', async (req, res, next) => {
+  router.post('/login', validateV2({ body: z.object({ username: text, password: text, remember: z.boolean().optional() }) }, { message: 'Username and password are required' }), async (req, res, next) => {
     try {
       const { username, password, remember } = req.body || {};
       if (typeof username !== 'string' || !username || username.length > 254 || typeof password !== 'string' || !password || password.length > 128) { res.status(422).json({ error: 'Username and password are required' }); return; }
@@ -65,8 +66,8 @@ export function authRoutes(db: PrismaClient) {
       res.set('Cache-Control', 'no-store').json({ token, expiresAt, user: profile(user) });
     } catch (error) { next(error); }
   });
-  router.get('/me', auth, (_req, res) => { res.set('Cache-Control', 'no-store').json(profile(res.locals.user)); });
-  router.post('/logout', auth, async (_req, res, next) => {
+  router.get('/me', auth, validateV2(), (_req, res) => { res.set('Cache-Control', 'no-store').json(profile(res.locals.user)); });
+  router.post('/logout', auth, validateV2(), async (_req, res, next) => {
     try {
       await db.session.deleteMany({ where: { tokenHash: res.locals.tokenHash } });
       res.json({ ok: true });
