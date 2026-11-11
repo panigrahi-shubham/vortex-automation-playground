@@ -17,7 +17,7 @@ export async function cart(el, { isCurrent }) {
       return;
     }
     el.innerHTML = `
-      <div class="page-head"><h1>Your cart <span class="muted" style="font-size:16px;font-weight:500" data-testid="cart-count-label">(${t(c.count === 1 ? '{count} item' : '{count} items', { count: c.count })})</span></h1>
+      <div class="page-head"><h1>${t("Your cart")} <span class="muted" style="font-size:16px;font-weight:500" data-testid="cart-count-label">(${t(c.count === 1 ? '{count} item' : '{count} items', { count: c.count })})</span></h1>
         <button class="btn link" id="clear-cart" data-testid="clear-cart">${t("Clear cart")}</button></div>
       <div class="cart-layout">
         <section class="card" aria-label="${t("Cart items")}" data-testid="cart-items">
