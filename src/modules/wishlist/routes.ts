@@ -1,3 +1,4 @@
+import { validateV2, z, productId, positiveNumberString } from '../../http/validation';
 import { Router, Request, RequestHandler } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { requireSession } from '../../auth/database-sessions';
@@ -14,11 +15,11 @@ export function wishlistRoutes(db: PrismaClient) {
     }
   };
   router.use('/wishlist', requireSession(db));
-  router.get('/wishlist', handle(async (_req, userId) => {
+  router.get('/wishlist', validateV2(), handle(async (_req, userId) => {
     const entries = await db.wishlistEntry.findMany({ where: { userId, product: { deletedAt: null } }, include: { product: true }, orderBy: [{ createdAt: 'desc' }, { productId: 'asc' }] });
     return entries.map(({ product: { deletedAt, ...p } }) => ({ ...p, price: Number(p.price) }));
   }));
-  router.post('/wishlist', handle(async (req, userId) => {
+  router.post('/wishlist', validateV2({ body: z.object({ productId }) }), handle(async (req, userId) => {
     const productId = req.body?.productId;
     if (!Number.isSafeInteger(productId) || productId < 1 || productId > 2147483647) throw new WorkflowError(422, 'Invalid product ID');
     return transaction(db, async tx => {
@@ -28,7 +29,7 @@ export function wishlistRoutes(db: PrismaClient) {
       return { productIds: (await tx.wishlistEntry.findMany({ where: { userId, product: { deletedAt: null } }, select: { productId: true } })).map(e => e.productId) };
     });
   }));
-  router.delete('/wishlist/:productId', handle(async (req, userId) => {
+  router.delete('/wishlist/:productId', validateV2({ params: z.object({ productId: positiveNumberString }) }, { status: 422, message: 'Invalid product ID' }), handle(async (req, userId) => {
     const productId = Number(req.params.productId);
     if (!/^\d+$/.test(String(req.params.productId)) || !Number.isSafeInteger(productId) || productId < 1 || productId > 2147483647) throw new WorkflowError(422, 'Invalid product ID');
     const deleted = await db.wishlistEntry.deleteMany({ where: { userId, productId } });

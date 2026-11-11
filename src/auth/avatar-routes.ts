@@ -1,3 +1,4 @@
+import { validateV2, z } from '../http/validation';
 import express, { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
@@ -15,7 +16,7 @@ export function avatarRoutes(db: PrismaClient) {
       if (!limit.allowed) { res.set('Retry-After', String(limit.retryAfter)).status(429).json({ error: 'Too many uploads. Try again later.' }); return; }
       next();
     } catch (error) { next(error); }
-  }, express.raw({ type: Object.keys(formats), limit: '1mb', inflate: false }), async (req, res, next) => {
+  }, express.raw({ type: Object.keys(formats), limit: '1mb', inflate: false }), validateV2({ body: z.instanceof(Buffer).refine(buffer => buffer.length > 0) }, { status: 415, message: 'Upload a PNG, JPEG, GIF or WebP image' }), async (req, res, next) => {
     const mime = (req.get('content-type') || '').split(';')[0].toLowerCase();
     if (!Object.hasOwn(formats, mime) || !Buffer.isBuffer(req.body) || !req.body.length) { res.status(415).json({ error: 'Upload a PNG, JPEG, GIF or WebP image' }); return; }
     let data: Buffer;
@@ -37,7 +38,7 @@ export function avatarRoutes(db: PrismaClient) {
       res.set('Cache-Control','no-store').json({ avatar });
     } catch (error) { next(error); }
   });
-  router.delete('/me/avatar', auth, async (_req, res, next) => {
+  router.delete('/me/avatar', auth, validateV2(), async (_req, res, next) => {
     try {
       await transaction(db, async tx => {
         const userId: string = res.locals.user.id;
@@ -51,7 +52,7 @@ export function avatarRoutes(db: PrismaClient) {
   // Profile photos are public through opaque, random URLs; no user directory is exposed.
   router.get('/avatars/:id', async (req, res, next) => {
     res.set({ 'Cache-Control':'no-store', 'X-Content-Type-Options':'nosniff' });
-    if (!/^[a-f0-9-]{36}$/.test(String(req.params.id))) { res.status(404).end(); return; }
+    if (!z.string().regex(/^[a-f0-9-]{36}$/).safeParse(req.params.id).success) { res.status(404).end(); return; }
     try {
       const avatar = await db.avatar.findUnique({ where: { id:String(req.params.id) } });
       if (!avatar) { res.status(404).end(); return; }

@@ -52,7 +52,8 @@ async function router() {
     console.error(err);
     if (id !== renderId) return;
     if (err instanceof ApiError && err.status === 401) return; // session handler already redirected
-    el.innerHTML = `<div class="empty" role="alert" data-testid="page-error"><div class="big">⚠️</div><h1>Could not load this page</h1><p>${esc(err.message)}</p><button class="btn secondary" onclick="location.reload()">Reload</button></div>`;
+    el.innerHTML = `<div class="empty" role="alert" data-testid="page-error"><div class="big">⚠️</div><h1>Could not load this page</h1><p>${esc(err.message)}</p><button class="btn secondary">Reload</button></div>`;
+    $('button', el).onclick = () => location.reload();
   }
 }
 function notFound(el) {

@@ -1,6 +1,13 @@
 {
   "version": 2,
-  "outputDirectory": "web",
+  "buildCommand": "npm run vercel-build",
+  "outputDirectory": ".vortex-static",
+  "headers": [
+    {
+      "source": "/:folder(assets|css|js)/:path*",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600" }]
+    }
+  ],
   "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
   "functions": {
     "api/index.js": {

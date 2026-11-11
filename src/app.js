@@ -1,27 +1,41 @@
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const express = require('express');
 const path = require('path');
+const fs = require('node:fs');
 const { productionLocked } = require('./test-hooks/guard');
+const { configureHttp, sendDocument } = require('./http/hardening');
 
 const app = express();
 app.disable('x-powered-by');
+const production = productionLocked();
+const { logError } = configureHttp(app, production);
 app.use(express.json({ limit: '200kb' }));
 
 // SHOPLAB_STORAGE=legacy lets the original suite run against memory even when DATABASE_URL is present.
-const production = productionLocked();
 const legacyRequested = process.env.SHOPLAB_STORAGE === 'legacy';
 const hasDatabase = !!process.env.DATABASE_URL;
 // A public production release must run on PostgreSQL; never serve the seeded memory demo instead.
 const configError = !production ? null : legacyRequested ? 'Legacy memory storage is not permitted in production' : !hasDatabase ? 'DATABASE_URL is required in production' : null;
 const storage = configError ? 'unavailable' : legacyRequested || !hasDatabase ? 'memory' : 'postgres';
+const database = storage === 'postgres' ? require('../dist/db/client').prisma : null;
 
 app.get('/api/health', (_req, res) => res.json({ ok: true, uptime: Math.round(process.uptime()), version: '2.0.0' }));
+app.get('/api/ready', async (_req, res) => {
+  res.set('Cache-Control', 'no-store');
+  if (configError) return res.status(503).json({ ready: false });
+  try {
+    if (database) await database.$queryRaw`SELECT 1`;
+    res.json({ ready: true, storage });
+  } catch (error) {
+    logError(res, error, 'Database readiness check failed');
+    res.status(503).json({ ready: false });
+  }
+});
 
 if (configError) {
   app.use('/api', (_req, res) => res.status(503).json({ error: 'Service configuration is incomplete' }));
 } else {
   app.get('/api/config', (_req, res) => { res.set('Cache-Control', 'no-store').json({ storage, recoveryAvailable: storage === 'postgres' && require('../dist/auth/recovery-routes').recoveryAvailable() }); });
-  const database = storage === 'postgres' ? require('../dist/db/client').prisma : null;
   app.post('/api/graphql', require('./practice/graphql').catalogGraphql(database));
   app.use('/mock-idp', require('./practice/mock-idp').mockIdp({ database, production }));
 
@@ -49,26 +63,37 @@ if (configError) {
 }
 
 const pub = path.join(__dirname, '../web');
-app.use(express.static(pub, { index: false }));
+const pages = new Map(fs.readdirSync(path.join(pub, 'pages')).filter(name => name.endsWith('.html'))
+  .map(name => [name, fs.readFileSync(path.join(pub, 'pages', name), 'utf8')]));
+const index = fs.readFileSync(path.join(pub, 'index.html'), 'utf8');
+const documentRoute = name => (_req, res) => sendDocument(res, pages.get(name));
+app.get('/index.html', (_req, res) => sendDocument(res, index));
+app.get('/pages/:name', (req, res, next) => {
+  const page = pages.get(req.params.name);
+  if (!page) return next();
+  sendDocument(res, page);
+});
+app.use(express.static(pub, { index: false, maxAge: '1h' }));
 
 // Lab helper pages (served as real documents so popups / new tabs / iframes have their own URLs)
-app.get('/lab/popup', (req, res) => res.sendFile(path.join(pub, 'pages', 'popup.html')));
-app.get('/lab/frame-outer', (req, res) => res.sendFile(path.join(pub, 'pages', 'frame-outer.html')));
-app.get('/lab/frame-inner', (req, res) => res.sendFile(path.join(pub, 'pages', 'frame-inner.html')));
-app.get('/terms', (req, res) => res.sendFile(path.join(pub, 'pages', 'terms.html')));
-app.get('/bank/3ds', (req, res) => res.sendFile(path.join(pub, 'pages', 'bank-3ds.html')));
+app.get('/lab/popup', documentRoute('popup.html'));
+app.get('/lab/frame-outer', documentRoute('frame-outer.html'));
+app.get('/lab/frame-inner', documentRoute('frame-inner.html'));
+app.get('/terms', documentRoute('terms.html'));
+app.get('/bank/3ds', documentRoute('bank-3ds.html'));
 
 // JSON errors for /api even when body parsing fails before the router runs
-// eslint-disable-next-line no-unused-vars
-app.use('/api', (err, req, res, next) => {
+app.use((err, _req, res, next) => {
+  if (res.headersSent) return next(err);
   if (err.type === 'entity.parse.failed') return res.status(400).json({ error: 'Malformed JSON body' });
   if (err.type === 'encoding.unsupported') return res.status(415).json({ error: 'Compressed request bodies are not supported' });
   if (err.type === 'entity.too.large') return res.status(413).json({ error: 'Payload too large' });
+  logError(res, err, 'Unhandled server error');
   res.status(500).json({ error: 'Internal server error' });
 });
 
 // SPA fallback: every other GET renders the app shell (history-API routing)
-app.get(/^\/(?!api\/).*/, (req, res) => res.sendFile(path.join(pub, 'index.html')));
+app.get(/^\/(?!api\/).*/, (_req, res) => sendDocument(res, index));
 
 
 module.exports = app;
