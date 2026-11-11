@@ -167,6 +167,13 @@ Open the routes below while the storefront runs locally. The default Playwright 
 - [Element replacement](http://localhost:3000/lab/rerender). Enable replacement and locate a button again after it is recreated. The replacement is opt-in.
 - [Moving button](http://localhost:3000/lab/animation). Enable movement and click after the target settles. The motion lasts one second and starts disabled.
 
+## Practice features
+
+- [WebSocket ticker and echo chat](http://localhost:3000/lab/websocket) uses the local Node server started by `npm start`. Connect and wait for a price tick, then send up to 120 characters to receive an echo. Hosted builds show an availability notice.
+- [Simulated single sign-on](http://localhost:3000/lab/sso) uses the mock identity provider at `/mock-idp`. The only demo credentials are `vortex_demo` and `VortexDemo24!`. Approving consent returns a short-lived code that creates a separate customer session. The production mock provider uses the existing `ORVILO_MFA_KEY` as its signing key.
+- [GraphQL catalog query](http://localhost:3000/lab/graphql) sends a read-only query to `POST /api/graphql`. The schema provides `products(q, category, offset, limit)`, `categories(q, offset, limit)`, and `reviews(productId, rating, offset, limit)`. The maximum limit is 50 and the maximum offset is 1000.
+- [English and Hindi](http://localhost:3000/shop) are available from the language switcher on shop, cart, and checkout. The choice is saved to `vortex.locale`. Catalog names, addresses, currencies, and backend response text use their source values. Storefront test IDs are the same in both languages.
+
 ### Local operator command
 
 ```bash

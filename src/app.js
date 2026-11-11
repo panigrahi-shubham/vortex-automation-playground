@@ -21,11 +21,14 @@ if (configError) {
   app.use('/api', (_req, res) => res.status(503).json({ error: 'Service configuration is incomplete' }));
 } else {
   app.get('/api/config', (_req, res) => { res.set('Cache-Control', 'no-store').json({ storage, recoveryAvailable: storage === 'postgres' && require('../dist/auth/recovery-routes').recoveryAvailable() }); });
+  const database = storage === 'postgres' ? require('../dist/db/client').prisma : null;
+  app.post('/api/graphql', require('./practice/graphql').catalogGraphql(database));
+  app.use('/mock-idp', require('./practice/mock-idp').mockIdp({ database, production }));
 
   if (storage === 'postgres') {
     app.use('/api/v2', require('../dist/modules/catalog/metadata').metadataRoutes());
     const { catalogRoutes } = require('../dist/modules/catalog/routes');
-    const { prisma } = require('../dist/db/client');
+    const prisma = database;
     app.use('/api/v2', require('../dist/auth/routes').authRoutes(prisma));
     app.use('/api/v2', require('../dist/auth/account-routes').accountRoutes(prisma));
     app.use('/api/v2', require('../dist/auth/avatar-routes').avatarRoutes(prisma));
