@@ -19,9 +19,28 @@ import dynamicIds from './lab/dynamic-ids.js';
 import table from './lab/table.js';
 import visual from './lab/visual.js';
 import a11y from './lab/a11y.js';
+import datePicker from './lab/date-picker.js';
+import modal from './lab/modal.js';
+import tabs from './lab/tabs.js';
+import accordion from './lab/accordion.js';
+import stepper from './lab/stepper.js';
+import slider from './lab/slider.js';
+import sortable from './lab/sortable.js';
+import editableTable from './lab/editable-table.js';
+import virtualList from './lab/virtual-list.js';
+import toasts from './lab/toasts.js';
+import otp from './lab/otp.js';
+import storage from './lab/storage.js';
+import crossOrigin from './lab/cross-origin.js';
+import locatorTraps from './lab/locator-traps.js';
+import race from './lab/race.js';
+import rerender from './lab/rerender.js';
+import animation from './lab/animation.js';
 import { removeTestIds } from './lab/support.js';
 
 const cards = [dialogs, windows, frames, shadow, dnd, mouse, signature, controls, waits, infinite, files, keyboard, clipboard, geo, clock, network, dynamicIds, table, visual, a11y];
+const newCards = [datePicker, modal, tabs, accordion, stepper, slider, sortable, editableTable, virtualList, toasts, otp, storage, crossOrigin, locatorTraps, race, rerender, animation];
+cards.push(...newCards.map(card => ({ ...card, testId: 'vortex-lab-' + card.id })));
 const levels = { 1: 'Beginner', 2: 'Intermediate', 3: 'Advanced' };
 
 export function render(el, { params = [], query = new URLSearchParams() } = {}) {
@@ -81,7 +100,7 @@ export function render(el, { params = [], query = new URLSearchParams() } = {}) 
 function mountCard(grid, card, { challenge, standalone, challengeQuery, signal }) {
   const section = document.createElement('section');
   section.className = 'card';
-  if (!challenge) section.dataset.testid = `lab-${card.id}`;
+  if (!challenge) section.dataset.testid = card.testId || `lab-${card.id}`;
   section.setAttribute('aria-labelledby', `h-${card.id}`);
   section.innerHTML = `<h2 id="h-${card.id}"><span class="vortex-lab-title">${card.title}</span>${challenge ? '' : `<span class="tag">${card.tag}</span>`}</h2>
     <p class="small muted"><strong>Level ${card.level} · ${levels[card.level]}</strong> · ${esc(card.task)}</p>
@@ -107,7 +126,10 @@ function mountCard(grid, card, { challenge, standalone, challengeQuery, signal }
     card.mount?.(body, { challenge, signal: AbortSignal.any([signal, instance.signal]) });
     if (challenge) removeTestIds(body);
   }
-  reset.addEventListener('click', mount);
+  reset.addEventListener('click', () => {
+    card.reset?.();
+    mount();
+  });
   mount();
   return section;
 }

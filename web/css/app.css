@@ -273,6 +273,28 @@ tbody tr:hover { background: var(--surface-2); }
 .vortex-lab-options { margin-bottom: 16px; }
 .vortex-lab-options select { width: auto; }
 .vortex-lab-actions { margin-top: 12px; }
+.vortex-calendar { margin-top: 8px; }
+.vortex-calendar-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; text-align: center; }
+.vortex-calendar-days button { min-width: 0; padding-inline: 0; }
+.vortex-calendar-days [aria-pressed=true], [role=tab][aria-selected=true] { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); }
+.vortex-lab-dialog { max-width: min(28rem, 90vw); color: var(--ink); }
+.vortex-lab-dialog::backdrop { background: rgb(15 23 42 / 65%); }
+.vortex-accordion h3 { margin: 8px 0; }
+.vortex-accordion button { text-align: left; }
+.vortex-slider { position: relative; height: 24px; margin: 8px 12px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 99px; cursor: ew-resize; touch-action: none; }
+.vortex-slider-thumb { position: absolute; left: 0; top: 50%; transform: translate(-50%, -50%); width: 18px; height: 18px; border-radius: 50%; background: var(--accent); }
+.vortex-sortable { display: grid; gap: 6px; padding-inline-start: 24px; }
+.vortex-sortable button { cursor: grab; }
+.vortex-virtual-list { position: relative; overflow-y: auto; height: 192px; border: 1px solid var(--line); }
+.vortex-virtual-spacer { position: relative; }
+.vortex-virtual-spacer ul { position: absolute; inset-inline: 0; margin: 0; padding-inline-start: 24px; }
+.vortex-virtual-spacer li { height: 32px; line-height: 32px; }
+.vortex-otp { gap: 4px; }
+.vortex-otp input { width: 36px; padding-inline: 4px; text-align: center; }
+.vortex-cross-frame { width: 100%; height: 135px; border: 1px solid var(--line); border-radius: 6px; background: white; }
+.vortex-animation-track { padding-block: 8px; overflow: hidden; }
+.vortex-target-moving { animation: vortex-target-slide 1s ease-in-out; }
+@keyframes vortex-target-slide { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(130px); } }
 .out { font-family: var(--mono); font-size: 13px; background: var(--surface-2); border: 1px dashed var(--line); border-radius: 6px; padding: 6px 10px; min-height: 32px; margin-top: 8px; word-break: break-word; }
 .kanban { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .kanban .col { background: var(--surface-2); border: 1px dashed var(--line); border-radius: 8px; padding: 8px; min-height: 140px; }
