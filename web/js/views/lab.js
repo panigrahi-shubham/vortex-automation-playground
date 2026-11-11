@@ -19,33 +19,19 @@ import dynamicIds from './lab/dynamic-ids.js';
 import table from './lab/table.js';
 import visual from './lab/visual.js';
 import a11y from './lab/a11y.js';
-import datePicker from './lab/date-picker.js';
-import modal from './lab/modal.js';
-import tabs from './lab/tabs.js';
-import accordion from './lab/accordion.js';
-import stepper from './lab/stepper.js';
-import slider from './lab/slider.js';
-import sortable from './lab/sortable.js';
-import editableTable from './lab/editable-table.js';
-import virtualList from './lab/virtual-list.js';
-import toasts from './lab/toasts.js';
-import otp from './lab/otp.js';
-import storage from './lab/storage.js';
-import crossOrigin from './lab/cross-origin.js';
-import locatorTraps from './lab/locator-traps.js';
-import race from './lab/race.js';
-import rerender from './lab/rerender.js';
-import animation from './lab/animation.js';
 import { removeTestIds } from './lab/support.js';
 
 const cards = [dialogs, windows, frames, shadow, dnd, mouse, signature, controls, waits, infinite, files, keyboard, clipboard, geo, clock, network, dynamicIds, table, visual, a11y];
-const newCards = [datePicker, modal, tabs, accordion, stepper, slider, sortable, editableTable, virtualList, toasts, otp, storage, crossOrigin, locatorTraps, race, rerender, animation];
-cards.push(...newCards.map(card => ({ ...card, testId: 'vortex-lab-' + card.id })));
 const levels = { 1: 'Beginner', 2: 'Intermediate', 3: 'Advanced' };
 
-export function render(el, { params = [], query = new URLSearchParams() } = {}) {
+export async function render(el, { params = [], query = new URLSearchParams(), isCurrent = () => true } = {}) {
   const cardId = params[0];
   const selected = cards.filter(card => !cardId || card.id === cardId);
+  if (cardId && !selected.length) {
+    const { default: widgets } = await import('./lab/widgets.js');
+    if (!isCurrent()) return;
+    selected.push(...widgets.filter(card => card.id === cardId));
+  }
   if (!selected.length) {
     setTitle('Lab card not found');
     el.innerHTML = '<div class="empty" role="alert"><h1>Lab card not found</h1><a href="/lab">Back to UI Lab</a></div>';
@@ -70,21 +56,34 @@ export function render(el, { params = [], query = new URLSearchParams() } = {}) 
     </div>
     <div class="lab-grid"></div>`;
   const grid = $('.lab-grid', el);
-  const sections = selected.map(card => mountCard(grid, card, { challenge, standalone: Boolean(cardId), challengeQuery, signal: page.signal }));
-
   const difficulty = $('#vortex-lab-difficulty', el);
+  const sections = [];
+  const filter = () => {
+    for (const { section, level } of sections) {
+      section.hidden = Boolean(difficulty?.value && difficulty.value !== String(level));
+    }
+  };
+  function addCards(definitions) {
+    for (const card of definitions) {
+      const section = mountCard(grid, card, { challenge, standalone: Boolean(cardId), challengeQuery, signal: page.signal });
+      sections.push({ section, level: card.level });
+    }
+    filter();
+  }
   if (difficulty) {
     difficulty.value = levels[query.get('level')] ? query.get('level') : '';
-    const filter = () => {
-      sections.forEach((section, i) => {
-        section.hidden = Boolean(difficulty.value && difficulty.value !== String(selected[i].level));
-      });
-    };
-    filter();
     difficulty.addEventListener('change', filter);
   }
+  addCards(selected);
+  if (!cardId) {
+    import('./lab/widgets.js').then(({ default: widgets }) => {
+      if (!page.signal.aborted) addCards(widgets);
+    }).catch(() => {
+      if (!page.signal.aborted) grid.insertAdjacentHTML('beforeend', '<p role="alert">The additional lab cards could not be loaded. Reload to try again.</p>');
+    });
+  }
 
-  $('#vortex-lab-challenge', el).addEventListener('change', event => {
+  $('#vortex-lab-challenge', el).addEventListener('change', async event => {
     const url = new URL(location.href);
     if (event.target.checked) url.searchParams.set('challenge', '1');
     else url.searchParams.delete('challenge');
@@ -92,8 +91,8 @@ export function render(el, { params = [], query = new URLSearchParams() } = {}) 
     else url.searchParams.delete('level');
     history.replaceState(history.state, '', url);
     page.abort();
-    render(el, { params, query: url.searchParams });
-    $('#vortex-lab-challenge', el).focus({ preventScroll: true });
+    await render(el, { params, query: url.searchParams, isCurrent });
+    if (isCurrent()) $('#vortex-lab-challenge', el)?.focus({ preventScroll: true });
   });
 }
 

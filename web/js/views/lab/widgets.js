@@ -1,0 +1,19 @@
+import datePicker from './date-picker.js';
+import modal from './modal.js';
+import tabs from './tabs.js';
+import accordion from './accordion.js';
+import stepper from './stepper.js';
+import slider from './slider.js';
+import sortable from './sortable.js';
+import editableTable from './editable-table.js';
+import virtualList from './virtual-list.js';
+import toasts from './toasts.js';
+import otp from './otp.js';
+import storage from './storage.js';
+import crossOrigin from './cross-origin.js';
+import locatorTraps from './locator-traps.js';
+import race from './race.js';
+import rerender from './rerender.js';
+import animation from './animation.js';
+
+export default [datePicker, modal, tabs, accordion, stepper, slider, sortable, editableTable, virtualList, toasts, otp, storage, crossOrigin, locatorTraps, race, rerender, animation].map(card => ({ ...card, testId: 'vortex-lab-' + card.id }));
