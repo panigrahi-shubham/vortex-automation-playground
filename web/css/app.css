@@ -273,6 +273,8 @@ tbody tr:hover { background: var(--surface-2); }
 .vortex-lab-options { margin-bottom: 16px; }
 .vortex-lab-options select { width: auto; }
 .vortex-lab-actions { margin-top: 12px; }
+.vortex-language-options { display: flex; gap: 8px; align-items: center; justify-content: flex-end; padding-top: 8px; }
+.vortex-language-options select { width: auto; }
 .vortex-calendar { margin-top: 8px; }
 .vortex-calendar-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; text-align: center; }
 .vortex-calendar-days button { min-width: 0; padding-inline: 0; }

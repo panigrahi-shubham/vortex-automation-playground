@@ -1,4 +1,12 @@
 import { $, $$, state, store, api, esc, navigate, isAuthed, isAdmin, setAuth, refreshCounts, toast, ApiError, loadRuntime, isDatabaseMode, runtime } from './core.js';
+import { language, setLanguage, t } from './locale.js';
+
+const languageSelect = $('#vortex-language');
+languageSelect.value = language();
+languageSelect.onchange = () => {
+  setLanguage(languageSelect.value);
+  navigate(location.pathname + location.search, { replace: true });
+};
 
 /* ---------------- routes (history API, lazy-loaded views) ---------------- */
 const routes = [
@@ -23,6 +31,12 @@ async function router() {
   const el = $('#app');
   const path = location.pathname.replace(/\/+$/, '') || '/';
   const query = new URLSearchParams(location.search);
+  const localized = /^\/(?:shop|cart|checkout(?:\/.*)?)$/.test(path);
+  document.documentElement.lang = localized ? language() : 'en';
+  languageSelect.parentElement.hidden = !localized;
+  languageSelect.labels[0].textContent = t('Language');
+  $('[data-testid=nav-shop]').textContent = t('Shop');
+  $('[data-testid=nav-cart]').setAttribute('aria-label', t('Cart'));
   closeMenus();
   highlightNav(path);
   const match = routes.map(([re, mod, fn]) => ({ m: path.match(re), mod, fn })).find(r => r.m);
@@ -52,7 +66,7 @@ window.addEventListener('popstate', router);
 window.addEventListener('route', router);
 
 // Intercept same-origin links for client-side navigation
-const SERVER_PAGES = /^\/(api|terms|bank|lab\/(?:popup|frame-outer|frame-inner)(?:[/?#]|$))/;
+const SERVER_PAGES = /^\/(api|terms|bank|mock-idp(?:[/?#]|$)|lab\/(?:popup|frame-outer|frame-inner)(?:[/?#]|$))/;
 document.addEventListener('click', e => {
   const a = e.target.closest('a[href]');
   if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
