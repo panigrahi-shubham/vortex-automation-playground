@@ -36,8 +36,10 @@ export async function render(el, { isCurrent = () => true } = {}) {
       load.hidden = true;
     } catch {
       if (!isCurrent()) return;
-      status.textContent = 'The 3D preview is unavailable in this browser. You can still explore the product photo.';
-      load.textContent = 'Try 3D again'; load.disabled = false;
+      status.textContent =
+        'The 3D preview is unavailable in this browser. You can still explore the product photo.';
+      load.textContent = 'Try 3D again';
+      load.disabled = false;
     }
   };
 }

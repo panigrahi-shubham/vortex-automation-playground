@@ -1,4 +1,16 @@
-import { $, $$, api, isDatabaseMode, isAuthed, setTitle, navigate, toast, refreshCounts, setAuth, state } from '../core.js';
+import {
+  $,
+  $$,
+  api,
+  isDatabaseMode,
+  isAuthed,
+  setTitle,
+  navigate,
+  toast,
+  refreshCounts,
+  setAuth,
+  state,
+} from '../core.js';
 
 const defects = [
   ['BUG-01', 'Reversed price sorting', 'Ascending price results arrive in descending order.'],
@@ -14,10 +26,14 @@ const defects = [
 export async function render(el, { isCurrent = () => true } = {}) {
   setTitle('Practice workspace');
   if (!isDatabaseMode()) {
-    el.innerHTML = '<section class="card"><h1>Practice workspace</h1><p>Your personal workspace is available with the PostgreSQL store. In local memory mode, use the existing chaos controls and seeded bug exercises.</p><a class="btn" href="/lab">Explore the UI Lab →</a></section>';
+    el.innerHTML =
+      '<section class="card"><h1>Practice workspace</h1><p>Your personal workspace is available with the PostgreSQL store. In local memory mode, use the existing chaos controls and seeded bug exercises.</p><a class="btn" href="/lab">Explore the UI Lab →</a></section>';
     return;
   }
-  if (!isAuthed()) { navigate('/login?returnTo=%2Fpractice'); return; }
+  if (!isAuthed()) {
+    navigate('/login?returnTo=%2Fpractice');
+    return;
+  }
   const profile = await api('/vortex/practice');
   if (!isCurrent()) return;
   el.innerHTML = `<div class="page-head"><div><p class="vortex-eyebrow">YOUR OWN SPACE TO EXPERIMENT</p><h1>Practice workspace</h1></div><a class="btn secondary" href="/shop">Explore the store ↗</a></div>
@@ -32,23 +48,39 @@ export async function render(el, { isCurrent = () => true } = {}) {
   let busy = false;
   async function change(path, method, body) {
     if (busy) return;
-    busy = true; $$('button', form).forEach(b => { b.disabled = true; });
+    busy = true;
+    $$('button', form).forEach((b) => {
+      b.disabled = true;
+    });
     try {
       await api(path, { method, body });
-      const me = await api('/me'); setAuth(state.token, me);
-      await refreshPracticeBanner(); await refreshCounts();
+      const me = await api('/me');
+      setAuth(state.token, me);
+      await refreshPracticeBanner();
+      await refreshCounts();
       toast('Practice workspace updated');
       if (isCurrent()) await render(el, { isCurrent });
     } catch (error) {
-      if (isCurrent()) $('[data-testid=vortex-practice-status]', form).textContent = error.message + ' Refresh the page before trying again.';
-    } finally { busy = false; $$('button', form).forEach(b => { b.disabled = false; }); }
+      if (isCurrent())
+        $('[data-testid=vortex-practice-status]', form).textContent =
+          error.message + ' Refresh the page before trying again.';
+    } finally {
+      busy = false;
+      $$('button', form).forEach((b) => {
+        b.disabled = false;
+      });
+    }
   }
-  form.onsubmit = e => {
+  form.onsubmit = (e) => {
     e.preventDefault();
-    change('/vortex/practice', 'PUT', { enabled: form.enabled.checked, defects: $$('[name=defect]:checked', form).map(input => input.value) });
+    change('/vortex/practice', 'PUT', {
+      enabled: form.enabled.checked,
+      defects: $$('[name=defect]:checked', form).map((input) => input.value),
+    });
   };
   $('[data-testid=vortex-practice-reset]', form).onclick = () => {
-    if (confirm('Reset your personal practice catalog, cart, orders, reviews, and defects?')) change('/vortex/practice/reset', 'POST', { generation: profile.generation });
+    if (confirm('Reset your personal practice catalog, cart, orders, reviews, and defects?'))
+      change('/vortex/practice/reset', 'POST', { generation: profile.generation });
   };
   $('[data-testid=vortex-practice-exit]', form).onclick = () => {
     if (confirm('Leave practice and clear your personal workspace?')) change('/vortex/practice', 'DELETE');
@@ -60,6 +92,9 @@ export async function refreshPracticeBanner() {
   if (!banner) return;
   banner.hidden = true;
   if (!isDatabaseMode() || !isAuthed()) return;
-  try { banner.hidden = !(await api('/vortex/practice', { quiet: true })).enabled; }
-  catch { banner.hidden = true; }
+  try {
+    banner.hidden = !(await api('/vortex/practice', { quiet: true })).enabled;
+  } catch {
+    banner.hidden = true;
+  }
 }
