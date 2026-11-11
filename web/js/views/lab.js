@@ -24,9 +24,14 @@ import { removeTestIds } from './lab/support.js';
 const cards = [dialogs, windows, frames, shadow, dnd, mouse, signature, controls, waits, infinite, files, keyboard, clipboard, geo, clock, network, dynamicIds, table, visual, a11y];
 const levels = { 1: 'Beginner', 2: 'Intermediate', 3: 'Advanced' };
 
-export function render(el, { params = [], query = new URLSearchParams() } = {}) {
+export async function render(el, { params = [], query = new URLSearchParams(), isCurrent = () => true } = {}) {
   const cardId = params[0];
   const selected = cards.filter(card => !cardId || card.id === cardId);
+  if (cardId && !selected.length) {
+    const { default: widgets } = await import('./lab/widgets.js');
+    if (!isCurrent()) return;
+    selected.push(...widgets.filter(card => card.id === cardId));
+  }
   if (!selected.length) {
     setTitle('Lab card not found');
     el.innerHTML = '<div class="empty" role="alert"><h1>Lab card not found</h1><a href="/lab">Back to UI Lab</a></div>';
@@ -51,21 +56,34 @@ export function render(el, { params = [], query = new URLSearchParams() } = {}) 
     </div>
     <div class="lab-grid"></div>`;
   const grid = $('.lab-grid', el);
-  const sections = selected.map(card => mountCard(grid, card, { challenge, standalone: Boolean(cardId), challengeQuery, signal: page.signal }));
-
   const difficulty = $('#vortex-lab-difficulty', el);
+  const sections = [];
+  const filter = () => {
+    for (const { section, level } of sections) {
+      section.hidden = Boolean(difficulty?.value && difficulty.value !== String(level));
+    }
+  };
+  function addCards(definitions) {
+    for (const card of definitions) {
+      const section = mountCard(grid, card, { challenge, standalone: Boolean(cardId), challengeQuery, signal: page.signal });
+      sections.push({ section, level: card.level });
+    }
+    filter();
+  }
   if (difficulty) {
     difficulty.value = levels[query.get('level')] ? query.get('level') : '';
-    const filter = () => {
-      sections.forEach((section, i) => {
-        section.hidden = Boolean(difficulty.value && difficulty.value !== String(selected[i].level));
-      });
-    };
-    filter();
     difficulty.addEventListener('change', filter);
   }
+  addCards(selected);
+  if (!cardId) {
+    import('./lab/widgets.js').then(({ default: widgets }) => {
+      if (!page.signal.aborted) addCards(widgets);
+    }).catch(() => {
+      if (!page.signal.aborted) grid.insertAdjacentHTML('beforeend', '<p role="alert">The additional lab cards could not be loaded. Reload to try again.</p>');
+    });
+  }
 
-  $('#vortex-lab-challenge', el).addEventListener('change', event => {
+  $('#vortex-lab-challenge', el).addEventListener('change', async event => {
     const url = new URL(location.href);
     if (event.target.checked) url.searchParams.set('challenge', '1');
     else url.searchParams.delete('challenge');
@@ -73,15 +91,15 @@ export function render(el, { params = [], query = new URLSearchParams() } = {}) 
     else url.searchParams.delete('level');
     history.replaceState(history.state, '', url);
     page.abort();
-    render(el, { params, query: url.searchParams });
-    $('#vortex-lab-challenge', el).focus({ preventScroll: true });
+    await render(el, { params, query: url.searchParams, isCurrent });
+    if (isCurrent()) $('#vortex-lab-challenge', el)?.focus({ preventScroll: true });
   });
 }
 
 function mountCard(grid, card, { challenge, standalone, challengeQuery, signal }) {
   const section = document.createElement('section');
   section.className = 'card';
-  if (!challenge) section.dataset.testid = `lab-${card.id}`;
+  if (!challenge) section.dataset.testid = card.testId || `lab-${card.id}`;
   section.setAttribute('aria-labelledby', `h-${card.id}`);
   section.innerHTML = `<h2 id="h-${card.id}"><span class="vortex-lab-title">${card.title}</span>${challenge ? '' : `<span class="tag">${card.tag}</span>`}</h2>
     <p class="small muted"><strong>Level ${card.level} · ${levels[card.level]}</strong> · ${esc(card.task)}</p>
@@ -107,7 +125,10 @@ function mountCard(grid, card, { challenge, standalone, challengeQuery, signal }
     card.mount?.(body, { challenge, signal: AbortSignal.any([signal, instance.signal]) });
     if (challenge) removeTestIds(body);
   }
-  reset.addEventListener('click', mount);
+  reset.addEventListener('click', () => {
+    card.reset?.();
+    mount();
+  });
   mount();
   return section;
 }

@@ -242,6 +242,30 @@
       </article>
     </section>
 
+    <section class="guide-section" aria-labelledby="vortex-widgets-title">
+      <h2 id="vortex-widgets-title">UI Lab widget exercises</h2>
+      <p>Open a card by itself to practice and reset its state. Run <code>npm run vortex:frame</code> in a second terminal for the cross-origin exercise.</p>
+      <ul>
+        <li><a href="/lab/date-picker">Date range picker</a>. Choose a start and end date across months. The fixture opens in November 2026.</li>
+        <li><a href="/lab/modal">Modal overlay</a>. Cycle focus inside the dialog and dismiss it with Escape or the backdrop. It uses the browser’s modal dialog semantics.</li>
+        <li><a href="/lab/tabs">Tabs</a>. Switch panels with arrow keys. The tab state resets when you reopen the card.</li>
+        <li><a href="/lab/accordion">Accordion</a>. Open two answers in turn. Only one answer can stay expanded.</li>
+        <li><a href="/lab/stepper">Multi-step form</a>. Enter a recipient and select delivery, then move between steps. The form keeps values until reset and never creates an order.</li>
+        <li><a href="/lab/slider">Custom slider</a>. Drag to a value or use arrow keys. Pointer results depend on the position relative to the track.</li>
+        <li><a href="/lab/sortable">Sortable list</a>. Reorder three tasks using a drag or arrow keys. The exercise only updates the displayed list.</li>
+        <li><a href="/lab/editable-table">Editable table</a>. Edit a quantity, select rows, and archive them. The table uses disposable browser data.</li>
+        <li><a href="/lab/virtual-list">Virtualized list</a>. Scroll through 500 logical rows and verify the DOM contains only visible rows. The demo uses fixed row heights.</li>
+        <li><a href="/lab/toasts">Auto dismiss toast</a>. Wait for the toast to disappear after three seconds. Use an assertion that waits for hidden state.</li>
+        <li><a href="/lab/otp">Split OTP fields</a>. Enter the practice code 246810. This exercise does not authenticate or send a message.</li>
+        <li><a href="/lab/storage">Cookies and local storage</a>. Set both the member cookie and local preference, then reload. Reset clears both values for this card.</li>
+        <li><a href="/lab/cross-origin">Cross-origin iframe</a>. Send a message from port 3101 using postMessage. This local exercise uses a different origin from the storefront.</li>
+        <li><a href="/lab/locator-traps">Locator traps</a>. Scope repeated Email fields and Remove buttons. An unscoped action intentionally triggers a strict-mode error.</li>
+        <li><a href="/lab/race">Request race</a>. Compare the latest result with the slower first request. The instability switch permits a stale response to overwrite the latest result.</li>
+        <li><a href="/lab/rerender">Element replacement</a>. Enable replacement and locate a button again after it is recreated. The replacement is opt-in.</li>
+        <li><a href="/lab/animation">Moving button</a>. Enable movement and click after the target settles. The motion lasts one second and starts disabled.</li>
+      </ul>
+    </section>
+
     <section class="guide-section" aria-labelledby="checklist-title">
       <h2 id="checklist-title">Manual results checklist</h2>
       <p class="guide-intro">Use these local checkboxes only after recording evidence elsewhere. They are not saved, submitted, or treated as deployment certification.</p>
