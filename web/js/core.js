@@ -1,4 +1,5 @@
 import { request as requestV2, V2HttpError } from './api-v2.js';
+import { catalogPhoto } from './product-photos.js';
 
 // Core helpers shared by every view: API client, auth state, toasts, modals, forms, images.
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -44,6 +45,8 @@ const CAT_COLORS = {
 };
 /** Deterministic SVG product image — no network, identical in every run (good for visual tests). */
 export function productImage(p, variant = 0) {
+  const photo = catalogPhoto(p.name);
+  if (photo) return `<img class="vortex-product-photo vortex-photo-view-${variant}" src="${photo}" alt="${esc(p.name)}${variant ? ` view ${variant + 1}` : ''}" aria-label="${esc(p.name)}${variant ? ` view ${variant + 1}` : ''}" width="480" height="480" loading="lazy" decoding="async">`;
   const [dark, light] = CAT_COLORS[p.category] || ['#44403c', '#f5f5f4'];
   const initials = esc(p.name.replace(/[^A-Za-z0-9 ]/g, '').split(' ').filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase());
   const seed = (p.id * 37 + variant * 11) % 100;

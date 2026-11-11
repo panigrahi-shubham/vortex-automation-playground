@@ -152,6 +152,7 @@ export async function request(rawPath, { method = 'GET', body, token, raw = fals
   const [path, search = ''] = rawPath.split('?');
   const query = new URLSearchParams(search);
   const verb = method.toUpperCase();
+  if (path === '/vortex/practice' || path === '/vortex/practice/reset') return call(path, { method: verb, body, token });
 
   /* ---- read-only metadata is available without the legacy API ---- */
   if (path === '/meta' && verb === 'GET') return call('/meta');
@@ -173,9 +174,9 @@ export async function request(rawPath, { method = 'GET', body, token, raw = fals
   if ((path === '/password/forgot' || path === '/password/reset') && verb === 'POST') return call(path, { method: verb, body });
 
   /* ---- catalog ---- */
-  if (path === '/categories' && verb === 'GET') return call('/categories');
+  if (path === '/categories' && verb === 'GET') return call('/categories', { token });
   if (path === '/deal' && verb === 'GET') {
-    const deal = await call('/deal');
+    const deal = await call('/deal', { token });
     return { ...deal, product: normalizeProduct(deal.product) };
   }
   if (path === '/products' && verb === 'GET') {
@@ -185,12 +186,12 @@ export async function request(rawPath, { method = 'GET', body, token, raw = fals
       if (value) params.set(key, value);
     }
 
-    const data = await call(`/products${params.toString() ? `?${params}` : ''}`);
+    const data = await call(`/products${params.toString() ? `?${params}` : ''}`, { token });
     return { ...data, items: data.items.map(normalizeProduct) };
   }
   if (/^\/products\/\d+\/reviews$/.test(path) && verb === 'GET') return call(path + (search ? '?' + search : ''), { token });
   if (/^\/products\/\d+\/reviews$/.test(path) && verb === 'POST') return call(path, { method: verb, body, token });
-  if (/^\/products\/\d+$/.test(path) && verb === 'GET') return normalizeProduct(await call(path));
+  if (/^\/products\/\d+$/.test(path) && verb === 'GET') return normalizeProduct(await call(path, { token }));
 
   /* ---- wishlist ---- */
   if (path === '/wishlist' && verb === 'GET') return (await call('/wishlist', { token })).map(normalizeProduct);

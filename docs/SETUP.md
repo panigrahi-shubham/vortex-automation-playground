@@ -184,6 +184,18 @@ This **mutates the development database**: it grants the admin role to an existi
 
 ## 7. Current limitations
 
+### Personal defect practice and the 3D studio
+
+Open `/practice` in PostgreSQL mode with a signed-in account to enter a private practice workspace. Each account has its own catalog snapshot, cart, wishlist, reviews, orders, display name, and defect selection. All eight bugs start off. Reset clears that workspace and its defects. A reset from a stale tab returns 409 until the tab refreshes.
+
+The catalog snapshot supports up to 1000 products, and a workspace supports 100 orders before reset. New or changed shared products appear after a personal reset. Leaving and clearing practice retains a generation counter to reject old reset requests. Credentials, MFA, and real account settings use their existing workflows.
+
+The new schema is in `202611110002_vortex_practice`. Run database tests only against Compose or the disposable GitHub Actions PostgreSQL service. A production migration needs its own explicit authorization.
+
+Open `/showroom` for the Three.js material study. The user loads WebGL on demand, then rotates the mug by drag or keyboard and changes its finish. Resources are disposed on navigation. Reduced-motion preferences stop auto-rotation. Browsers without WebGL retain the product photo and a retry message. This is a conceptual model for the exercise.
+
+All 40 seeded product names have local WebP photos. Their enlarged gallery views crop the same photo. Custom products continue to use the existing generated placeholder. Asset prompts and provenance are recorded in [Asset sources](ASSET_SOURCES.md).
+
 - PostgreSQL and legacy modes do not have identical auth, test-control, event or payment behavior.
 - No scoped per-test-run reset API, durable event subscribers, real recovery email delivery or production deployment verification is supplied by setup alone.
 - Seller/RFQ workflows, remaining commerce work and complete reference-design parity

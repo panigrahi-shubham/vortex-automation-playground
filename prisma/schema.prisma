@@ -29,6 +29,16 @@ model User {
   mfa         MfaCredential?
   mfaLogins   MfaLogin[]
   backupCodes MfaBackupCode[]
+  practice    PracticeProfile?
+}
+
+model PracticeProfile {
+  userId     String  @id
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enabled    Boolean @default(false)
+  defects    String[]
+  generation Int     @default(0)
+  workspace  Json
 }
 
 model Session {

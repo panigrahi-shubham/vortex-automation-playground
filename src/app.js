@@ -40,6 +40,7 @@ if (configError) {
   app.use('/mock-idp', require('./practice/mock-idp').mockIdp({ database, production }));
 
   if (storage === 'postgres') {
+    app.use('/api/v2', require('../dist/practice/routes').practiceRoutes(database));
     app.use('/api/v2', require('../dist/modules/catalog/metadata').metadataRoutes());
     const { catalogRoutes } = require('../dist/modules/catalog/routes');
     const prisma = database;
@@ -63,6 +64,7 @@ if (configError) {
 }
 
 const pub = path.join(__dirname, '../web');
+app.use('/js/vendor/three', express.static(path.dirname(require.resolve('three')), { maxAge: '1d', index: false }));
 const pages = new Map(fs.readdirSync(path.join(pub, 'pages')).filter(name => name.endsWith('.html'))
   .map(name => [name, fs.readFileSync(path.join(pub, 'pages', name), 'utf8')]));
 const index = fs.readFileSync(path.join(pub, 'index.html'), 'utf8');
