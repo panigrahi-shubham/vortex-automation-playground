@@ -84,9 +84,21 @@ export async function list(el, { query, isCurrent }) {
   if (!isCurrent()) return;
   const selected = new Set(q.category.split(',').filter(Boolean));
   el.innerHTML = `
+    ${!Object.values(q).some(Boolean) ? `<section class="vortex-store-hero" aria-labelledby="vortex-hero-title" data-testid="vortex-store-hero">
+      <div class="vortex-hero-copy"><p class="vortex-eyebrow">${t('THE VORTEX COLLECTION')}</p>
+        <h2 id="vortex-hero-title">${t('Everyday finds.')}<br><em>${t('Endless possibilities.')}</em></h2>
+        <p>${t('Discover considered essentials for your desk, your home, and everything in between.')}</p>
+        <div class="row"><a class="btn" href="#vortex-catalog">${t('Explore the collection')} <span aria-hidden="true">↗</span></a><a class="vortex-hero-secondary" href="/showroom">${t('Step into 3D')} <span aria-hidden="true">→</span></a></div>
+        <span class="vortex-hero-note">${t('A practice store. Every interaction is a chance to learn.')}</span>
+      </div>
+      <div class="vortex-hero-media"><img src="/assets/products/vortex-hero.webp" width="1200" height="800" alt="${t('Headphones and a compact speaker on sculptural studio plinths')}" fetchpriority="high"><a class="vortex-hero-float" href="/shop?category=Electronics">${t('Find your next favorite')} <span aria-hidden="true">↗</span></a></div>
+    </section>
+    <nav class="vortex-category-rail" aria-label="${t('Shop by collection')}">
+      ${cats.map(c => `<a href="/shop?category=${encodeURIComponent(c.name)}" ${selected.has(c.name) ? 'aria-current="page"' : ''}>${esc(c.name)} <span aria-hidden="true">↗</span></a>`).join('')}
+    </nav>` : ''}
     <div class="promo-bar" data-testid="promo-bar"><span>🏷️ ${t("Use code")} <strong>SAVE10</strong> ${t("for 10% off")} · <span id="deal" data-testid="deal-of-day">${t("Loading today's deal…")}</span></span>
       <span>${t("Flash sale ends in")} <strong class="mono" data-testid="sale-countdown" id="countdown">--:--:--</strong></span></div>
-    <div class="page-head">
+    <div class="page-head" id="vortex-catalog">
       <h1 data-testid="shop-title">${q.q ? t("Results for “{query}”", { query: esc(q.q) }) : t("All products")}</h1>
       <form class="row" id="search-form" role="search" style="flex:1;max-width:460px;flex-wrap:nowrap">
         <input type="search" name="q" value="${esc(q.q)}" placeholder="${t("Search products…")}" aria-label="${t("Search products")}" data-testid="search" autocomplete="off">

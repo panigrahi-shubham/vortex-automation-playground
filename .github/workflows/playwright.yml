@@ -70,4 +70,5 @@ jobs:
       - run: PGPASSWORD=vortex_ci psql -h localhost -U vortex -d vortex_test -c 'CREATE ROLE anon; CREATE ROLE authenticated;'
       - run: npm run db:migrate
       - run: npm run db:seed:catalog
+      - run: npx playwright install --with-deps chromium
       - run: npm run test:db

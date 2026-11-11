@@ -11,7 +11,7 @@
   "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
   "functions": {
     "api/index.js": {
-      "includeFiles": "{web,dist,server/certs,node_modules/.prisma}/**"
+      "includeFiles": "{web,dist,server/certs,node_modules/.prisma,node_modules/three/build}/**"
     }
   }
 }

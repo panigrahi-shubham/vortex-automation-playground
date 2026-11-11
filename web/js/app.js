@@ -21,7 +21,8 @@ const routes = [
   [/^\/settings$/, 'account', 'settings'],
   [/^\/account(?:\/(profile|security|avatar|settings))?$/, 'account', 'render'],
   [/^\/admin(?:\/(products|orders|users))?$/, 'admin', 'render'],
-  [/^\/lab(?:\/([\w-]+))?$/, 'lab', 'render'], [/^\/mailbox$/, 'mailbox', 'render'], [/^\/docs$/, 'docs', 'render']
+  [/^\/lab(?:\/([\w-]+))?$/, 'lab', 'render'], [/^\/mailbox$/, 'mailbox', 'render'], [/^\/docs$/, 'docs', 'render'],
+  [/^\/practice$/, 'practice', 'render'], [/^\/showroom$/, 'showroom', 'render']
 ];
 
 let renderId = 0;
@@ -97,6 +98,7 @@ function renderHeader() {
     <div class="menu" id="user-menu" role="menu" aria-label="Account">
       <div class="small muted" style="padding:6px 10px">Signed in as <strong data-testid="signed-in-as">${esc(u.username)}</strong></div><hr>
       <a role="menuitem" href="/account" data-testid="menu-account">My account</a>
+      <a role="menuitem" href="/practice" data-testid="vortex-menu-practice">Practice workspace</a>
       <a role="menuitem" href="/orders" data-testid="menu-orders">My orders</a>
       <a role="menuitem" href="/wishlist" data-testid="menu-wishlist">Wishlist</a>
       ${isAdmin() ? '<a role="menuitem" href="/admin" data-testid="menu-admin">Admin console</a>' : ''}
@@ -247,6 +249,11 @@ function connectEvents() {
     catch { /* 401 handled by api() */ }
   }
   renderHeader(); refreshCounts(); connectEvents(); cookieBanner();
+  if (isDatabaseMode()) {
+    const { refreshPracticeBanner } = await import('./views/practice.js');
+    refreshPracticeBanner();
+    document.addEventListener('auth-changed', refreshPracticeBanner);
+  }
   if (!isDatabaseMode()) loadChaos();
   router();
 })();
