@@ -26,6 +26,7 @@ if (configError) {
     app.use('/api/v2', require('../dist/modules/catalog/metadata').metadataRoutes());
     const { catalogRoutes } = require('../dist/modules/catalog/routes');
     const { prisma } = require('../dist/db/client');
+    app.use('/api/v2/business', require('../server/business-routes.cjs').businessRoutes({ db: prisma, auth: require('../dist/auth/database-sessions').requireSession(prisma) }));
     app.use('/api/v2', require('../dist/auth/routes').authRoutes(prisma));
     app.use('/api/v2', require('../dist/auth/account-routes').accountRoutes(prisma));
     app.use('/api/v2', require('../dist/auth/avatar-routes').avatarRoutes(prisma));
@@ -42,7 +43,10 @@ if (configError) {
 
   // The legacy in-memory API is a development/reference surface; production exposes only /api/v2.
   if (production) app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found' }));
-  else app.use('/api', require('../server/api'));
+  else {
+    app.use('/api/business', require('../server/business-routes.cjs').businessRoutes({ auth: require('./auth/sessions').auth }));
+    app.use('/api', require('../server/api'));
+  }
 }
 
 const pub = path.join(__dirname, '../web');

@@ -54,7 +54,7 @@ export async function login(el, { query }) {
         </div>
         <button class="btn block" type="submit" data-testid="login-btn">Sign in</button>
       </form>
-      <p class="small" style="margin:16px 0 0;text-align:center">New here? <a href="/register" data-testid="register-link">Create an account</a></p>
+      <p class="small" style="margin:16px 0 0;text-align:center">New here? <a href="/register?returnTo=${encodeURIComponent(safeReturn(query))}" data-testid="register-link">Create an account</a></p>
     </div>
     ${isDatabaseMode() ? '' : `<details class="card small" style="margin-top:16px" data-testid="test-accounts">
       <summary style="cursor:pointer;font-weight:600">Test accounts (password <code>secret123</code>)</summary>
@@ -147,8 +147,8 @@ export async function verify(el) {
 }
 
 /* ================= REGISTER ================= */
-export async function register(el) {
-  if (isAuthed()) return navigate('/shop', { replace: true });
+export async function register(el, { query = new URLSearchParams() } = {}) {
+  if (isAuthed()) return navigate(safeReturn(query), { replace: true });
   setTitle('Create account');
   el.innerHTML = `<div class="auth-wrap"><div class="card">
     <h1>Create your account</h1>
@@ -166,7 +166,7 @@ export async function register(el) {
       </div>
       <button class="btn block" data-testid="register-btn">Create account</button>
     </form>
-    <p class="small" style="margin:16px 0 0;text-align:center">Already have an account? <a href="/login">Sign in</a></p></div></div>`;
+    <p class="small" style="margin:16px 0 0;text-align:center">Already have an account? <a href="/login?returnTo=${encodeURIComponent(safeReturn(query))}">Sign in</a></p></div></div>`;
   const form = $('#reg-form', el);
   passwordToggle(form);
   strengthMeter(form.password, $('#pw-meter', el));
@@ -180,7 +180,7 @@ export async function register(el) {
         const r = await api('/login', { method: 'POST', body: { username: body.username, password: body.password } });
         setAuth(r.token, r.user);
         toast('Account created — welcome to VORTEX!');
-        navigate('/shop', { replace: true });
+        navigate(safeReturn(query), { replace: true });
       } catch (err) {
         if (err.fields) showErrors(form, err.fields);
         formAlert(form, err.message);

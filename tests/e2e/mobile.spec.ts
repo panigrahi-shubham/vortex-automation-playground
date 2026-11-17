@@ -10,8 +10,9 @@ test('hamburger menu opens the main navigation', async ({ page }) => {
   await expect(nav).toBeHidden();
   await burger.tap();
   await expect(burger).toHaveAttribute('aria-expanded', 'true');
-  await nav.getByRole('link', { name: 'UI Lab' }).tap();
-  await expect(page).toHaveURL('/lab');
+  await nav.getByRole('link', { name: 'Business', exact: true }).tap();
+  await expect(page).toHaveURL('/business');
+  await expect(page.getByRole('heading', { name: 'Make room for your business.' })).toBeVisible();
   await expect(nav).toBeHidden(); // menu closes after navigating
 });
 

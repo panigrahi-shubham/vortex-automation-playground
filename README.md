@@ -4,11 +4,11 @@
 
 [Visit the live playground](https://vortex-qa.vercel.app) · [Testing guide](https://vortex-qa.vercel.app/pages/testing-guide.html) · [About](https://vortex-qa.vercel.app/pages/about.html) · [Future roadmap](docs/ROADMAP.md)
 
-VORTEX is an existing Express and vanilla-JavaScript e-commerce application for practising browser, API and database automation. It includes catalog, account, cart, checkout and order journeys plus UI laboratories, network controls and intentionally defective legacy exercises.
+VORTEX is an existing Express and vanilla-JavaScript e-commerce application for practising browser, API and database automation. It includes catalog, account, cart, checkout and order journeys plus a B2B business portal, network controls and intentionally defective legacy exercises.
 
 ## About
 
-Vortex Automation Playground gives testers a realistic website on which to learn, experiment and build their own automation frameworks. Its simulated store and UI lab offer practical workflows and browser interactions without requiring real purchases. The website, Vortex Web Recorder, Android application and Android Recorder are separate Vortex projects; this repository contains the website and its supporting API and database.
+Vortex Automation Playground gives testers a realistic website on which to learn, experiment and build their own automation frameworks. Its simulated buyer storefront and business portal offer practical workflows and browser interactions without requiring real purchases. The website, Vortex Web Recorder, Android application and Android Recorder are separate Vortex projects; this repository contains the website and its supporting API and database.
 
 The supported runtime uses **Supabase/PostgreSQL through Prisma**. A separate in-memory compatibility mode preserves the original reference suite and test controls; it is not the production persistence model.
 
@@ -45,7 +45,7 @@ The legacy suite is pinned to memory mode by `playwright.config.ts`. Stop anothe
 - Catalog search/filter/sort/pagination, reviews/ratings, variants, wishlist, cart, coupons, shipping, simulated checkout, orders, cancellation and CSV invoices.
 - Server-authorized admin functions and a transactional outbox foundation; durable subscribers and all remaining business workflows are not complete.
 - Legacy email OTP inbox, global/per-request chaos controls, seeded defects, live order events and simulated 3-D Secure, with mode-specific limitations.
-- `/lab` exercises for dialogs, tabs/popups, nested frames, shadow DOM, drag/drop, dynamic content, downloads, keyboard, clipboard, geolocation, clocks, tables and accessibility targets.
+- `/business` replaces the UI Lab with a private seller portal, simulated business travel, finance and banking, and a learning academy. `/lab` redirects to it. See [business portal workflows and setup](docs/BUSINESS_PORTAL.md).
 
 The route-by-route implementation and reference-design gaps are tracked in [docs/PAGE_DESIGN_INVENTORY.md](docs/PAGE_DESIGN_INVENTORY.md). A route or reference image is not evidence of visual parity.
 

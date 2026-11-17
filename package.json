@@ -27,6 +27,7 @@
     "test:pricing": "npm run build && node --test tests/workflows/pricing.test.cjs",
     "smoke:storefront:db": "node scripts/smoke-v2-storefront.cjs",
     "test:storefront-adapter": "node --test tests/workflows/storefront-adapter.test.cjs",
+    "test:business:db": "npm run build && playwright test --config=playwright.database.config.ts",
     "test:inbox": "node scripts/test-inbox.cjs",
     "admin:grant": "node scripts/grant-admin.cjs"
   },

@@ -68,3 +68,5 @@ jobs:
       - run: npm run db:migrate
       - run: npm run db:seed:catalog
       - run: npm run test:db
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:business:db

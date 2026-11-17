@@ -29,6 +29,15 @@ model User {
   mfa         MfaCredential?
   mfaLogins   MfaLogin[]
   backupCodes MfaBackupCode[]
+  businessWorkspace BusinessWorkspace?
+}
+
+model BusinessWorkspace {
+  userId    String @id
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  state     Json
+  version   Int @default(0)
+  updatedAt DateTime @updatedAt
 }
 
 model Session {
