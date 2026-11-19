@@ -17,16 +17,19 @@ function actor(role: 'seller' | 'buyer'): Actor {
   return { username, password, otpSecret };
 }
 
-async function open(context: BrowserContext, path: string) {
+async function open(context: BrowserContext) {
   context.setDefaultTimeout(staging ? 15_000 : 8_000);
-  await context.addInitScript(() => localStorage.setItem('shoplab.cookies', 'accepted'));
-  const page = await context.newPage();
-  await page.goto(path);
-  return page;
+  await context.addInitScript(() => {
+    if (location.protocol === 'http:' || location.protocol === 'https:') localStorage.setItem('shoplab.cookies', 'accepted');
+  });
+  return context.newPage();
 }
 
 async function signIn(page: Page, account: Actor, path: string, previousWindow = true) {
-  await page.goto('/login?returnTo=' + encodeURIComponent(path));
+  const current = new URL(page.url());
+  if (current.pathname !== '/login' || current.searchParams.get('returnTo') !== path) {
+    await page.goto('/login?returnTo=' + encodeURIComponent(path));
+  }
   await page.getByTestId('username').fill(account.username);
   await page.getByTestId('password').fill(account.password);
   await page.getByTestId('login-btn').click();
@@ -67,8 +70,8 @@ test('seller publishes on desktop, mobile buyer requests a quote, seller replies
   const buyerContext = await browser.newContext({ ...devices['Pixel 7'], baseURL });
   const title = 'Steel Workshop Rack ' + randomUUID().slice(0, 8);
   const seller = actor('seller'), buyer = actor('buyer');
-  const sellerPage = await open(sellerContext, '/marketplace/products');
-  const buyerPage = await open(buyerContext, '/marketplace/catalog');
+  const sellerPage = await open(sellerContext);
+  const buyerPage = await open(buyerContext);
   const sellerListing = sellerPage.getByTestId('vortex-market-listing').filter({ hasText: title });
   const photoName = title + '.png';
   const workbookName = title + '.xlsx';
@@ -86,9 +89,9 @@ test('seller publishes on desktop, mobile buyer requests a quote, seller replies
         { name: photoName, mimeType: 'image/png', buffer: image },
         { name: workbookName, mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', buffer: sheet }
       ]);
+      uploaded = true;
       await sellerPage.getByRole('button', { name: 'Upload files' }).click();
       await expect(sellerFile).toBeVisible();
-      uploaded = true;
       await workbookFile.getByRole('button', { name: 'Preview' }).click();
       const preview = sellerPage.getByRole('dialog', { name: 'File preview' });
       await expect(preview.getByRole('cell', { name: 'Workshop quantity' })).toBeVisible();
