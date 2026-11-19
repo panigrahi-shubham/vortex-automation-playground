@@ -5,13 +5,19 @@ import { tokenHash, hashPassword } from './passwords';
 import { validPassword } from './profile';
 import { transaction } from '../db/transaction';
 import { consume, throttleKey } from './throttle';
+import { z } from '../http/validation';
+
+const emailInput = z.object({ email: z.string().max(254) });
+const resetInput = emailInput.extend({ code: z.string().regex(/^\d{6}$/), password: z.string().refine(validPassword) });
+const mailboxInput = z.object({ to: z.string().min(1).max(254) });
 
 export const recoveryAvailable = () => process.env.NODE_ENV !== 'production' && process.env.VERCEL_ENV !== 'production' && !!process.env.ORVILO_TEST_KEY;
 export function recoveryRoutes(db: PrismaClient) {
   const router = Router();
   router.post('/password/forgot', async (req, res, next) => {
     if (!recoveryAvailable()) { res.status(503).json({ error: 'Password recovery delivery is not configured' }); return; }
-    const email = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+    const input = emailInput.safeParse(req.body);
+    const email = input.success ? input.data.email.trim().toLowerCase() : '';
     if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { res.status(422).json({ error: 'Enter a valid email address' }); return; }
     try {
       const bucket = await consume(db, 'forgot', email, 5, 600);
@@ -33,9 +39,10 @@ export function recoveryRoutes(db: PrismaClient) {
   });
   router.post('/password/reset', async (req, res, next) => {
     if (!recoveryAvailable()) { res.status(503).json({ error: 'Password recovery delivery is not configured' }); return; }
-    const { code, password } = req.body || {};
-    const email = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
-    if (!email || email.length > 254 || typeof code !== 'string' || !/^\d{6}$/.test(code) || !validPassword(password)) { res.status(422).json({ error: 'Enter a valid email, six-digit code and strong new password' }); return; }
+    const input = resetInput.safeParse(req.body);
+    if (!input.success || !input.data.email.trim()) { res.status(422).json({ error: 'Enter a valid email, six-digit code and strong new password' }); return; }
+    const { code, password } = input.data;
+    const email = input.data.email.trim().toLowerCase();
     try {
       const bucket = await consume(db, 'reset', email, 10, 600);
       if (!bucket.allowed) { res.set('Retry-After', String(bucket.retryAfter)).status(429).json({ error: 'Too many requests. Try again later.' }); return; }
@@ -63,8 +70,9 @@ export function recoveryRoutes(db: PrismaClient) {
     if (!recoveryAvailable()) { res.status(404).json({ error: 'Not found' }); return; }
     const supplied = tokenHash(req.get('X-Orvilo-Test-Key') || ''), expected = tokenHash(process.env.ORVILO_TEST_KEY!);
     if (!timingSafeEqual(Buffer.from(supplied), Buffer.from(expected))) { res.status(403).json({ error: 'Test key required' }); return; }
-    if (typeof req.query.to !== 'string' || !req.query.to || req.query.to.length > 254) { res.status(422).json({ error: 'Recipient required' }); return; }
-    try { res.set('Cache-Control', 'no-store').json(await db.testMail.findMany({ where: { to: req.query.to.trim().toLowerCase(), expiresAt: { gt: new Date() } }, orderBy: { createdAt: 'desc' }, take: 20, select: { id: true, to: true, subject: true, code: true, createdAt: true } })); }
+    const input = mailboxInput.safeParse(req.query);
+    if (!input.success) { res.status(422).json({ error: 'Recipient required' }); return; }
+    try { res.set('Cache-Control', 'no-store').json(await db.testMail.findMany({ where: { to: input.data.to.trim().toLowerCase(), expiresAt: { gt: new Date() } }, orderBy: { createdAt: 'desc' }, take: 20, select: { id: true, to: true, subject: true, code: true, createdAt: true } })); }
     catch (error) { next(error); }
   });
   return router;

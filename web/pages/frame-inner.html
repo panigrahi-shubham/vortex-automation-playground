@@ -5,5 +5,6 @@
   <form class="row" id="f" style="margin-top:8px;flex-wrap:nowrap"><label class="sr-only" for="name">Your name</label><input id="name" placeholder="Your name" data-testid="inner-name"><button class="btn sm" data-testid="inner-greet">Greet</button></form>
   <p id="out" data-testid="inner-greeting" style="margin-top:8px"></p>
   <script>document.getElementById('f').onsubmit = e => { e.preventDefault(); document.getElementById('out').textContent = `Hello, ${document.getElementById('name').value || 'stranger'}!`; };</script>
+  <script type="module" src="/js/views/lab/challenge-document.js"></script>
 </body></html>
 

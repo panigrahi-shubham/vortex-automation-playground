@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       BASE_URL: ${{ inputs.base_url }}
@@ -21,12 +21,15 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm audit --audit-level=high
       - run: npm run typecheck
       - run: npm run build
       - run: npm run test:workflows
       - run: npm run test:pricing
       - run: npm run test:storefront-adapter
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --only-shell chromium
       - run: npx playwright test
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
@@ -36,7 +39,7 @@ jobs:
           retention-days: 14
 
   database:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     services:
       postgres:
@@ -67,6 +70,7 @@ jobs:
       - run: PGPASSWORD=vortex_ci psql -h localhost -U vortex -d vortex_test -c 'CREATE ROLE anon; CREATE ROLE authenticated;'
       - run: npm run db:migrate
       - run: npm run db:seed:catalog
+      - run: npx playwright install --only-shell chromium
       - run: npm run test:db
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:business:db
+      - name: Verify business portal and marketplace in PostgreSQL
+        run: npm run test:business:db

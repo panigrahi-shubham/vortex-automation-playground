@@ -1,7 +1,7 @@
 # Vortex Business
 
-The former UI Lab is now a business portal at `/business`. `/lab` redirects to it.
-The buyer storefront remains at `/shop`. Use the existing account sign-in, then
+Open the business portal at `/business` or choose **Business** in the main navigation.
+Use the existing account sign-in, then
 create a business profile. No additional seller password is required. Every
 account owns a private demo workspace; it does not grant storefront admin access.
 
@@ -46,8 +46,8 @@ Run `node --test tests/workflows/business.test.js` for business invariants.
 Run `npm run test:api -- business.api.spec.ts` for authenticated account isolation,
 idempotency and concurrent writes. Run
 `npx playwright test --project=chromium tests/e2e/business.spec.ts` for complete
-seller, travel, finance and learning journeys plus mobile layout and `/lab`
-redirect coverage. This also checks interrupted payment recovery, keyboard focus,
+seller, travel, finance and learning journeys, mobile layout, and navigation
+between the UI Lab and the business portal. This also checks interrupted payment recovery, keyboard focus,
 CSV contents, accessibility and narrow-screen layouts.
 The standard Playwright configuration starts a legacy server;
 never point its reset-driven global setup at a shared or production instance.
@@ -58,10 +58,8 @@ port 3100 without the legacy global reset. It exercises all four portal sections
 through real database sessions, checks a fresh mobile browser session and removes
 its own account fixtures. Both checks are included in the database CI job.
 
-The old widget-only lab tests were replaced with business outcomes. Native
-dialogs, uploads, nested frames, shadow roots, canvas and geolocation are not all
-reimplemented here; the portal does not claim full parity with the retired gallery.
-Existing storefront avatar uploads and legacy payment-frame exercises remain.
+Open `/lab` for the standalone browser exercises, including native dialogs,
+uploads, frames, shadow DOM, canvas, and geolocation.
 
 ## Release order
 

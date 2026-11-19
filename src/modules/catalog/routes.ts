@@ -1,10 +1,11 @@
+import { validateV2, z, text, positiveNumberString, productPath } from '../../http/validation';
 import { Router } from 'express';
 import { Prisma, PrismaClient } from '@prisma/client';
 
 // Staged database API: do not mix database catalog IDs with the legacy cart.
 export function catalogRoutes(db: PrismaClient) {
   const router = Router();
-  router.get('/categories', async (_req, res, next) => {
+  router.get('/categories', validateV2(), async (_req, res, next) => {
     try {
       const groups = await db.product.groupBy({
         by: ['category'],
@@ -15,7 +16,7 @@ export function catalogRoutes(db: PrismaClient) {
       res.json(groups.map(group => ({ name: group.category, count: group._count._all })));
     } catch (error) { next(error); }
   });
-  router.get('/deal', async (_req, res, next) => {
+  router.get('/deal', validateV2(), async (_req, res, next) => {
     try {
       const products = await db.product.findMany({ where: { deletedAt: null, stock: { gt: 0 } } });
       if (!products.length) { res.status(404).json({ error: 'No deal available' }); return; }
@@ -27,7 +28,7 @@ export function catalogRoutes(db: PrismaClient) {
       });
     } catch (error) { next(error); }
   });
-  router.get('/products', async (req, res, next) => {
+  router.get('/products', validateV2({ query: z.object({ q: text.optional(), category: text.optional(), page: positiveNumberString.optional(), limit: positiveNumberString.optional(), sort: text.optional(), minPrice: text.optional(), maxPrice: text.optional(), minRating: text.optional(), inStock: text.optional() }) }), async (req, res, next) => {
     try {
       const page = Number(req.query.page ?? 1);
       const limit = Number(req.query.limit ?? 12);
@@ -76,7 +77,7 @@ export function catalogRoutes(db: PrismaClient) {
         items: products.map(({ deletedAt, ...p }) => ({ ...p, price: Number(p.price), rating: Number(p.rating) })) });
     } catch (error) { next(error); }
   });
-  router.get('/products/:id', async (req, res, next) => {
+  router.get('/products/:id', validateV2({ params: productPath }, { message: 'Invalid product ID' }), async (req, res, next) => {
     try {
       const id = Number(req.params.id);
       if (!/^\d+$/.test(req.params.id) || !Number.isSafeInteger(id) || id < 1 || id > 2147483647) { res.status(400).json({ error: 'Invalid product ID' }); return; }
