@@ -223,6 +223,7 @@ test('learning gates assessments, records progress and awards a certificate', as
 });
 
 test('business pages and dialogs are accessible and fit a narrow screen', async ({ page }) => {
+  test.setTimeout(60_000); // Five page scans and a dialog scan share this test.
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   for (const section of ['overview', 'seller', 'travel', 'finance', 'learning']) {
     await page.getByTestId(`business-nav-${section}`).click();
