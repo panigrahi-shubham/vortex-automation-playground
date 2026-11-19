@@ -91,7 +91,9 @@ test('seller publishes on desktop, mobile buyer requests a quote, seller replies
   const seller = actor('seller'), buyer = actor('buyer');
   const sellerPage = await open(sellerContext);
   const buyerPage = await open(buyerContext);
-  const sellerListing = sellerPage.getByTestId('vortex-market-listing').filter({ hasText: title });
+  const sellerListing = sellerPage.getByTestId('vortex-market-listing').filter({
+    has: sellerPage.getByRole('heading', { name: title, exact: true })
+  });
   const photoName = title + '.png';
   const workbookName = title + '.xlsx';
   const sellerFile = sellerPage.getByTestId('vortex-market-file').filter({ hasText: photoName });
