@@ -10,5 +10,6 @@ export default defineConfig({
   testMatch: 'marketplace-smoke.spec.ts',
   workers: 1,
   reporter: [['list']],
-  use: { baseURL: url.origin }
+  expect: { timeout: 12_000 },
+  use: { baseURL: url.origin, trace: 'retain-on-failure', screenshot: 'only-on-failure' }
 });

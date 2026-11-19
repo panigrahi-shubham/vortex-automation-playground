@@ -18,7 +18,7 @@ function actor(role: 'seller' | 'buyer'): Actor {
 }
 
 async function open(context: BrowserContext, path: string) {
-  context.setDefaultTimeout(8_000);
+  context.setDefaultTimeout(staging ? 15_000 : 8_000);
   await context.addInitScript(() => localStorage.setItem('shoplab.cookies', 'accepted'));
   const page = await context.newPage();
   await page.goto(path);
@@ -62,7 +62,7 @@ test.afterAll(async () => {
 });
 
 test('seller publishes on desktop, mobile buyer requests a quote, seller replies and buyer signs back in to see it', async ({ browser, baseURL }) => {
-  test.setTimeout(100_000);
+  test.setTimeout(staging ? 180_000 : 100_000);
   const sellerContext = await browser.newContext({ ...devices['Desktop Chrome'], baseURL });
   const buyerContext = await browser.newContext({ ...devices['Pixel 7'], baseURL });
   const title = 'Steel Workshop Rack ' + randomUUID().slice(0, 8);

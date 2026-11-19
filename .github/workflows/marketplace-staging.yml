@@ -29,5 +29,5 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --only-shell chromium
       - run: npx playwright test --config=playwright.marketplace-staging.config.ts
