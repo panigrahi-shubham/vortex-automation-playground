@@ -1,0 +1,33 @@
+name: Marketplace staging smoke
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vortex-marketplace-staging-smoke
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: marketplace-staging
+    env:
+      VORTEX_MARKETPLACE_STAGING_URL: ${{ vars.VORTEX_MARKETPLACE_STAGING_URL }}
+      VORTEX_MARKETPLACE_SELLER_USERNAME: ${{ secrets.VORTEX_MARKETPLACE_SELLER_USERNAME }}
+      VORTEX_MARKETPLACE_SELLER_PASSWORD: ${{ secrets.VORTEX_MARKETPLACE_SELLER_PASSWORD }}
+      VORTEX_MARKETPLACE_SELLER_OTP_SECRET: ${{ secrets.VORTEX_MARKETPLACE_SELLER_OTP_SECRET }}
+      VORTEX_MARKETPLACE_BUYER_USERNAME: ${{ secrets.VORTEX_MARKETPLACE_BUYER_USERNAME }}
+      VORTEX_MARKETPLACE_BUYER_PASSWORD: ${{ secrets.VORTEX_MARKETPLACE_BUYER_PASSWORD }}
+      VORTEX_MARKETPLACE_BUYER_OTP_SECRET: ${{ secrets.VORTEX_MARKETPLACE_BUYER_OTP_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test --config=playwright.marketplace-staging.config.ts

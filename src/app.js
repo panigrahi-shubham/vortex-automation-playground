@@ -35,7 +35,15 @@ app.get('/api/ready', async (_req, res) => {
 if (configError) {
   app.use('/api', (_req, res) => res.status(503).json({ error: 'Service configuration is incomplete' }));
 } else {
-  app.get('/api/config', (_req, res) => { res.set('Cache-Control', 'no-store').json({ storage, recoveryAvailable: storage === 'postgres' && require('../dist/auth/recovery-routes').recoveryAvailable() }); });
+  app.get('/api/config', (req, res) => {
+    const stageHost = process.env.VORTEX_MARKETPLACE_STAGING_HOST;
+    const marketStaging = stageHost && stageHost !== 'vortex-qa.vercel.app' && req.hostname === stageHost;
+    res.set('Cache-Control', 'no-store').json({
+      storage,
+      recoveryAvailable: storage === 'postgres' && require('../dist/auth/recovery-routes').recoveryAvailable(),
+      ...(marketStaging ? { vortexMarketplaceStaging: true } : {})
+    });
+  });
   app.post('/api/graphql', require('./practice/graphql').catalogGraphql(database));
   app.use('/mock-idp', require('./practice/mock-idp').mockIdp({ database, production }));
 
@@ -45,6 +53,7 @@ if (configError) {
     const { catalogRoutes } = require('../dist/modules/catalog/routes');
     const prisma = database;
     app.use('/api/v2/business', require('../server/business-routes.cjs').businessRoutes({ db: prisma, auth: require('../dist/auth/database-sessions').requireSession(prisma) }));
+    app.use('/api/v2/marketplace', require('../dist/modules/marketplace/routes').marketplaceRoutes(prisma));
     app.use('/api/v2', require('../dist/auth/routes').authRoutes(prisma));
     app.use('/api/v2', require('../dist/auth/account-routes').accountRoutes(prisma));
     app.use('/api/v2', require('../dist/auth/avatar-routes').avatarRoutes(prisma));

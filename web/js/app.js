@@ -22,6 +22,7 @@ const routes = [
   [/^\/account(?:\/(profile|security|avatar|settings))?$/, 'account', 'render'],
   [/^\/admin(?:\/(products|orders|users))?$/, 'admin', 'render'],
   [/^\/business(?:\/(seller|travel|finance|learning))?$/, 'business', 'render'],
+  [/^\/marketplace(?:\/(products|catalog|enquiries|files))?$/, 'marketplace', 'render'],
   [/^\/lab(?:\/([\w-]+))?$/, 'lab', 'render'], [/^\/mailbox$/, 'mailbox', 'render'], [/^\/docs$/, 'docs', 'render'],
   [/^\/practice$/, 'practice', 'render'], [/^\/showroom$/, 'showroom', 'render']
 ];
@@ -170,7 +171,7 @@ $('#c-reset').onclick = async () => {
 };
 
 /* ---------------- command palette (Ctrl/Cmd+K) ---------------- */
-const PAGES = [['Shop', '/shop'], ['Cart', '/cart'], ['Wishlist', '/wishlist'], ['Orders', '/orders'], ['Account', '/account'], ['UI Lab', '/lab'], ['Business portal', '/business'], ['Seller centre', '/business/seller'], ['Business travel', '/business/travel'], ['Finance & banking', '/business/finance'], ['Learning academy', '/business/learning'], ['Test Inbox', '/mailbox'], ['API Docs', '/docs'], ['Admin console', '/admin']];
+const PAGES = [['Shop', '/shop'], ['Cart', '/cart'], ['Wishlist', '/wishlist'], ['Orders', '/orders'], ['Account', '/account'], ['UI Lab', '/lab'], ['Business portal', '/business'], ['B2B Marketplace', '/marketplace'], ['Seller centre', '/business/seller'], ['Business travel', '/business/travel'], ['Finance & banking', '/business/finance'], ['Learning academy', '/business/learning'], ['Test Inbox', '/mailbox'], ['API Docs', '/docs'], ['Admin console', '/admin']];
 function openPalette() {
   if ($('.palette')) return;
   const el = document.createElement('div');

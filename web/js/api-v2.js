@@ -152,6 +152,7 @@ export async function request(rawPath, { method = 'GET', body, token, raw = fals
   const [path, search = ''] = rawPath.split('?');
   const query = new URLSearchParams(search);
   const verb = method.toUpperCase();
+  if (path.startsWith('/marketplace/')) return raw ? callRaw(rawPath, token) : call(rawPath, { method: verb, body, token });
   if (path === '/vortex/practice' || path === '/vortex/practice/reset') return call(path, { method: verb, body, token });
 
   /* ---- read-only metadata is available without the legacy API ---- */

@@ -14,7 +14,7 @@ const dummyHash = hashPassword(randomBytes(32).toString('hex'));
 export function authRoutes(db: PrismaClient) {
   const router = Router();
   const auth = requireSession(db);
-  router.post('/register', rateLimit(db, 'vortex-register', clientIp, 60, 60), validateV2({ body: z.object({ username: text, email: text, name: text, password: text, confirmPassword: text, acceptTerms: z.boolean() }) }), async (req, res, next) => {
+  router.post('/register', rateLimit(db, 'vortex-register', clientIp, 60, 60), validateV2({ body: z.object({ username: text, email: text, name: text, password: text, confirmPassword: text, acceptTerms: z.boolean(), vortexAccountType: z.enum(['buyer', 'seller']).optional() }) }), async (req, res, next) => {
     try {
       const b = req.body || {};
       const username = typeof b.username === 'string' ? b.username.toLowerCase() : '';
@@ -28,7 +28,8 @@ export function authRoutes(db: PrismaClient) {
       if (b.password !== b.confirmPassword) fields.confirmPassword = 'Passwords do not match';
       if (b.acceptTerms !== true) fields.acceptTerms = 'You must accept the terms';
       if (Object.keys(fields).length) { res.status(422).json({ error: 'Validation failed', fields }); return; }
-      const user = await db.user.create({ data: { username, email, name, passwordHash: await hashPassword(b.password) } });
+      const role = b.vortexAccountType === 'seller' ? 'seller' : 'customer';
+      const user = await db.user.create({ data: { username, email, name, role, passwordHash: await hashPassword(b.password) } });
       res.status(201).json(profile(user));
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') { res.status(409).json({ error: 'Account already exists' }); return; }

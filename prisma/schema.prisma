@@ -31,6 +31,77 @@ model User {
   backupCodes MfaBackupCode[]
   practice    PracticeProfile?
   businessWorkspace BusinessWorkspace?
+  vortexListings VortexListing[]
+  vortexEnquiries VortexEnquiry[]
+  vortexFiles VortexFile[]
+}
+
+enum VortexListingStatus {
+  DRAFT
+  PUBLISHED
+  INACTIVE
+}
+
+enum VortexFileKind {
+  PHOTO
+  PDF
+  SPREADSHEET
+}
+
+model VortexListing {
+  id String @id @default(cuid())
+  sellerId String
+  seller User @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  name String
+  description String
+  category String
+  unitPrice Decimal @db.Decimal(12, 2)
+  minimumQuantity Int
+  status VortexListingStatus @default(DRAFT)
+  photoId String?
+  photo VortexFile? @relation(fields: [photoId], references: [id], onDelete: SetNull)
+  enquiries VortexEnquiry[]
+  updatedAt DateTime @updatedAt
+
+  @@index([sellerId, updatedAt])
+  @@index([status, category])
+  @@index([photoId])
+}
+
+model VortexEnquiry {
+  id String @id @default(cuid())
+  listingId String
+  listing VortexListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  productName String
+  buyerId String
+  buyer User @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  quantity Int
+  message String
+  requestId String?
+  createdAt DateTime @default(now())
+  quoteQuantity Int?
+  quoteUnitPrice Decimal? @db.Decimal(12, 2)
+  deliveryDays Int?
+  repliedAt DateTime?
+
+  @@index([buyerId, createdAt])
+  @@index([listingId, createdAt])
+  @@unique([buyerId, requestId])
+}
+
+model VortexFile {
+  id String @id @default(cuid())
+  sellerId String
+  seller User @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  name String
+  mime String
+  kind VortexFileKind
+  size Int
+  content Bytes
+  createdAt DateTime @default(now())
+  listings VortexListing[]
+
+  @@index([sellerId, kind, createdAt])
 }
 
 model PracticeProfile {

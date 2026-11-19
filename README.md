@@ -47,6 +47,7 @@ The legacy suite is pinned to memory mode by `playwright.config.ts`. Stop anothe
 - Legacy email OTP inbox, global/per-request chaos controls, seeded defects, live order events and simulated 3-D Secure, with mode-specific limitations.
 - `/lab` offers browser exercises for dialogs, frames, shadow DOM, drag and drop, downloads, keyboard interactions, and accessibility.
 - `/business` provides a private seller workspace, simulated business travel and finance, and a learning academy. See [business portal workflows and setup](docs/BUSINESS_PORTAL.md).
+- `/marketplace` connects separate buyer and seller accounts through published listings, quote requests and seller replies. See the [marketplace walkthrough, API and Playwright setup](docs/MARKETPLACE.md).
 
 The route-by-route implementation and reference-design gaps are tracked in [docs/PAGE_DESIGN_INVENTORY.md](docs/PAGE_DESIGN_INVENTORY.md). A route or reference image is not evidence of visual parity.
 
