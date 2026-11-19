@@ -1,4 +1,4 @@
-import { devices, expect, test, type BrowserContext, type Page } from '@playwright/test';
+import { devices, expect, test, type APIRequestContext, type BrowserContext, type Page } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -45,6 +45,25 @@ async function signIn(page: Page, account: Actor, path: string, previousWindow =
   await expect(page.getByRole('heading', { name: 'B2B Marketplace' })).toBeVisible();
 }
 
+async function cleanStaging(request: APIRequestContext, token: string, title: string, names: string[]) {
+  const api = '/api/v2/marketplace';
+  const options = { headers: { Authorization: 'Bearer ' + token }, timeout: 20_000 };
+  const listings = await request.get(api + '/listings?' + new URLSearchParams({ q: title }), options);
+  expect(listings.ok()).toBe(true);
+  for (const item of (await listings.json()).items) {
+    if (item.name !== title || item.status === 'INACTIVE') continue;
+    const response = await request.patch(api + '/listings/' + item.id + '/status', { ...options, data: { status: 'INACTIVE' } });
+    expect(response.ok()).toBe(true);
+  }
+  const library = await request.get(api + '/files', options);
+  expect(library.ok()).toBe(true);
+  for (const item of (await library.json()).items) {
+    if (!names.includes(item.name)) continue;
+    const response = await request.delete(api + '/files/' + item.id, options);
+    expect(response.status()).toBe(204);
+  }
+}
+
 test.beforeAll(async ({ request }) => {
   if (staging) {
     const response = await request.get('/api/config');
@@ -64,7 +83,7 @@ test.afterAll(async () => {
   finally { await db.$disconnect(); }
 });
 
-test('seller publishes on desktop, mobile buyer requests a quote, seller replies and buyer signs back in to see it', async ({ browser, baseURL }) => {
+test('seller publishes on desktop, mobile buyer requests a quote, seller replies and buyer signs back in to see it', async ({ browser, baseURL, request }) => {
   test.setTimeout(staging ? 180_000 : 100_000);
   const sellerContext = await browser.newContext({ ...devices['Desktop Chrome'], baseURL });
   const buyerContext = await browser.newContext({ ...devices['Pixel 7'], baseURL });
@@ -77,11 +96,11 @@ test('seller publishes on desktop, mobile buyer requests a quote, seller replies
   const workbookName = title + '.xlsx';
   const sellerFile = sellerPage.getByTestId('vortex-market-file').filter({ hasText: photoName });
   const workbookFile = sellerPage.getByTestId('vortex-market-file').filter({ hasText: workbookName });
-  let published = false;
-  let uploaded = false;
+  let sellerSession: string | null = null;
   try {
     await test.step('Seller signs in, uploads a photo and publishes a draft', async () => {
       await signIn(sellerPage, seller, '/marketplace/products', false);
+      if (staging) sellerSession = await sellerPage.evaluate(() => localStorage.getItem('shoplab.token'));
       await sellerPage.getByRole('link', { name: 'Photos & Docs' }).click();
       const image = await sharp({ create: { width: 16, height: 16, channels: 3, background: '#126359' } }).png().toBuffer();
       const sheet = await readFile(join(__dirname, 'fixtures', 'workshop.xlsx'));
@@ -89,7 +108,6 @@ test('seller publishes on desktop, mobile buyer requests a quote, seller replies
         { name: photoName, mimeType: 'image/png', buffer: image },
         { name: workbookName, mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', buffer: sheet }
       ]);
-      uploaded = true;
       await sellerPage.getByRole('button', { name: 'Upload files' }).click();
       await expect(sellerFile).toBeVisible();
       await workbookFile.getByRole('button', { name: 'Preview' }).click();
@@ -112,7 +130,6 @@ test('seller publishes on desktop, mobile buyer requests a quote, seller replies
       await expect(sellerListing.getByText('Draft', { exact: true })).toBeVisible();
       await sellerListing.getByRole('button', { name: 'Publish', exact: true }).click();
       await expect(sellerListing.getByText('Published', { exact: true })).toBeVisible();
-      published = true;
     });
     await test.step('Buyer finds the published listing on mobile and sends the request', async () => {
       await signIn(buyerPage, buyer, '/marketplace/catalog');
@@ -158,22 +175,7 @@ test('seller publishes on desktop, mobile buyer requests a quote, seller replies
     });
   } finally {
     try {
-      if (staging && (published || uploaded)) {
-        if (published) {
-          await sellerPage.goto('/marketplace/products?' + new URLSearchParams({ q: title }));
-          await sellerListing.getByRole('button', { name: 'Deactivate' }).click({ timeout: 5000 });
-          await expect(sellerListing.getByText('Inactive', { exact: true })).toBeVisible();
-        }
-        if (uploaded) {
-          await sellerPage.goto('/marketplace/files');
-          for (const file of [sellerFile, workbookFile]) {
-            if (!await file.count()) continue;
-            sellerPage.once('dialog', dialog => dialog.accept());
-            await file.getByRole('button', { name: 'Delete' }).click({ timeout: 5000 });
-            await expect(file).toHaveCount(0);
-          }
-        }
-      }
+      if (sellerSession) await cleanStaging(request, sellerSession, title, [photoName, workbookName]);
     } finally {
       await Promise.all([sellerContext.close(), buyerContext.close()]);
     }
