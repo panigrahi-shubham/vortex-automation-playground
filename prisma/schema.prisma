@@ -30,6 +30,7 @@ model User {
   mfaLogins   MfaLogin[]
   backupCodes MfaBackupCode[]
   practice    PracticeProfile?
+  businessWorkspace BusinessWorkspace?
 }
 
 model PracticeProfile {
@@ -39,6 +40,14 @@ model PracticeProfile {
   defects    String[]
   generation Int     @default(0)
   workspace  Json
+}
+
+model BusinessWorkspace {
+  userId    String @id
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  state     Json
+  version   Int @default(0)
+  updatedAt DateTime @updatedAt
 }
 
 model Session {
