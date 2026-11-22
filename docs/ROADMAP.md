@@ -6,7 +6,7 @@ This roadmap covers the website, its API, database and testing experience. Prior
 
 The deployed website supports a database-backed store, accounts and MFA, cart and simulated checkout, orders, an API and a UI lab. The [deployment status](DEPLOYMENT_STATUS.md) records the verified production journey and current boundaries.
 
-The current checkout replaces the UI Lab with [Vortex Business](BUSINESS_PORTAL.md): a private seller workspace, simulated travel and banking, and a learning academy. This change is separate from the historical deployment record above.
+[Vortex Business](BUSINESS_PORTAL.md) adds a private seller workspace, simulated travel and banking, and a learning academy at `/business`.
 
 ## Next: make practice repeatable
 

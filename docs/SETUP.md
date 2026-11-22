@@ -145,6 +145,35 @@ Playwright reuses an existing local server outside CI. Stop a port-3000 PostgreS
 
 Legacy Playwright success and PostgreSQL integration/browser smoke are separate evidence. Neither establishes design parity or production readiness.
 
+## UI Lab widget exercises
+
+Open the routes below while the storefront runs locally. The default Playwright run starts the practice frame server automatically. When starting the storefront manually, run `npm run vortex:frame` in another terminal for the cross-origin card. Port 3101 is a separate origin, so the parent can receive a message with `postMessage` and cannot read the frame DOM directly.
+
+- [Date range picker](http://localhost:3000/lab/date-picker). Choose a start and end date across months. The fixture opens in November 2026.
+- [Modal overlay](http://localhost:3000/lab/modal). Cycle focus inside the dialog and dismiss it with Escape or the backdrop. It uses the browser’s modal dialog semantics.
+- [Tabs](http://localhost:3000/lab/tabs). Switch panels with arrow keys. The tab state resets when you reopen the card.
+- [Accordion](http://localhost:3000/lab/accordion). Open two answers in turn. Only one answer can stay expanded.
+- [Multi-step form](http://localhost:3000/lab/stepper). Enter a recipient and select delivery, then move between steps. The form keeps values until reset and never creates an order.
+- [Custom slider](http://localhost:3000/lab/slider). Drag to a value or use arrow keys. Pointer results depend on the position relative to the track.
+- [Sortable list](http://localhost:3000/lab/sortable). Reorder three tasks using a drag or arrow keys. The exercise only updates the displayed list.
+- [Editable table](http://localhost:3000/lab/editable-table). Edit a quantity, select rows, and archive them. The table uses disposable browser data.
+- [Virtualized list](http://localhost:3000/lab/virtual-list). Scroll through 500 logical rows and verify the DOM contains only visible rows. The demo uses fixed row heights.
+- [Auto dismiss toast](http://localhost:3000/lab/toasts). Wait for the toast to disappear after three seconds. Use an assertion that waits for hidden state.
+- [Split OTP fields](http://localhost:3000/lab/otp). Enter the practice code 246810. This exercise does not authenticate or send a message.
+- [Cookies and local storage](http://localhost:3000/lab/storage). Set both the member cookie and local preference, then reload. Reset clears both values for this card.
+- [Cross-origin iframe](http://localhost:3000/lab/cross-origin). Send a message from port 3101 using postMessage. This local exercise uses a different origin from the storefront.
+- [Locator traps](http://localhost:3000/lab/locator-traps). Scope repeated Email fields and Remove buttons. An unscoped action intentionally triggers a strict-mode error.
+- [Request race](http://localhost:3000/lab/race). Compare the latest result with the slower first request. The instability switch permits a stale response to overwrite the latest result.
+- [Element replacement](http://localhost:3000/lab/rerender). Enable replacement and locate a button again after it is recreated. The replacement is opt-in.
+- [Moving button](http://localhost:3000/lab/animation). Enable movement and click after the target settles. The motion lasts one second and starts disabled.
+
+## Practice features
+
+- [WebSocket ticker and echo chat](http://localhost:3000/lab/websocket) uses the local Node server started by `npm start`. Connect and wait for a price tick, then send up to 120 characters to receive an echo. Hosted builds show an availability notice.
+- [Simulated single sign-on](http://localhost:3000/lab/sso) uses the mock identity provider at `/mock-idp`. The only demo credentials are `vortex_demo` and `VortexDemo24!`. Approving consent returns a short-lived code that creates a separate customer session. The production mock provider uses the existing `ORVILO_MFA_KEY` as its signing key.
+- [GraphQL catalog query](http://localhost:3000/lab/graphql) sends a read-only query to `POST /api/graphql`. The schema provides `products(q, category, offset, limit)`, `categories(q, offset, limit)`, and `reviews(productId, rating, offset, limit)`. The maximum limit is 50 and the maximum offset is 1000.
+- [English and Hindi](http://localhost:3000/shop) are available from the language switcher on shop, cart, and checkout. The choice is saved to `vortex.locale`. Catalog names, addresses, currencies, and backend response text use their source values. Storefront test IDs are the same in both languages.
+
 ### Local operator command
 
 ```bash
@@ -154,6 +183,18 @@ npm run admin:grant -- existing_username
 This **mutates the development database**: it grants the admin role to an existing username, revokes that user's sessions/pending MFA logins and writes an outbox event. It refuses production environments. Use only when that account and role change are intended.
 
 ## 7. Current limitations
+
+### Personal defect practice and the 3D studio
+
+Open `/practice` in PostgreSQL mode with a signed-in account to enter a private practice workspace. Each account has its own catalog snapshot, cart, wishlist, reviews, orders, display name, and defect selection. All eight bugs start off. Reset clears that workspace and its defects. A reset from a stale tab returns 409 until the tab refreshes.
+
+The catalog snapshot supports up to 1000 products, and a workspace supports 100 orders before reset. New or changed shared products appear after a personal reset. Leaving and clearing practice retains a generation counter to reject old reset requests. Credentials, MFA, and real account settings use their existing workflows.
+
+The new schema is in `202611110002_vortex_practice`. Run database tests only against Compose or the disposable GitHub Actions PostgreSQL service. A production migration needs its own explicit authorization.
+
+Open `/showroom` for the Three.js material study. The user loads WebGL on demand, then rotates the mug by drag or keyboard and changes its finish. Resources are disposed on navigation. Reduced-motion preferences stop auto-rotation. Browsers without WebGL retain the product photo and a retry message. This is a conceptual model for the exercise.
+
+All 40 seeded product names have local WebP photos. Their enlarged gallery views crop the same photo. Custom products continue to use the existing generated placeholder. Asset prompts and provenance are recorded in [Asset sources](ASSET_SOURCES.md).
 
 - PostgreSQL and legacy modes do not have identical auth, test-control, event or payment behavior.
 - No scoped per-test-run reset API, durable event subscribers, real recovery email delivery or production deployment verification is supplied by setup alone.

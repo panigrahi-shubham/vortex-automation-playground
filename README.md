@@ -4,7 +4,7 @@
 
 [Visit the live playground](https://vortex-qa.vercel.app) · [Testing guide](https://vortex-qa.vercel.app/pages/testing-guide.html) · [About](https://vortex-qa.vercel.app/pages/about.html) · [Future roadmap](docs/ROADMAP.md)
 
-VORTEX is an existing Express and vanilla-JavaScript e-commerce application for practising browser, API and database automation. It includes catalog, account, cart, checkout and order journeys plus a B2B business portal, network controls and intentionally defective legacy exercises.
+VORTEX is an existing Express and vanilla-JavaScript e-commerce application for practising browser, API and database automation. It includes catalog, account, cart, checkout and order journeys, a B2B business portal, UI Lab, network controls and intentionally defective legacy exercises.
 
 ## About
 
@@ -45,7 +45,9 @@ The legacy suite is pinned to memory mode by `playwright.config.ts`. Stop anothe
 - Catalog search/filter/sort/pagination, reviews/ratings, variants, wishlist, cart, coupons, shipping, simulated checkout, orders, cancellation and CSV invoices.
 - Server-authorized admin functions and a transactional outbox foundation; durable subscribers and all remaining business workflows are not complete.
 - Legacy email OTP inbox, global/per-request chaos controls, seeded defects, live order events and simulated 3-D Secure, with mode-specific limitations.
-- `/business` replaces the UI Lab with a private seller portal, simulated business travel, finance and banking, and a learning academy. `/lab` redirects to it. See [business portal workflows and setup](docs/BUSINESS_PORTAL.md).
+- `/lab` offers browser exercises for dialogs, frames, shadow DOM, drag and drop, downloads, keyboard interactions, and accessibility.
+- `/business` provides a private seller workspace, simulated business travel and finance, and a learning academy. See [business portal workflows and setup](docs/BUSINESS_PORTAL.md).
+- `/marketplace` connects separate buyer and seller accounts through published listings, quote requests and seller replies. See the [marketplace walkthrough, API and Playwright setup](docs/MARKETPLACE.md).
 
 The route-by-route implementation and reference-design gaps are tracked in [docs/PAGE_DESIGN_INVENTORY.md](docs/PAGE_DESIGN_INVENTORY.md). A route or reference image is not evidence of visual parity.
 

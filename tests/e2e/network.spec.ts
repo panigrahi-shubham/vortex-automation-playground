@@ -1,4 +1,4 @@
-import { test, expect } from '../support/fixtures';
+import { test, expect, ShopApi } from '../support/fixtures';
 
 /** Network control: mock, patch, abort, slow down and inspect traffic. */
 test.use({ authAs: 'guest' });
@@ -67,7 +67,10 @@ test('make the random "deal of the day" deterministic', async ({ page }) => {
   await expect(page).toHaveURL('/product/3');
 });
 
-test('block third-party noise / images by resource type', async ({ page, shopPage }) => {
+test('block third-party noise / images by resource type', async ({ page, shopPage, guestApi }) => {
+  const { items } = await ShopApi.ok<{ items: Array<{ id: number; name: string }> }>(
+    await guestApi.get('/products', { limit: 12 })
+  );
   const blocked: string[] = [];
   await page.route('**/*', route => {
     if (['image', 'font', 'media'].includes(route.request().resourceType())) { blocked.push(route.request().url()); return route.abort(); }
@@ -75,6 +78,15 @@ test('block third-party noise / images by resource type', async ({ page, shopPag
   });
   await shopPage.goto();
   await expect(shopPage.cards).toHaveCount(12);
-  expect(blocked.every(url => new URL(url).pathname.startsWith('/assets/fonts/'))).toBe(true); // bundled fonts may be blocked; products remain inline SVG
+  await expect(shopPage.cards.getByTestId('product-name')).toHaveText(items.map(product => product.name));
+  await shopPage.cards.first().scrollIntoViewIfNeeded();
+  await expect.poll(() => blocked.some(url => /\/assets\/products\/vortex-product-\d+\.webp$/.test(new URL(url).pathname))).toBe(true);
+  expect(blocked.every(url => /^\/assets\/(fonts|products)\//.test(new URL(url).pathname))).toBe(true);
+  for (const [index, product] of items.entries()) {
+    await expect(shopPage.cards.nth(index).getByTestId('product-name')).toHaveAttribute('href', `/product/${product.id}`);
+  }
+  await shopPage.cards.first().getByTestId('product-name').click();
+  await expect(page).toHaveURL(`/product/${items[0].id}`);
+  await expect(page.getByTestId('product-title')).toHaveText(items[0].name);
 });
 

@@ -1,4 +1,12 @@
-import { $, $$, state, store, api, esc, navigate, isAuthed, isAdmin, setAuth, refreshCounts, toast, ApiError, loadRuntime, isDatabaseMode, runtime } from './core.js';
+import { $, $$, state, store, api, esc, navigate, isAuthed, isAdmin, setAuth, refreshCounts, toast, ApiError, loadRuntime, isDatabaseMode, runtime, busy } from './core.js';
+import { language, setLanguage, t } from './locale.js';
+
+const languageSelect = $('#vortex-language');
+languageSelect.value = language();
+languageSelect.onchange = () => {
+  setLanguage(languageSelect.value);
+  navigate(location.pathname + location.search, { replace: true });
+};
 
 /* ---------------- routes (history API, lazy-loaded views) ---------------- */
 const routes = [
@@ -14,7 +22,9 @@ const routes = [
   [/^\/account(?:\/(profile|security|avatar|settings))?$/, 'account', 'render'],
   [/^\/admin(?:\/(products|orders|users))?$/, 'admin', 'render'],
   [/^\/business(?:\/(seller|travel|finance|learning))?$/, 'business', 'render'],
-  [/^\/lab$/, 'lab', 'render'], [/^\/mailbox$/, 'mailbox', 'render'], [/^\/docs$/, 'docs', 'render']
+  [/^\/marketplace(?:\/(products|catalog|enquiries|files))?$/, 'marketplace', 'render'],
+  [/^\/lab(?:\/([\w-]+))?$/, 'lab', 'render'], [/^\/mailbox$/, 'mailbox', 'render'], [/^\/docs$/, 'docs', 'render'],
+  [/^\/practice$/, 'practice', 'render'], [/^\/showroom$/, 'showroom', 'render']
 ];
 
 let renderId = 0;
@@ -24,6 +34,12 @@ async function router() {
   const el = $('#app');
   const path = location.pathname.replace(/\/+$/, '') || '/';
   const query = new URLSearchParams(location.search);
+  const localized = /^\/(?:shop|cart|checkout(?:\/.*)?)$/.test(path);
+  document.documentElement.lang = localized ? language() : 'en';
+  languageSelect.parentElement.hidden = !localized;
+  languageSelect.labels[0].textContent = t('Language');
+  $('[data-testid=nav-shop]').textContent = t('Shop');
+  $('[data-testid=nav-cart]').setAttribute('aria-label', t('Cart'));
   closeMenus();
   highlightNav(path);
   const match = routes.map(([re, mod, fn]) => ({ m: path.match(re), mod, fn })).find(r => r.m);
@@ -39,7 +55,8 @@ async function router() {
     console.error(err);
     if (id !== renderId) return;
     if (err instanceof ApiError && err.status === 401) return; // session handler already redirected
-    el.innerHTML = `<div class="empty" role="alert" data-testid="page-error"><div class="big">⚠️</div><h1>Could not load this page</h1><p>${esc(err.message)}</p><button class="btn secondary" onclick="location.reload()">Reload</button></div>`;
+    el.innerHTML = `<div class="empty" role="alert" data-testid="page-error"><div class="big">⚠️</div><h1>Could not load this page</h1><p>${esc(err.message)}</p><button class="btn secondary">Reload</button></div>`;
+    $('button', el).onclick = () => location.reload();
   }
 }
 function notFound(el) {
@@ -53,7 +70,7 @@ window.addEventListener('popstate', router);
 window.addEventListener('route', router);
 
 // Intercept same-origin links for client-side navigation
-const SERVER_PAGES = /^\/(api|terms|bank|lab\/)/;
+const SERVER_PAGES = /^\/(api|terms|bank|mock-idp(?:[/?#]|$)|lab\/(?:popup|frame-outer|frame-inner)(?:[/?#]|$))/;
 document.addEventListener('click', e => {
   const a = e.target.closest('a[href]');
   if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -83,6 +100,7 @@ function renderHeader() {
     <div class="menu" id="user-menu" role="menu" aria-label="Account">
       <div class="small muted" style="padding:6px 10px">Signed in as <strong data-testid="signed-in-as">${esc(u.username)}</strong></div><hr>
       <a role="menuitem" href="/account" data-testid="menu-account">My account</a>
+      <a role="menuitem" href="/practice" data-testid="vortex-menu-practice">Practice workspace</a>
       <a role="menuitem" href="/orders" data-testid="menu-orders">My orders</a>
       <a role="menuitem" href="/wishlist" data-testid="menu-wishlist">Wishlist</a>
       ${isAdmin() ? '<a role="menuitem" href="/admin" data-testid="menu-admin">Admin console</a>' : ''}
@@ -132,28 +150,53 @@ function cookieBanner() {
 }
 
 /* ---------------- chaos panel ---------------- */
+const chaosInputs = Object.entries({
+  latencyMs: $('#c-lat'), errorRate: $('#c-err'), bugMode: $('#c-bug'),
+  sessionTtlSec: $('#c-ttl'), orderProgressSec: $('#c-prog')
+});
+const chaosEdits = new Map();
+let nextChaosEdit = 0, chaosLoad = 0;
+function drawChaos(settings) {
+  for (const [key, input] of chaosInputs) {
+    if (chaosEdits.has(input)) continue;
+    if (input.type === 'checkbox') input.checked = settings[key];
+    else input.value = settings[key];
+  }
+  const on = settings.latencyMs > 0 || settings.errorRate > 0 || settings.bugMode;
+  $('#chaos-dot').classList.toggle('on', on);
+  $('#chaos-dot').setAttribute('aria-label', on ? 'Chaos active' : 'Chaos off');
+}
 async function loadChaos() {
+  const load = ++chaosLoad;
   try {
     const c = await api('/chaos', { quiet: true });
-    $('#c-lat').value = c.latencyMs; $('#c-err').value = c.errorRate; $('#c-bug').checked = c.bugMode;
-    $('#c-ttl').value = c.sessionTtlSec; $('#c-prog').value = c.orderProgressSec;
-    const on = c.latencyMs > 0 || c.errorRate > 0 || c.bugMode;
-    $('#chaos-dot').classList.toggle('on', on);
-    $('#chaos-dot').setAttribute('aria-label', on ? 'Chaos active' : 'Chaos off');
+    if (load === chaosLoad) drawChaos(c);
   } catch { /* ignore */ }
 }
+for (const [, input] of chaosInputs) input.addEventListener('input', () => { chaosEdits.set(input, ++nextChaosEdit); });
 $('#chaos').addEventListener('toggle', () => { if ($('#chaos').open) loadChaos(); });
-$('#c-apply').onclick = async () => {
-  await api('/chaos', { method: 'POST', body: { latencyMs: +$('#c-lat').value, errorRate: +$('#c-err').value, bugMode: $('#c-bug').checked, sessionTtlSec: +$('#c-ttl').value, orderProgressSec: +$('#c-prog').value } });
-  toast('Chaos settings applied', 'info'); loadChaos();
-};
+$('#c-apply').onclick = () => busy($('#c-apply'), async () => {
+  const submitted = new Map(chaosEdits);
+  const body = Object.fromEntries(chaosInputs.filter(([, input]) => submitted.has(input))
+    .map(([key, input]) => [key, input.type === 'checkbox' ? input.checked : +input.value]));
+  const settings = await api('/chaos', { method: 'POST', body });
+  ++chaosLoad;
+  for (const [input, revision] of submitted) {
+    if (chaosEdits.get(input) === revision) chaosEdits.delete(input);
+  }
+  drawChaos(settings);
+  toast('Chaos settings applied', 'info');
+}, 'Applying…');
 $('#c-reset').onclick = async () => {
-  await api('/reset', { method: 'POST' });
-  setAuth(null, null); toast('Server reset — all data restored to seed', 'info'); loadChaos(); navigate('/login');
+  const { chaos } = await api('/reset', { method: 'POST' });
+  ++chaosLoad;
+  chaosEdits.clear();
+  drawChaos(chaos);
+  setAuth(null, null); toast('Server reset — all data restored to seed', 'info'); navigate('/login');
 };
 
 /* ---------------- command palette (Ctrl/Cmd+K) ---------------- */
-const PAGES = [['Shop', '/shop'], ['Cart', '/cart'], ['Wishlist', '/wishlist'], ['Orders', '/orders'], ['Account', '/account'], ['Business portal', '/business'], ['Seller centre', '/business/seller'], ['Business travel', '/business/travel'], ['Finance & banking', '/business/finance'], ['Learning academy', '/business/learning'], ['Test Inbox', '/mailbox'], ['API Docs', '/docs'], ['Admin console', '/admin']];
+const PAGES = [['Shop', '/shop'], ['Cart', '/cart'], ['Wishlist', '/wishlist'], ['Orders', '/orders'], ['Account', '/account'], ['UI Lab', '/lab'], ['Business portal', '/business'], ['B2B Marketplace', '/marketplace'], ['Seller centre', '/business/seller'], ['Business travel', '/business/travel'], ['Finance & banking', '/business/finance'], ['Learning academy', '/business/learning'], ['Test Inbox', '/mailbox'], ['API Docs', '/docs'], ['Admin console', '/admin']];
 function openPalette() {
   if ($('.palette')) return;
   const el = document.createElement('div');
@@ -233,6 +276,11 @@ function connectEvents() {
     catch { /* 401 handled by api() */ }
   }
   renderHeader(); refreshCounts(); connectEvents(); cookieBanner();
+  if (isDatabaseMode()) {
+    const { refreshPracticeBanner } = await import('./views/practice.js');
+    refreshPracticeBanner();
+    document.addEventListener('auth-changed', refreshPracticeBanner);
+  }
   if (!isDatabaseMode()) loadChaos();
   router();
 })();

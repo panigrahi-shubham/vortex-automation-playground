@@ -33,7 +33,10 @@ export default defineConfig({
   },
   webServer: process.env.BASE_URL
     ? undefined
-    : { command: 'npm start', url: `${BASE_URL}/api/health`, reuseExistingServer: !process.env.CI, timeout: 90_000, env: { SHOPLAB_STORAGE: 'legacy' } },
+    : [
+      { command: 'npm start', url: `${BASE_URL}/api/health`, reuseExistingServer: !process.env.CI, timeout: 90_000, env: { SHOPLAB_STORAGE: 'legacy' } },
+      { command: 'npm run vortex:frame', url: 'http://127.0.0.1:3101/vortex-frame', reuseExistingServer: !process.env.CI },
+    ],
   projects: [
     { name: 'api', testDir: './tests/api' },
     { name: 'chromium', testDir: './tests/e2e', testIgnore: /mobile\.spec\.ts/, use: { ...devices['Desktop Chrome'] } },

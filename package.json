@@ -6,12 +6,15 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
+    "vortex:frame": "node scripts/vortex-frame-server.cjs",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:api": "playwright test --project=api",
     "test:bugs": "playwright test --project=bugs",
     "report": "playwright show-report",
     "typecheck": "tsc -p .",
+    "lint": "eslint .",
+    "format:check": "prettier --check src/http eslint.config.mjs .github/dependabot.yml .github/workflows/codeql.yml SECURITY.md CONTRIBUTING.md",
     "test:workflows": "node --test tests/workflows/*.test.js",
     "db:migrate": "prisma migrate deploy",
     "db:validate": "prisma validate",
@@ -21,13 +24,14 @@
     "postinstall": "prisma generate",
     "prestart": "npm run build",
     "build": "prisma generate && tsc -p tsconfig.build.json",
-    "vercel-build": "npm run build",
+    "vercel-build": "npm run build && node scripts/build-vercel-assets.cjs",
     "predev": "npm run build",
     "test:db": "npm run build && node --test tests/workflows/database-*.test.cjs",
     "test:pricing": "npm run build && node --test tests/workflows/pricing.test.cjs",
     "smoke:storefront:db": "node scripts/smoke-v2-storefront.cjs",
     "test:storefront-adapter": "node --test tests/workflows/storefront-adapter.test.cjs",
     "test:business:db": "npm run build && playwright test --config=playwright.database.config.ts",
+    "test:marketplace:db": "npm run build && playwright test --config=playwright.database.config.ts marketplace",
     "test:inbox": "node scripts/test-inbox.cjs",
     "admin:grant": "node scripts/grant-admin.cjs"
   },
@@ -39,16 +43,33 @@
     "@prisma/client": "7.10.1",
     "dotenv": "^16.6.1",
     "express": "^4.22.3",
+    "graphql": "^17.1.0",
+    "helmet": "^8.3.0",
     "otplib": "13.4.0",
     "pg": "8.23.1",
-    "sharp": "0.35.5"
+    "pino": "^10.4.0",
+    "sharp": "0.35.5",
+    "three": "0.187.0",
+    "ws": "^8.22.2",
+    "yauzl": "3.4.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.56.0",
     "@types/express": "^4.17.25",
     "@types/node": "^22.20.5",
+    "@types/yauzl": "3.4.0",
+    "@typescript-eslint/parser": "^8.72.2",
+    "eslint": "^10.14.0",
+    "globals": "^17.14.0",
+    "prettier": "^3.9.10",
     "prisma": "7.10.1",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "@prisma/config": {
+      "effect": "3.22.1"
+    }
   }
 }

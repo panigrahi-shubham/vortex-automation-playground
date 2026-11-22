@@ -29,10 +29,13 @@ test.describe('business entry', () => {
   });
 });
 
-test('lab bookmark redirects to a responsive business workspace; buyer shop stays available', async ({ page }) => {
+test('UI Lab and the responsive business workspace have separate pages', async ({ page }) => {
   await page.goto('/lab');
+  await expect(page).toHaveURL('/lab');
+  await expect(page.getByRole('heading', { name: 'UI Lab', exact: true })).toBeVisible();
+  await page.getByRole('link', { name: 'Business', exact: true }).click();
   await expect(page).toHaveURL(/\/business$/);
-  await expect(page.getByRole('link', { name: 'UI Lab', exact: true })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'UI Lab', exact: true })).toBeVisible();
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.getByTestId('business-nav-finance')).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
@@ -220,6 +223,7 @@ test('learning gates assessments, records progress and awards a certificate', as
 });
 
 test('business pages and dialogs are accessible and fit a narrow screen', async ({ page }) => {
+  test.setTimeout(60_000); // Five page scans and a dialog scan share this test.
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   for (const section of ['overview', 'seller', 'travel', 'finance', 'learning']) {
     await page.getByTestId(`business-nav-${section}`).click();

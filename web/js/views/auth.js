@@ -149,6 +149,7 @@ export async function verify(el) {
 /* ================= REGISTER ================= */
 export async function register(el, { query = new URLSearchParams() } = {}) {
   if (isAuthed()) return navigate(safeReturn(query), { replace: true });
+  const marketplace = isDatabaseMode() && /^\/marketplace(?:[/?]|$)/.test(safeReturn(query));
   setTitle('Create account');
   el.innerHTML = `<div class="auth-wrap"><div class="card">
     <h1>Create your account</h1>
@@ -157,6 +158,7 @@ export async function register(el, { query = new URLSearchParams() } = {}) {
       ${field({ name: 'name', label: 'Full name', testid: 'reg-name', attrs: 'autocomplete="name" autofocus' })}
       ${field({ name: 'username', label: 'Username', testid: 'reg-username', hint: '3–20 letters, numbers or underscore', attrs: 'autocomplete="username"' })}
       ${field({ name: 'email', label: 'Email', type: 'email', testid: 'reg-email', attrs: 'autocomplete="email"' })}
+      ${marketplace ? '<label class="field">Marketplace account<select name="vortexAccountType" data-testid="vortex-register-account-type"><option value="buyer">Buyer</option><option value="seller">Seller</option></select></label>' : ''}
       ${pwField('password', 'Password', 'reg-password', 'autocomplete="new-password"')}
       <div id="pw-meter" style="margin:-6px 0 12px"></div>
       ${pwField('confirmPassword', 'Confirm password', 'reg-confirm', 'autocomplete="new-password"')}
@@ -174,6 +176,7 @@ export async function register(el, { query = new URLSearchParams() } = {}) {
     e.preventDefault(); clearErrors(form);
     const d = formData(form);
     const body = { name: d.name, username: d.username.trim(), email: d.email.trim(), password: d.password, confirmPassword: d.confirmPassword, acceptTerms: !!d.acceptTerms };
+    if (marketplace) body.vortexAccountType = d.vortexAccountType;
     await busy($('[data-testid=register-btn]', form), async () => {
       try {
         await api('/register', { method: 'POST', body });

@@ -1,3 +1,4 @@
+import { validateV2, z, text } from '../http/validation';
 import { PrismaClient } from '@prisma/client';
 import { Request, Router } from 'express';
 import { randomBytes } from 'node:crypto';
@@ -11,11 +12,11 @@ import { publicProfile } from './profile';
 
 export function mfaRoutes(db: PrismaClient) {
   const router = Router(), auth = requireSession(db);
-  router.get('/me/mfa', auth, async (_req, res, next) => {
+  router.get('/me/mfa', auth, validateV2(), async (_req, res, next) => {
     try { const credential = await db.mfaCredential.findUnique({ where: { userId: res.locals.user.id } }); res.set('Cache-Control', 'no-store').json({ enabled: credential?.enabled ?? false }); }
     catch (error) { next(error); }
   });
-  for (const action of ['enroll', 'enable', 'disable']) router.post(`/me/mfa/${action}`, auth, async (req, res, next) => {
+  for (const action of ['enroll', 'enable', 'disable']) router.post(`/me/mfa/${action}`, auth, validateV2({ body: z.object({ password: text.max(128), code: z.unknown().optional() }) }, { status: 403, message: 'Current password is incorrect' }), async (req, res, next) => {
     try {
       mfaKey();
       const userId: string = res.locals.user.id;
@@ -49,7 +50,7 @@ export function mfaRoutes(db: PrismaClient) {
       res.set('Cache-Control', 'no-store').json(data);
     } catch (error) { if (error instanceof WorkflowError) { res.status(error.status).json({ error: error.message }); return; } next(error); }
   });
-  router.post('/login/mfa', async (req, res, next) => {
+  router.post('/login/mfa', validateV2({ body: z.object({ mfaToken: text.regex(/^[a-f0-9]{64}$/), code: text.max(32) }) }, { message: 'Invalid verification request' }), async (req, res, next) => {
     const { mfaToken, code } = req.body || {};
     if (typeof mfaToken !== 'string' || !/^[a-f0-9]{64}$/.test(mfaToken) || typeof code !== 'string' || code.length > 32) { res.status(422).json({ error: 'Invalid verification request' }); return; }
     try {

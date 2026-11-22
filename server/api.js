@@ -17,7 +17,7 @@ const isTestControl = p => p === '/health' || p === '/reset' || p.startsWith('/c
 /* Chaos: global (chaos panel / POST /api/chaos) + per-request headers */
 /* ------------------------------------------------------------------ */
 api.use(async (req, res, next) => {
-  res.set('X-Request-Id', crypto.randomUUID());
+  if (!res.get('X-Request-Id')) res.set('X-Request-Id', crypto.randomUUID());
   if (isTestControl(req.path)) return next();
   const headerLatency = Math.min(+req.get('x-shoplab-latency') || 0, 10000);
   const latency = Math.max(db.chaos.latencyMs, headerLatency);
@@ -615,7 +615,6 @@ api.delete('/test/mailbox', (req, res) => { db.mailbox = []; res.json({ ok: true
 
 api.use((req, res) => fail(res, 404, `No route for ${req.method} /api${req.path}`));
 // JSON error handler (bad JSON body, payload too large, etc.)
-// eslint-disable-next-line no-unused-vars
 api.use((err, req, res, next) => {
   if (err.type === 'entity.too.large') return fail(res, 413, 'File too large (max 1 MB)');
   if (err.type === 'entity.parse.failed') return fail(res, 400, 'Malformed JSON body');

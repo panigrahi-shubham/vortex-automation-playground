@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/assets/fonts.css">
   <link rel="stylesheet" href="/css/app.css">
   <link rel="stylesheet" href="/css/orvilo.css">
+  <link rel="stylesheet" href="/css/vortex.css">
   <style>
     .guide-page .site-header { position: static; }
     .guide-page .guide-header { justify-content: space-between; }
@@ -75,7 +76,7 @@
     <div class="header-inner guide-header">
       <a class="brand" href="/shop" aria-label="Vortex Automation Playground shop">
         <span class="brand-mark" aria-hidden="true">V</span>
-        <span class="brand-copy"><span class="brand-name">VORTEX</span><small>AUTOMATION PLAYGROUND</small></span>
+        <span class="brand-copy"><span class="brand-name">VORTEX QA</span><small>EXPLORE. INTERACT. TEST.</small></span>
       </a>
       <a class="guide-back" href="/shop">Back to store</a>
     </div>
@@ -89,10 +90,10 @@
     <section class="guide-hero" aria-labelledby="guide-title">
       <p class="guide-eyebrow">Manual testing · Six practical journeys</p>
       <h1 id="guide-title">Test Vortex with confidence</h1>
-      <p class="guide-lede">Follow source-backed storefront and business-portal walkthroughs, compare observable results, and record what actually happened. This guide does not sign you in, create fixtures, reset data, or change server settings.</p>
+      <p class="guide-lede">Follow source-backed storefront and UI Lab walkthroughs, compare observable results, and record what actually happened. This guide does not sign you in, create fixtures, reset data, or change server settings.</p>
       <div class="guide-actions">
         <a class="btn" href="#journey-auth">Start with sign up</a>
-        <a class="btn secondary" href="/business">Open business portal</a>
+        <a class="btn secondary" href="/lab">Open UI Lab</a>
       </div>
     </section>
 
@@ -125,7 +126,7 @@
 
     <section class="guide-section" aria-labelledby="journeys-title">
       <h2 id="journeys-title">Journeys</h2>
-      <p class="guide-intro">Run the journeys in order for a complete storefront pass, or explore the business portal independently. Record blocked work as blocked rather than treating an unexecuted step as a pass.</p>
+      <p class="guide-intro">Run the journeys in order for a complete storefront pass, or use UI Lab independently. Record blocked work as blocked rather than treating an unexecuted step as a pass.</p>
 
       <article class="card guide-journey" id="journey-auth" aria-labelledby="journey-auth-title">
         <div class="guide-journey-head"><span class="guide-number" aria-hidden="true">01</span><div><p class="guide-kicker">Account</p><h2 id="journey-auth-title">Sign up and sign in</h2></div></div>
@@ -223,24 +224,62 @@
       </article>
 
       <article class="card guide-journey" id="journey-lab" aria-labelledby="journey-lab-title">
-        <div class="guide-journey-head"><span class="guide-number" aria-hidden="true">06</span><div><p class="guide-kicker">Business workflows</p><h2 id="journey-lab-title">Explore Vortex Business</h2></div></div>
-        <ul class="guide-meta"><li><strong>Start:</strong> <a href="/business"><code>/business</code></a></li><li><strong>Needs:</strong> a signed-in account and a business profile</li></ul>
+        <div class="guide-journey-head"><span class="guide-number" aria-hidden="true">06</span><div><p class="guide-kicker">Automation techniques</p><h2 id="journey-lab-title">Explore UI Lab</h2></div></div>
+        <ul class="guide-meta"><li><strong>Start:</strong> <a href="/lab"><code>/lab</code></a></li><li><strong>Needs:</strong> no storefront account for the Lab itself</li></ul>
         <div class="guide-columns">
           <div><h3>Steps</h3><ol class="guide-steps">
-            <li>Sign in with your Vortex account and create a private business profile.</li>
-            <li>In Seller centre, quote a sample buyer, simulate acceptance and ship the resulting purchase order.</li>
-            <li>Search and book a business trip; download its itinerary, then cancel and check the refund.</li>
-            <li>Add a fictional beneficiary, review and confirm a demo payment, then export the ledger.</li>
-            <li>Enrol in a course, complete its lessons and pass the assessment to download a certificate.</li>
+            <li>Open <a href="/lab">UI Lab</a> and choose one independent card, such as dialogs, frames, form controls, waits, or downloads.</li>
+            <li>Read the card title and technique hint before interacting with its visible controls.</li>
+            <li>Perform the action and observe the card's own output, event, download, frame, or dialog result.</li>
+            <li>Repeat with keyboard input where supported, then reset only that exercise through its provided control when available.</li>
           </ol></div>
-          <section class="guide-expect" aria-label="Expected business portal outcome"><h3>Expected outcome</h3><ul>
-            <li>Wholesale stock decreases on acceptance and shipped orders credit the demo ledger once.</li>
-            <li>Trip charges, refunds and payments reconcile with the displayed balance.</li>
-            <li>Learning progress survives a page reload; assessments require completed lessons.</li>
+          <section class="guide-expect" aria-label="Expected UI Lab outcome"><h3>Expected outcome</h3><ul>
+            <li>Each exercise exposes an observable result within its own card or browser surface.</li>
+            <li>Nested-frame and open-shadow-root exercises remain bounded by their actual DOM structure.</li>
+            <li>Deliberately unstable or inaccessible examples affect only their designated exercise.</li>
           </ul></section>
         </div>
-        <p class="guide-limit"><strong>Boundary:</strong> These are private simulated business workflows, not real banking, travel reservations or shared marketplace orders. PostgreSQL saves your workspace to your account; legacy data lasts until reset/restart. The retired UI Lab widget gallery has been replaced, so its old selectors and exercises no longer apply.</p>
+        <p class="guide-limit"><strong>Boundary:</strong> Closed shadow-root internals are not promised to be selectable. Browser permissions can affect clipboard and geolocation exercises. The accessibility audit and visual-defect cards are intentionally faulty and are not quality baselines for the rest of the site.</p>
       </article>
+    </section>
+
+    <section class="guide-section" aria-labelledby="vortex-widgets-title">
+      <h2 id="vortex-widgets-title">UI Lab widget exercises</h2>
+      <p>Open a card by itself to practice and reset its state. Run <code>npm run vortex:frame</code> in a second terminal for the cross-origin exercise.</p>
+      <ul>
+        <li><a href="/lab/date-picker">Date range picker</a>. Choose a start and end date across months. The fixture opens in November 2026.</li>
+        <li><a href="/lab/modal">Modal overlay</a>. Cycle focus inside the dialog and dismiss it with Escape or the backdrop. It uses the browser’s modal dialog semantics.</li>
+        <li><a href="/lab/tabs">Tabs</a>. Switch panels with arrow keys. The tab state resets when you reopen the card.</li>
+        <li><a href="/lab/accordion">Accordion</a>. Open two answers in turn. Only one answer can stay expanded.</li>
+        <li><a href="/lab/stepper">Multi-step form</a>. Enter a recipient and select delivery, then move between steps. The form keeps values until reset and never creates an order.</li>
+        <li><a href="/lab/slider">Custom slider</a>. Drag to a value or use arrow keys. Pointer results depend on the position relative to the track.</li>
+        <li><a href="/lab/sortable">Sortable list</a>. Reorder three tasks using a drag or arrow keys. The exercise only updates the displayed list.</li>
+        <li><a href="/lab/editable-table">Editable table</a>. Edit a quantity, select rows, and archive them. The table uses disposable browser data.</li>
+        <li><a href="/lab/virtual-list">Virtualized list</a>. Scroll through 500 logical rows and verify the DOM contains only visible rows. The demo uses fixed row heights.</li>
+        <li><a href="/lab/toasts">Auto dismiss toast</a>. Wait for the toast to disappear after three seconds. Use an assertion that waits for hidden state.</li>
+        <li><a href="/lab/otp">Split OTP fields</a>. Enter the practice code 246810. This exercise does not authenticate or send a message.</li>
+        <li><a href="/lab/storage">Cookies and local storage</a>. Set both the member cookie and local preference, then reload. Reset clears both values for this card.</li>
+        <li><a href="/lab/cross-origin">Cross-origin iframe</a>. Send a message from port 3101 using postMessage. This local exercise uses a different origin from the storefront.</li>
+        <li><a href="/lab/locator-traps">Locator traps</a>. Scope repeated Email fields and Remove buttons. An unscoped action intentionally triggers a strict-mode error.</li>
+        <li><a href="/lab/race">Request race</a>. Compare the latest result with the slower first request. The instability switch permits a stale response to overwrite the latest result.</li>
+        <li><a href="/lab/rerender">Element replacement</a>. Enable replacement and locate a button again after it is recreated. The replacement is opt-in.</li>
+        <li><a href="/lab/animation">Moving button</a>. Enable movement and click after the target settles. The motion lasts one second and starts disabled.</li>
+      </ul>
+    </section>
+
+    <section class="guide-section" aria-labelledby="vortex-business-title">
+      <h2 id="vortex-business-title">Vortex Business</h2>
+      <p>Sign in and open <a href="/business">the business portal</a> to create a private workspace. Quote a sample buyer, accept the quote and ship the order. Then try a trip booking and refund, a demo payment and ledger export, or a course assessment and certificate download.</p>
+      <p>Check the balance and stock after each action, then reload to verify persistence in PostgreSQL mode.</p>
+    </section>
+    <section class="guide-section" aria-labelledby="vortex-practice-title">
+      <h2 id="vortex-practice-title">Practice features</h2>
+      <ul>
+        <li><a href="/lab/websocket">WebSocket ticker and echo chat</a>. Connect locally, wait for a price change, then send a message and verify the echo. Hosted builds show a local availability notice.</li>
+        <li><a href="/lab/sso">Simulated single sign-on</a>. Use the demo credentials shown on the sign-in page, approve consent, and verify the storefront shows a new practice customer.</li>
+        <li><a href="/lab/graphql">GraphQL catalog query</a>. Filter Keyboard results and compare the requested fields with the response. The API exposes read-only catalog data.</li>
+        <li><a href="/shop">Language switcher</a>. Select हिन्दी, reload, and open the cart and checkout. The selected language applies to the storefront controls while catalog names and currency retain their source values.</li>
+      </ul>
     </section>
 
     <section class="guide-section" aria-labelledby="checklist-title">
@@ -252,10 +291,16 @@
         <li><label><input type="checkbox"><span><strong>Wishlist and cart</strong><small>Saved product, variant, quantity, totals, and reload behavior were checked.</small></span></label></li>
         <li><label><input type="checkbox"><span><strong>Checkout</strong><small>The persisted order matches the review and the cart is empty.</small></span></label></li>
         <li><label><input type="checkbox"><span><strong>Cancellation</strong><small>Both dismissed and confirmed cancellation outcomes were checked.</small></span></label></li>
-        <li><label><input type="checkbox"><span><strong>Business portal</strong><small>Seller, travel, finance and learning actions produced saved business outcomes.</small></span></label></li>
+        <li><label><input type="checkbox"><span><strong>UI Lab</strong><small>Each attempted exercise produced its documented observable result.</small></span></label></li>
       </ul>
     </section>
 
+    <section class="guide-section" aria-labelledby="vortex-practice-title">
+      <h2 id="vortex-practice-title">Personal defect practice and 3D interactions</h2>
+      <p>Open <a href="/practice">your practice workspace</a> in PostgreSQL mode and sign in. Select any of BUG-01 through BUG-08, save the settings, and reproduce the issue in the store. Reset affects your workspace. A stale reset returns 409 until you refresh.</p>
+      <p>Use <a href="/showroom">3D Studio</a> to practice canvas interaction alongside accessible controls. Load the preview, choose a finish, rotate with the slider or a drag, and reset. The photo stays available when WebGL cannot start. Auto-rotation respects reduced motion.</p>
+      <p>Reference coverage lives in <code>tests/e2e/vortex-studio.spec.ts</code> and <code>tests/workflows/database-practice.test.cjs</code>. The original seeded-bug spec supplies the eight behavioral examples. Product photographs are local assets and remain available offline after installation.</p>
+    </section>
     <section class="guide-section" aria-labelledby="quality-title">
       <h2 id="quality-title">Quality checks for this guide</h2>
       <div class="guide-quality">
@@ -273,7 +318,7 @@
   </main>
 
   <footer class="site-footer guide-footer">
-    <div class="inner"><span><strong>VORTEX</strong> · Automation Playground — practice only; no real purchases, payments, or email.</span><span class="row"><a href="/shop">Storefront</a><a href="/business">Business portal</a></span></div>
+    <div class="inner"><span><strong>VORTEX</strong> · Automation Playground — practice only; no real purchases, payments, or email.</span><span class="row"><a href="/shop">Storefront</a><a href="/lab">UI Lab</a></span></div>
   </footer>
 </body>
 </html>

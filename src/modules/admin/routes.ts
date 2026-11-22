@@ -1,3 +1,4 @@
+import { validateV2, productPath, z, objectPath, identifier, text } from '../../http/validation';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { Router, Request, Response, RequestHandler } from 'express';
 import { randomUUID } from 'node:crypto';
@@ -14,6 +15,9 @@ const productId = (req: Request) => {
   if (!/^\d+$/.test(String(req.params.id)) || !Number.isSafeInteger(id) || id < 1 || id > 2147483647) throw new WorkflowError(400, 'Invalid product ID');
   return id;
 };
+const productInput = z.object({
+  name: text, category: text, price: z.number(), stock: z.number(), description: text,
+});
 const productData = (body: Record<string, unknown>) => {
   const fields: Record<string,string> = {};
   if(typeof body.name !== 'string' || body.name.trim().length < 3 || body.name.length > 150) fields.name = 'Name must be 3-150 characters';
@@ -44,34 +48,45 @@ export function adminRoutes(db: PrismaClient) {
     if(!actor || actor.locked || actor.role!=='admin' || !session || session.expiresAt<=new Date())throw new WorkflowError(403,'Admin access required');
     return op(tx);
   });
-  router.get('/admin/stats',handle(async()=>{
+  const audit = (tx: Prisma.TransactionClient, res: Response, action: string, targetId: string, state?: string) =>
+    tx.auditLog.create({ data: { actorId: res.locals.user.id, action, targetId, state, requestId: res.locals.vortexRequestId } });
+  router.get('/admin/stats', validateV2(), handle(async()=>{
     const [products,outOfStock,users,orders,revenue]=await db.$transaction([
       db.product.count({where:{deletedAt:null}}),db.product.count({where:{deletedAt:null,stock:0}}),db.user.count(),db.order.count(),
       db.order.aggregate({where:{status:{not:'Cancelled'}},_sum:{total:true}})
     ],{isolationLevel:Prisma.TransactionIsolationLevel.RepeatableRead});
     return {products,outOfStock,users,orders,revenue:Number(revenue._sum.total??0)};
   }));
-  router.get('/admin/products',handle(async()=> (await db.product.findMany({where:{deletedAt:null},orderBy:{id:'asc'}})).map(productJson)));
-  router.post('/admin/products',handle(async(req,res)=>{
+  router.get('/admin/products', validateV2(), handle(async()=> (await db.product.findMany({where:{deletedAt:null},orderBy:{id:'asc'}})).map(productJson)));
+  router.post('/admin/products', validateV2({ body: productInput }), handle(async(req,res)=>{
     const parsed=productData(req.body||{}); if(!parsed.data){res.status(422).json({error:'Validation failed',fields:parsed.fields});return;}
     return productJson(await write(res,async tx=>{
       const p=await tx.product.create({data:{...parsed.data!,sku:`ORV-${randomUUID()}`}});
-      await enqueue(tx,'product.created',String(p.id),{productId:p.id});return p;
+      await enqueue(tx,'product.created',String(p.id),{productId:p.id});
+      await audit(tx, res, 'vortex.product.created', String(p.id));
+      return p;
     }));
   }));
-  router.put('/admin/products/:id',handle(async(req,res)=>{
+  router.put('/admin/products/:id', validateV2({ params: productPath, body: productInput }), handle(async(req,res)=>{
     const id=productId(req),parsed=productData(req.body||{});if(!parsed.data){res.status(422).json({error:'Validation failed',fields:parsed.fields});return;}
     return productJson(await write(res,async tx=>{
       if(!await tx.product.findFirst({where:{id,deletedAt:null}}))throw new WorkflowError(404,'Product not found');
       const p=await tx.product.update({where:{id},data:parsed.data});
-      await enqueue(tx,'product.updated',String(id),{productId:id});return p;
+      await enqueue(tx,'product.updated',String(id),{productId:id});
+      await audit(tx, res, 'vortex.product.updated', String(id));
+      return p;
     }));
   }));
-  router.delete('/admin/products/:id',handle(async(req,res)=>{
-    const id=productId(req);if(!await write(res,tx=>deleteProductIn(tx,id)))throw new WorkflowError(404,'Product not found');res.status(204).end();
+  router.delete('/admin/products/:id', validateV2({ params: productPath }), handle(async(req,res)=>{
+    const id = productId(req);
+    await write(res, async tx => {
+      if (!await deleteProductIn(tx, id)) throw new WorkflowError(404, 'Product not found');
+      await audit(tx, res, 'vortex.product.deleted', String(id));
+    });
+    res.status(204).end();
   }));
-  router.get('/admin/orders',handle(async()=> (await db.order.findMany({include:{lines:true,user:true},orderBy:{createdAt:'desc'}})).map(orderJson)));
-  router.patch('/admin/orders/:id',handle(async(req,res)=>orderJson(await write(res,async tx=>{
+  router.get('/admin/orders', validateV2(), handle(async()=> (await db.order.findMany({include:{lines:true,user:true},orderBy:{createdAt:'desc'}})).map(orderJson)));
+  router.patch('/admin/orders/:id', validateV2({ params: objectPath, body: z.object({ status: z.enum(['Placed', 'Processing', 'Shipped', 'Delivered', 'Cancelled']) }) }), handle(async(req,res)=>orderJson(await write(res,async tx=>{
     const id=String(req.params.id), status=req.body?.status;
     const flow=['Placed','Processing','Shipped','Delivered'];
     if(![...flow,'Cancelled'].includes(status))throw new WorkflowError(422,'Invalid status');
@@ -83,16 +98,20 @@ export function adminRoutes(db: PrismaClient) {
       if(order.status==='Cancelled' || flow.indexOf(status)!==flow.indexOf(order.status)+1)throw new WorkflowError(409,'Advance the order by one stage; terminal orders cannot be reopened');
       await tx.order.update({where:{id},data:{status}});await enqueue(tx,'order.status-changed',id,{orderId:id,userId:order.userId,status});
     }
+    await audit(tx, res, 'vortex.order.status-changed', id, status);
     return tx.order.findUniqueOrThrow({where:{id},include:{lines:true,user:true}});
   }))));
-  router.get('/admin/users',handle(async()=> (await db.user.findMany({orderBy:{username:'asc'}})).map(u=>({...publicProfile(u),locked:u.locked}))));
-  router.patch('/admin/users/:username',handle(async(req,res)=>write(res,async tx=>{
+  router.get('/admin/users', validateV2(), handle(async()=> (await db.user.findMany({orderBy:{username:'asc'}})).map(u=>({...publicProfile(u),locked:u.locked}))));
+  router.patch('/admin/users/:username', validateV2({ params: z.object({ username: identifier }), body: z.strictObject({ locked: z.boolean() }) }), handle(async(req,res)=>write(res,async tx=>{
     const user=await tx.user.findUnique({where:{username:String(req.params.username)}});
     if(!user)throw new WorkflowError(404,'User not found');
     if(user.id===res.locals.user.id || user.role==='admin')throw new WorkflowError(422,'Admin accounts cannot be changed here');
     if(typeof req.body?.locked!=='boolean' || Object.hasOwn(req.body,'role'))throw new WorkflowError(422,'Only a boolean locked value is supported');
     const updated=await tx.user.update({where:{id:user.id},data:{locked:req.body.locked}});
     if(updated.locked){await tx.session.deleteMany({where:{userId:user.id}});await tx.mfaLogin.deleteMany({where:{userId:user.id}});}
+    if (updated.locked !== user.locked) {
+      await audit(tx, res, updated.locked ? 'vortex.user.locked' : 'vortex.user.unlocked', user.id);
+    }
     return {...publicProfile(updated),locked:updated.locked};
   })));
   return router;
