@@ -179,7 +179,7 @@ export function openModal(inner, { wide = false, label = 'Dialog', testid = 'mod
   const onKey = e => { if (e.key === 'Escape') close(); };
   document.addEventListener('keydown', onKey);
   wrap.addEventListener('mousedown', e => { if (e.target === wrap) close(); });
-  setTimeout(() => { const f = wrap.querySelector('[autofocus], input, select, textarea, button'); f && f.focus(); });
+  wrap.querySelector('[autofocus], input, select, textarea, button')?.focus();
   return { el: wrap.firstElementChild, close };
 }
 export function confirmDialog({ title, message, confirmText = 'Confirm', cancelText = 'Cancel', danger = false }) {

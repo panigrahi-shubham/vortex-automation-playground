@@ -1,4 +1,4 @@
-import { $, $$, state, store, api, esc, navigate, isAuthed, isAdmin, setAuth, refreshCounts, toast, ApiError, loadRuntime, isDatabaseMode, runtime } from './core.js';
+import { $, $$, state, store, api, esc, navigate, isAuthed, isAdmin, setAuth, refreshCounts, toast, ApiError, loadRuntime, isDatabaseMode, runtime, busy } from './core.js';
 import { language, setLanguage, t } from './locale.js';
 
 const languageSelect = $('#vortex-language');
@@ -150,24 +150,49 @@ function cookieBanner() {
 }
 
 /* ---------------- chaos panel ---------------- */
+const chaosInputs = Object.entries({
+  latencyMs: $('#c-lat'), errorRate: $('#c-err'), bugMode: $('#c-bug'),
+  sessionTtlSec: $('#c-ttl'), orderProgressSec: $('#c-prog')
+});
+const chaosEdits = new Map();
+let nextChaosEdit = 0, chaosLoad = 0;
+function drawChaos(settings) {
+  for (const [key, input] of chaosInputs) {
+    if (chaosEdits.has(input)) continue;
+    if (input.type === 'checkbox') input.checked = settings[key];
+    else input.value = settings[key];
+  }
+  const on = settings.latencyMs > 0 || settings.errorRate > 0 || settings.bugMode;
+  $('#chaos-dot').classList.toggle('on', on);
+  $('#chaos-dot').setAttribute('aria-label', on ? 'Chaos active' : 'Chaos off');
+}
 async function loadChaos() {
+  const load = ++chaosLoad;
   try {
     const c = await api('/chaos', { quiet: true });
-    $('#c-lat').value = c.latencyMs; $('#c-err').value = c.errorRate; $('#c-bug').checked = c.bugMode;
-    $('#c-ttl').value = c.sessionTtlSec; $('#c-prog').value = c.orderProgressSec;
-    const on = c.latencyMs > 0 || c.errorRate > 0 || c.bugMode;
-    $('#chaos-dot').classList.toggle('on', on);
-    $('#chaos-dot').setAttribute('aria-label', on ? 'Chaos active' : 'Chaos off');
+    if (load === chaosLoad) drawChaos(c);
   } catch { /* ignore */ }
 }
+for (const [, input] of chaosInputs) input.addEventListener('input', () => { chaosEdits.set(input, ++nextChaosEdit); });
 $('#chaos').addEventListener('toggle', () => { if ($('#chaos').open) loadChaos(); });
-$('#c-apply').onclick = async () => {
-  await api('/chaos', { method: 'POST', body: { latencyMs: +$('#c-lat').value, errorRate: +$('#c-err').value, bugMode: $('#c-bug').checked, sessionTtlSec: +$('#c-ttl').value, orderProgressSec: +$('#c-prog').value } });
-  toast('Chaos settings applied', 'info'); loadChaos();
-};
+$('#c-apply').onclick = () => busy($('#c-apply'), async () => {
+  const submitted = new Map(chaosEdits);
+  const body = Object.fromEntries(chaosInputs.filter(([, input]) => submitted.has(input))
+    .map(([key, input]) => [key, input.type === 'checkbox' ? input.checked : +input.value]));
+  const settings = await api('/chaos', { method: 'POST', body });
+  ++chaosLoad;
+  for (const [input, revision] of submitted) {
+    if (chaosEdits.get(input) === revision) chaosEdits.delete(input);
+  }
+  drawChaos(settings);
+  toast('Chaos settings applied', 'info');
+}, 'Applying…');
 $('#c-reset').onclick = async () => {
-  await api('/reset', { method: 'POST' });
-  setAuth(null, null); toast('Server reset — all data restored to seed', 'info'); loadChaos(); navigate('/login');
+  const { chaos } = await api('/reset', { method: 'POST' });
+  ++chaosLoad;
+  chaosEdits.clear();
+  drawChaos(chaos);
+  setAuth(null, null); toast('Server reset — all data restored to seed', 'info'); navigate('/login');
 };
 
 /* ---------------- command palette (Ctrl/Cmd+K) ---------------- */
