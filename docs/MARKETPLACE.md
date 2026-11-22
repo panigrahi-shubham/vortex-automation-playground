@@ -29,6 +29,20 @@ Paths are relative to `/api/v2/marketplace`. Use the bearer session from the exi
 
 Listings accept `name`, `description`, `category`, a decimal-string `unitPrice`, an integer `minimumQuantity` and optional `photoId`. Publish with `{"status":"PUBLISHED"}`, deactivate with `{"status":"INACTIVE"}`. Quote requests accept `quantity`, `message` and an optional UUID `requestId` for safe retries. Seller replies accept `quoteQuantity`, a decimal-string `quoteUnitPrice` and integer `deliveryDays`. Each file upload uses an `application/octet-stream` body and a URL-encoded filename in the query.
 
+## StockPilot native integration
+
+Configure the HTTPS origin and publishable key separately for each APK build variant.
+
+- Staging origin is `https://vortex-qa-staging.vercel.app`.
+- Production origin is `https://vortex-qa.vercel.app`.
+- Send `X-Vortex-Api-Key: <environment publishable key>` on the two native catalogue requests below. A missing or invalid key returns `401`.
+
+Build a category picker with `GET /api/v2/marketplace/native/categories`. Build a searchable, paginated list with `GET /api/v2/marketplace/native/catalog` and its optional `q`, `category` and `page` query parameters. The list returns `items`, `total`, `page` and `pageSize`. Use the product's `photoUrl` relative to the same origin. A product without a photo has `photoUrl: null`. Prices are decimal strings in USD.
+
+For **Request Quote** and **My Enquiries**, sign the user in with `POST /api/v2/login` using `username` and `password`. If the response has `mfaRequired: true`, send `mfaToken` and the user's `code` to `POST /api/v2/login/mfa`. Use the returned token as `Authorization: Bearer <token>` to request a quote and list enquiries. Keep the session token in memory or in app-private storage encrypted with an Android Keystore key. On `401` prompt the user to sign in again. Sign out with `POST /api/v2/logout` and clear the local token.
+
+The publishable key identifies a client on read-only catalogue endpoints. Quote requests, enquiry history, seller operations, and private files require the signed-in user's authorisation. On the Vortex server, `VORTEX_STOCKPILOT_PUBLIC_KEYS` accepts a comma-separated list of publishable keys. During rotation, configure both keys until the updated APK has shipped.
+
 ## Local and CI tests
 
 Use a disposable local PostgreSQL database named `vortex_marketplace_test` or `vortex_test`, with schema `orvilo`. Create empty `anon` and `authenticated` roles on vanilla PostgreSQL, as in the CI workflow. Set `DATABASE_URL`, `DIRECT_URL` and a development `ORVILO_MFA_KEY`, then run the following commands.

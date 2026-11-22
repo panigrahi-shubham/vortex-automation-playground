@@ -42,17 +42,31 @@ test('marketplace API keeps published inventory, file ownership and enquiries co
   expect(draft.status()).toBe(201);
   const { id } = await draft.json();
   const catalogue = base + '/catalog?q=workshop';
+  const nativeCatalogue = base + '/native/catalog?q=workshop';
+  const nativeCategories = base + '/native/categories';
+  const appKey = { 'X-Vortex-Api-Key': 'vortex_pk_ci_stockpilot' };
   const quotePath = base + '/catalog/' + id + '/enquiries';
   const own = base + '/listings/' + id;
   expect((await request.post(base + '/listings', { headers: buyer, data: listing })).status()).toBe(403);
   expect((await request.patch(own, { headers: other, data: listing })).status()).toBe(404);
   expect(await (await request.get(catalogue)).json()).toMatchObject({ items: [], total: 0 });
+  expect((await request.get(nativeCatalogue)).status()).toBe(401);
+  expect((await request.get(nativeCategories, { headers: { 'X-Vortex-Api-Key': 'unknown' } })).status()).toBe(401);
+  const categories = await request.get(nativeCategories, { headers: appKey });
+  expect(categories.status()).toBe(200);
+  expect((await categories.json()).categories).toContain('Industrial supplies');
+  expect(await (await request.get(nativeCatalogue, { headers: appKey })).json()).toMatchObject({ items: [], total: 0 });
   expect((await request.post(quotePath, { headers: buyer, data: { quantity: 12, message: 'Need delivery' } })).status()).toBe(404);
   expect((await request.patch(own, { headers: seller, data: { ...listing, description: 'Bulk zinc-plated fasteners' } })).status()).toBe(200);
   expect((await request.patch(own + '/status', { headers: seller, data: { status: 'PUBLISHED' } })).status()).toBe(200);
   expect(await (await request.get(catalogue + '&category=Industrial+supplies')).json()).toMatchObject({
     items: [{ id, supplier: 'Northline Supply', minimumQuantity: 10, unitPrice: '2.50', description: 'Bulk zinc-plated fasteners' }]
   });
+  expect(await (await request.get(nativeCatalogue + '&category=Industrial+supplies&page=1', { headers: appKey })).json()).toMatchObject({
+    items: [{ id, supplier: 'Northline Supply' }], total: 1, page: 1
+  });
+  expect((await request.get(base + '/enquiries', { headers: appKey })).status()).toBe(401);
+  expect((await request.post(quotePath, { headers: appKey, data: { quantity: 12, message: 'Need delivery' } })).status()).toBe(401);
   expect(await (await request.get(base + '/catalog?q=%25')).json()).toMatchObject({ items: [] });
   expect((await request.post(quotePath, { headers: buyer, data: { quantity: 9, message: 'Need delivery' } })).status()).toBe(422);
   expect((await request.post(quotePath, { headers: buyer, data: { quantity: 12, message: '   ' } })).status()).toBe(422);
@@ -74,6 +88,7 @@ test('marketplace API keeps published inventory, file ownership and enquiries co
   expect((await request.post(reply, { headers: seller, data: quote })).status()).toBe(409);
   expect((await request.patch(own + '/status', { headers: seller, data: { status: 'INACTIVE' } })).status()).toBe(200);
   expect(await (await request.get(catalogue)).json()).toMatchObject({ items: [] });
+  expect(await (await request.get(nativeCatalogue, { headers: appKey })).json()).toMatchObject({ items: [] });
   expect(await (await request.get(base + '/enquiries?status=REPLIED', { headers: buyer })).json()).toMatchObject({ items: [{ id: enquiry.id, status: 'REPLIED', ...quote }] });
   await db.session.update({ where: { tokenHash: tokenHash(buyerToken) }, data: { expiresAt: new Date(1) } });
   const expired = await request.get(base + '/enquiries', { headers: buyer });

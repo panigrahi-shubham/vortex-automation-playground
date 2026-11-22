@@ -67,8 +67,19 @@ function role(expected: 'seller' | 'customer'): RequestHandler {
 export function marketplaceRoutes(db: PrismaClient) {
   const router = express.Router();
   const auth = requireSession(db), seller = role('seller'), buyer = role('customer');
+  const stockPilotKeys = new Set((process.env.VORTEX_STOCKPILOT_PUBLIC_KEYS || '').split(',').map(key => key.trim()).filter(Boolean));
+  // Installed apps can expose their publishable key. This guard is used only on
+  // aliases of public routes and does not grant a user identity or permissions.
+  const stockPilot: RequestHandler = (req, res, next) => {
+    if (!stockPilotKeys.size) { res.status(503).json({ error: 'StockPilot access is unavailable' }); return; }
+    const key = req.get('X-Vortex-Api-Key');
+    if (!key || !stockPilotKeys.has(key)) { res.status(401).json({ error: 'A valid Vortex publishable key is required' }); return; }
+    next();
+  };
+  const listCategories: RequestHandler = (_req, res) => { res.json({ categories }); };
   router.use((_req, res, next) => { res.set('Cache-Control', 'no-store'); next(); });
-  router.get('/categories', (_req, res) => res.json({ categories }));
+  router.get('/categories', listCategories);
+  router.get('/native/categories', stockPilot, listCategories);
 
   function list(owned: boolean) {
     return marketplaceHandler(async (req, res) => {
@@ -86,7 +97,9 @@ export function marketplaceRoutes(db: PrismaClient) {
       res.json({ items: items.map(listingView), total, page, pageSize });
     });
   }
-  router.get('/catalog', list(false));
+  const publicCatalog = list(false);
+  router.get('/catalog', publicCatalog);
+  router.get('/native/catalog', stockPilot, publicCatalog);
   router.get('/listings', auth, seller, list(true));
   router.get('/catalog/:id/photo', marketplaceHandler(async (req, res) => {
     const listing = await db.vortexListing.findFirst({
