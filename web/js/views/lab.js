@@ -1,4 +1,5 @@
 import { $, esc, setTitle } from '../core.js';
+import { levels, validLevel, levelOptions } from '../practice-levels.js';
 import dialogs from './lab/dialogs.js';
 import windows from './lab/windows.js';
 import frames from './lab/frames.js';
@@ -19,10 +20,10 @@ import dynamicIds from './lab/dynamic-ids.js';
 import table from './lab/table.js';
 import visual from './lab/visual.js';
 import a11y from './lab/a11y.js';
+import cssScenarios from './lab/css-scenarios.js';
 import { removeTestIds } from './lab/support.js';
 
-const cards = [dialogs, windows, frames, shadow, dnd, mouse, signature, controls, waits, infinite, files, keyboard, clipboard, geo, clock, network, dynamicIds, table, visual, a11y];
-const levels = { 1: 'Beginner', 2: 'Intermediate', 3: 'Advanced' };
+const cards = [...cssScenarios, dialogs, windows, frames, shadow, dnd, mouse, signature, controls, waits, infinite, files, keyboard, clipboard, geo, clock, network, dynamicIds, table, visual, a11y];
 
 export async function render(el, { params = [], query = new URLSearchParams(), isCurrent = () => true } = {}) {
   const cardId = params[0];
@@ -47,39 +48,60 @@ export async function render(el, { params = [], query = new URLSearchParams(), i
   }
 
   setTitle('UI Lab');
-  el.innerHTML = `<div class="page-head"><div><h1>UI Lab</h1><p class="muted" style="margin:0">Every awkward thing a real app throws at your tests, in one place. Each card is independent.</p></div>
-    ${cardId ? `<a class="btn secondary sm" href="/lab${challengeQuery}">Back to all cards</a>` : '<a class="btn secondary sm" href="/docs">API &amp; test data →</a>'}</div>
-    <div class="row vortex-lab-options" role="group" aria-label="Lab options">
+  const filters = new URLSearchParams(query);
+  const backLink = '/lab' + (filters.size ? `?${filters}` : '');
+  el.innerHTML = `<div class="page-head qa-page-head"><div><h1>UI Lab</h1><p>Practice browser testing with procurement forms, shipment layouts and interactive components.</p></div>
+    ${cardId ? `<a class="btn secondary sm" href="${esc(backLink)}">Back to all cards</a>` : '<a class="btn secondary sm" href="/docs">API practice →</a>'}</div>
+    <div class="row qa-filters vortex-lab-options" role="group" aria-label="Lab options">
       ${cardId ? '' : `<label for="vortex-lab-difficulty">Difficulty</label>
-      <select id="vortex-lab-difficulty"><option value="">All levels</option>${Object.entries(levels).map(([level, name]) => `<option value="${level}">${level} · ${name}</option>`).join('')}</select>`}
+      <select id="vortex-lab-difficulty">${levelOptions()}</select>
+      <label class="check"><input type="checkbox" id="qa-css-only"> CSS examples only</label>`}
       <label class="check"><input type="checkbox" id="vortex-lab-challenge" ${challenge ? 'checked' : ''}> Challenge mode</label>
     </div>
-    <div class="lab-grid"></div>`;
-  const grid = $('.lab-grid', el);
+    ${cardId ? '<div class="lab-grid qa-single"></div>' : Object.entries(levels).map(([level, { name, description }]) => `<section class="qa-level" data-level="${level}" aria-labelledby="qa-ui-level-${level}">
+      <div class="qa-level-head"><h2 id="qa-ui-level-${level}">Level ${level} · ${name}</h2><p>${description}</p></div>
+      <div class="lab-grid"></div></section>`).join('')}`;
   const difficulty = $('#vortex-lab-difficulty', el);
+  const cssOnly = $('#qa-css-only', el);
   const sections = [];
+  const levelSections = new Map([...el.querySelectorAll('.qa-level')].map(section => [section.dataset.level, section]));
+  if (difficulty) difficulty.value = validLevel(query.get('level'));
+  if (cssOnly) cssOnly.checked = query.get('topic') === 'css';
   const filter = () => {
-    for (const { section, level } of sections) {
-      section.hidden = Boolean(difficulty?.value && difficulty.value !== String(level));
+    for (const { section, card } of sections) {
+      section.hidden = Boolean(cssOnly?.checked && !card.selector);
     }
+    for (const [level, section] of levelSections) section.hidden = Boolean(difficulty.value && level !== difficulty.value);
+  };
+  const rememberFilters = () => {
+    const url = new URL(location.href);
+    if (difficulty.value) url.searchParams.set('level', difficulty.value); else url.searchParams.delete('level');
+    if (cssOnly.checked) url.searchParams.set('topic', 'css'); else url.searchParams.delete('topic');
+    history.replaceState(history.state, '', url);
+    for (const { section, card } of sections) {
+      const link = $('.vortex-lab-actions a', section);
+      if (link) link.href = `/lab/${card.id}${url.search}`;
+    }
+    filter();
   };
   function addCards(definitions) {
     for (const card of definitions) {
+      const grid = cardId ? $('.lab-grid', el) : $('.lab-grid', levelSections.get(String(card.level)));
       const section = mountCard(grid, card, { challenge, standalone: Boolean(cardId), challengeQuery, signal: page.signal });
-      sections.push({ section, level: card.level });
+      sections.push({ section, card });
     }
-    filter();
+    if (difficulty) rememberFilters();
   }
   if (difficulty) {
-    difficulty.value = levels[query.get('level')] ? query.get('level') : '';
-    difficulty.addEventListener('change', filter);
+    difficulty.addEventListener('change', rememberFilters);
+    cssOnly.addEventListener('change', rememberFilters);
   }
   addCards(selected);
   if (!cardId) {
     import('./lab/widgets.js').then(({ default: widgets }) => {
       if (!page.signal.aborted) addCards(widgets);
     }).catch(() => {
-      if (!page.signal.aborted) grid.insertAdjacentHTML('beforeend', '<p role="alert">The additional lab cards could not be loaded. Reload to try again.</p>');
+      if (!page.signal.aborted) el.insertAdjacentHTML('beforeend', '<p role="alert">The additional lab cards could not be loaded. Reload to try again.</p>');
     });
   }
 
@@ -87,8 +109,6 @@ export async function render(el, { params = [], query = new URLSearchParams(), i
     const url = new URL(location.href);
     if (event.target.checked) url.searchParams.set('challenge', '1');
     else url.searchParams.delete('challenge');
-    if (difficulty?.value) url.searchParams.set('level', difficulty.value);
-    else url.searchParams.delete('level');
     history.replaceState(history.state, '', url);
     page.abort();
     await render(el, { params, query: url.searchParams, isCurrent });
@@ -102,12 +122,13 @@ function mountCard(grid, card, { challenge, standalone, challengeQuery, signal }
   if (!challenge) section.dataset.testid = card.testId || `lab-${card.id}`;
   section.setAttribute('aria-labelledby', `h-${card.id}`);
   section.innerHTML = `<h2 id="h-${card.id}"><span class="vortex-lab-title">${card.title}</span>${challenge ? '' : `<span class="tag">${card.tag}</span>`}</h2>
-    <p class="small muted"><strong>Level ${card.level} · ${levels[card.level]}</strong> · ${esc(card.task)}</p>
+    <p class="small muted"><strong>Level ${card.level} · ${levels[card.level].name}</strong> · ${esc(card.task)}</p>
     <div class="vortex-lab-body"></div>
     <div class="row vortex-lab-actions">
       ${standalone ? '' : `<a class="btn link sm" href="/lab/${card.id}${challengeQuery}">Open card</a>`}
       <button type="button" class="btn link sm">Reset</button>
     </div>`;
+  if (!challenge && card.selector) section.insertAdjacentHTML('beforeend', `<details class="qa-selector"><summary>CSS locator example</summary><code>${esc(card.selector)}</code></details>`);
   grid.append(section);
 
   const body = $('.vortex-lab-body', section);

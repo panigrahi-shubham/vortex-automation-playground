@@ -1,4 +1,5 @@
-import { esc, setTitle } from '../core.js';
+import { esc, isDatabaseMode, setTitle } from '../core.js';
+import { mountPractice } from './api-practice.js';
 
 const A = '🔒'; // needs Bearer token
 const GROUPS = [
@@ -50,9 +51,17 @@ const GROUPS = [
   ]]
 ];
 
-export function render(el) {
-  setTitle('API docs');
-  el.innerHTML = `<div data-testid="api-docs"><div class="page-head"><div><h1>API &amp; test data</h1><p class="muted" style="margin:0">Everything the UI does goes through this JSON API — so you can seed state with <code>request</code> and assert in the browser.</p></div></div>
+export function render(el, { query = new URLSearchParams(), isCurrent = () => true } = {}) {
+  setTitle('API testing');
+  el.innerHTML = `<div data-testid="api-docs"><div class="page-head qa-page-head"><div><h1>API testing</h1><p>Run read-only catalog and account scenarios. Inspect the request, response and checks, then repeat them in your test suite.</p></div><a class="btn secondary sm" href="/lab">UI Lab →</a></div>
+    <div id="qa-api-practice"></div>
+    <section class="card qa-api-reference"><h2>API reference</h2>
+    ${isDatabaseMode() ? `<p>The PostgreSQL storefront uses <code>/api/v2</code>. This reference lists common routes for testing with a dedicated account.</p>
+    <dl><dt><code>POST /api/v2/login</code></dt><dd>Sign in and use the returned bearer token for account requests. An MFA-enabled account must complete <code>POST /api/v2/login/mfa</code>.</dd>
+    <dt><code>GET /api/v2/products</code></dt><dd>Search with <code>q</code>, filter by category or stock, and read pagination and total count.</dd>
+    <dt><code>GET /api/v2/cart</code> and <code>GET /api/v2/orders</code></dt><dd>Read cart and orders owned by the signed-in account.</dd>
+    <dt><code>GET /api/v2/marketplace/catalog</code></dt><dd>Browse published B2B listings by search term, category and page.</dd></dl>
+    <a href="/marketplace">Open marketplace</a>` : `<details><summary>Legacy API routes, test users and payment fixtures</summary>
     <div class="grid-2" style="margin-bottom:16px">
       <section class="card"><h2>Users <span class="muted small">password: secret123</span></h2><table class="small"><tbody>
         <tr><td class="mono">standard_user</td><td>Happy path</td></tr><tr><td class="mono">locked_user</td><td>423 Locked</td></tr><tr><td class="mono">slow_user</td><td>3 s login delay</td></tr>
@@ -67,6 +76,7 @@ export function render(el) {
       <p class="small">Safe for parallel tests — they only affect the request that carries them. Set them with <code>page.setExtraHTTPHeaders()</code> or <code>test.use({ extraHTTPHeaders })</code>.</p>
       <table class="small"><tbody><tr><td class="mono">x-shoplab-latency: 2000</td><td>Delay this request (ms, max 10000)</td></tr><tr><td class="mono">x-shoplab-fail: 503</td><td>Force this status code</td></tr><tr><td class="mono">x-shoplab-bugs: 1</td><td>Turn seeded bugs on for this request</td></tr></tbody></table></section>
     ${GROUPS.map(([g, eps]) => `<section class="card" style="margin-bottom:16px" data-testid="docs-group"><h2>${esc(g)}</h2>
-      ${eps.map(([m, p, a, d]) => `<div class="endpoint"><span class="method ${m}">${m}</span><code>${esc(p)} ${a}</code><span class="desc small muted">${esc(d)}</span></div>`).join('')}</section>`).join('')}</div>`;
+      ${eps.map(([m, p, a, d]) => `<div class="endpoint"><span class="method ${m}">${m}</span><code>${esc(p)} ${a}</code><span class="desc small muted">${esc(d)}</span></div>`).join('')}</section>`).join('')}</details>`}</section></div>`;
+  mountPractice(el.querySelector('#qa-api-practice'), query, isCurrent);
 }
 

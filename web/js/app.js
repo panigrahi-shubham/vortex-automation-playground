@@ -196,7 +196,7 @@ $('#c-reset').onclick = async () => {
 };
 
 /* ---------------- command palette (Ctrl/Cmd+K) ---------------- */
-const PAGES = [['Shop', '/shop'], ['Cart', '/cart'], ['Wishlist', '/wishlist'], ['Orders', '/orders'], ['Account', '/account'], ['UI Lab', '/lab'], ['Business portal', '/business'], ['B2B Marketplace', '/marketplace'], ['Seller centre', '/business/seller'], ['Business travel', '/business/travel'], ['Finance & banking', '/business/finance'], ['Learning academy', '/business/learning'], ['Test Inbox', '/mailbox'], ['API Docs', '/docs'], ['Admin console', '/admin']];
+const PAGES = [['Shop', '/shop'], ['Cart', '/cart'], ['Wishlist', '/wishlist'], ['Orders', '/orders'], ['Account', '/account'], ['UI Lab', '/lab'], ['Business portal', '/business'], ['B2B Marketplace', '/marketplace'], ['Seller centre', '/business/seller'], ['Business travel', '/business/travel'], ['Finance & banking', '/business/finance'], ['Learning academy', '/business/learning'], ['Test Inbox', '/mailbox'], ['API testing', '/docs'], ['Admin console', '/admin']];
 function openPalette() {
   if ($('.palette')) return;
   const el = document.createElement('div');
