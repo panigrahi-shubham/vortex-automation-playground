@@ -6,6 +6,10 @@ const catalog = {
   tag: 'Attribute selectors · :disabled',
   level: 1,
   task: 'Filter to in-stock items. Check that only available listings remain, then request a quote for Desk lamp.',
+  steps: [
+    ['filter', 'Show only in-stock items.'],
+    ['quote', 'With the filter on, request a quote for Desk lamp.'],
+  ],
   selector: '.qa-listing[data-stock="available"] > button:not(:disabled)',
   body: `<p class="small">Procurement is sourcing replacement office supplies.</p>
     <label class="check"><input type="checkbox" name="available"> Show in-stock items only</label>
@@ -14,17 +18,21 @@ const catalog = {
       <li class="qa-listing" data-stock="unavailable"><div><strong>Monitor arm</strong><span>Out of stock</span></div><button class="btn secondary sm" type="button" disabled aria-label="Request quote for Monitor arm">Request quote</button></li>
       <li class="qa-listing" data-stock="available"><div><strong>USB-C dock</strong><span>In stock · 12 units</span></div><button class="btn secondary sm" type="button" aria-label="Request quote for USB-C dock">Request quote</button></li>
     </ul><p role="status" class="small">3 listings shown</p>`,
-  mount(el) {
+  mount(el, { checkpoint }) {
     const list = $('.qa-listings', el);
     const status = $('[role=status]', el);
     $('input', el).onchange = event => {
       const row = $('[data-stock=unavailable]', list);
       row.hidden = event.target.checked;
+      if (row.hidden) checkpoint?.('filter');
       status.textContent = event.target.checked ? '2 listings shown' : '3 listings shown';
     };
     list.onclick = event => {
       const button = event.target.closest('button');
-      if (button && !button.disabled) status.textContent = `Quote requested for ${$('strong', button.closest('li')).textContent}`;
+      if (!button || button.disabled) return;
+      const product = $('strong', button.closest('li')).textContent;
+      status.textContent = `Quote requested for ${product}`;
+      if ($('input', el).checked && product === 'Desk lamp') checkpoint?.('quote');
     };
   }
 };
@@ -35,6 +43,10 @@ const form = {
   tag: ':focus-visible · :user-invalid · adjacent sibling',
   level: 1,
   task: 'Tab to the billing email, submit an invalid address, then correct it and save.',
+  steps: [
+    ['invalid', 'Submit an invalid billing email to see the validation error.'],
+    ['save', 'Correct the address and save the billing contact.'],
+  ],
   selector: 'input:user-invalid + .qa-field-error',
   body: `<form class="qa-invoice">
       <label for="qa-billing-email">Billing email</label>
@@ -43,10 +55,13 @@ const form = {
       <button type="submit" class="btn sm">Save billing contact</button>
       <p role="status" class="small"></p>
     </form>`,
-  mount(el) {
+  mount(el, { checkpoint }) {
     const status = $('[role=status]', el);
     const email = $('input', el);
-    email.oninvalid = () => email.setAttribute('aria-describedby', 'qa-billing-error');
+    email.oninvalid = () => {
+      email.setAttribute('aria-describedby', 'qa-billing-error');
+      if (email.validity.typeMismatch) checkpoint?.('invalid');
+    };
     email.oninput = () => {
       if (email.validity.valid) email.removeAttribute('aria-describedby');
       status.textContent = '';
@@ -54,6 +69,7 @@ const form = {
     $('form', el).onsubmit = event => {
       event.preventDefault();
       status.textContent = 'Billing contact saved';
+      checkpoint?.('save');
     };
   }
 };

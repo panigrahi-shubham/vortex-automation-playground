@@ -240,6 +240,7 @@ test('web table: filter, sort and paginate', async ({ page }) => {
 });
 
 test('accessibility scan finds the deliberately broken widgets', async ({ page }) => {
+  await expect(card(page, 'a11y')).toBeVisible();
   const results = await new AxeBuilder({ page }).include('[data-testid="lab-a11y"]').analyze();
   const ids = results.violations.map(v => v.id);
   expect(ids).toEqual(expect.arrayContaining(['image-alt', 'button-name', 'label', 'color-contrast']));

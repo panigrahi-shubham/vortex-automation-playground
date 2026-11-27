@@ -62,10 +62,10 @@
 .qa-invoice { display: grid; gap: 8px; }
 .qa-invoice button { justify-self: start; }
 .qa-invoice :is(input, button):focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-.qa-invoice .qa-field-error { display: none; color: var(--bad); margin: 0; }
+.qa-invoice .qa-field-error { visibility: hidden; color: var(--bad); margin: 0; }
 .qa-invoice .qa-field-error::before { content: "! "; font-weight: 700; }
 .qa-invoice input:user-invalid { border-color: var(--bad); }
-.qa-invoice input:user-invalid + .qa-field-error { display: block; }
+.qa-invoice input:user-invalid + .qa-field-error { visibility: visible; }
 
 .qa-shipment-scroll { max-width: 100%; overflow-x: auto; margin-top: 12px; }
 .qa-shipment-preview { container-type: inline-size; width: min(100%, 270px); }
@@ -116,3 +116,51 @@
 @media (prefers-reduced-motion: reduce) {
   .qa-progress-fill { transition: none; }
 }
+
+.qa-marathon-invite {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin-bottom: 16px;
+  padding: 18px 22px;
+  background: var(--accent-soft);
+  border-inline-start: 4px solid var(--accent);
+  border-radius: var(--radius);
+}
+.qa-marathon-invite h2, .qa-marathon-plan h2 { margin: 0; font-size: 1.15rem; }
+.qa-marathon-invite p { margin: 4px 0 0; }
+.qa-marathon-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(0, 2fr);
+  gap: 20px;
+  align-items: start;
+}
+.qa-marathon-count { margin: 4px 0 8px; font-size: .85rem; color: var(--muted); }
+.qa-marathon-plan progress { display: block; width: 100%; height: 8px; accent-color: var(--accent); }
+.qa-marathon-plan ol { list-style: none; padding: 0; margin: 16px 0 0; }
+.qa-marathon-plan li + li { margin-top: 4px; }
+.qa-marathon-plan button {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; min-height: 44px; padding: 8px; text-align: start;
+  background: transparent; font: inherit; color: var(--ink);
+  border: 1px solid transparent; border-radius: 8px; cursor: pointer;
+}
+.qa-marathon-plan button:hover { background: var(--surface-2); }
+.qa-marathon-plan button[aria-current] { border-color: var(--accent); background: var(--accent-soft); }
+.qa-marathon-number { color: var(--muted); font-variant-numeric: tabular-nums; }
+.qa-marathon-mark { margin-inline-start: auto; color: var(--accent); }
+.qa-marathon-work h2 { margin: 0; }
+.qa-marathon-steps { margin: 16px 0; padding-inline-start: 1.5em; }
+.qa-marathon-steps li { padding: 4px; }
+.qa-marathon-steps [aria-current] { font-weight: 700; }
+.qa-marathon-steps .qa-step-done::after { content: " ✓"; color: var(--accent); }
+.qa-marathon-sandbox { padding: 16px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; }
+.qa-marathon-footer { margin-top: 16px; }
+@media (max-width: 680px) {
+  .qa-marathon-layout { grid-template-columns: minmax(0, 1fr); }
+  .qa-marathon-work { grid-row: 1; }
+}
+.qa-filters input[type="search"] { width: min(100%, 230px); }
+.qa-lab-results { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: -10px 0 16px; font-size: .85rem; color: var(--muted); }

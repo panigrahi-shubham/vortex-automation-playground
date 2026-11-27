@@ -4,12 +4,16 @@ export default {
   tag: 'getByRole() · toHaveAttribute()',
   level: 1,
   task: 'Use the arrow keys to switch tabs. Verify that only the selected panel is visible.',
+  steps: [
+    ['returns', 'Focus the Delivery tab and press ArrowRight to read the returns policy.'],
+    ['delivery', 'Press ArrowLeft from Returns to return to Delivery.'],
+  ],
   body: `<div class="row" role="tablist" aria-label="Delivery details">
     <button type="button" class="btn secondary sm" role="tab" id="vortex-tab-delivery" aria-controls="vortex-panel-delivery" aria-selected="true" data-testid="vortex-tab-delivery">Delivery</button>
     <button type="button" class="btn secondary sm" role="tab" id="vortex-tab-returns" aria-controls="vortex-panel-returns" aria-selected="false" tabindex="-1" data-testid="vortex-tab-returns">Returns</button></div>
     <p id="vortex-panel-delivery" role="tabpanel" aria-labelledby="vortex-tab-delivery" tabindex="0">Standard delivery takes three days.</p>
     <p id="vortex-panel-returns" role="tabpanel" aria-labelledby="vortex-tab-returns" tabindex="0" hidden>Returns are accepted within 30 days.</p>`,
-  mount(el) {
+  mount(el, { checkpoint }) {
     const tabs = [...el.querySelectorAll('[role=tab]')];
     function select(current) {
       for (const tab of tabs) {
@@ -32,6 +36,8 @@ export default {
         if (!target) return;
         event.preventDefault();
         select(target);
+        if (index === 0 && event.key === 'ArrowRight') checkpoint?.('returns');
+        if (index === 1 && event.key === 'ArrowLeft') checkpoint?.('delivery');
       };
     }
   },
